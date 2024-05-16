@@ -1,5 +1,7 @@
 import type { Config } from 'tailwindcss'
 
+const { fontFamily } = require('tailwindcss/defaultTheme')
+
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 const colors = require('tailwindcss/colors')
@@ -40,6 +42,15 @@ const config: Config = {
           },
         },
       },
+      borderRadius: {
+        lg: `var(--radius)`,
+        md: `calc(var(--radius) - 2px)`,
+        sm: 'calc(var(--radius) - 4px)',
+      },
+      fontFamily: {
+        sans: ['var(--font-sans)', ...fontFamily.sans],
+        heading: ['var(--font-heading)', ...fontFamily.sans],
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
@@ -54,8 +65,11 @@ const config: Config = {
     },
   },
   prefix: '',
-  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography'), addVariablesForColors],
-
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+    addVariablesForColors,
+  ],
 }
 
 function addVariablesForColors({ addBase, theme }: any) {
