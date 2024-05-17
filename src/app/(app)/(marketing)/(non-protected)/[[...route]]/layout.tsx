@@ -1,3 +1,5 @@
+import { Inter as FontSans } from 'next/font/google'
+import localFont from 'next/font/local'
 import Link from 'next/link'
 
 // import { SiteFooter } from '@/components/site-footer'
@@ -9,6 +11,16 @@ import { MainNav } from './_components/main-nav'
 interface MarketingLayoutProps {
   children: React.ReactNode
 }
+
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
+
+const fontHeading = localFont({
+  src: './assets/fonts/CalSans-SemiBold.woff2',
+  variable: '--font-heading',
+})
 
 export const marketingConfig = {
   mainNav: [
@@ -51,7 +63,15 @@ export default async function MarketingLayout({
           </nav>
         </div>
       </header>
-      <main className='flex-1'>{children}</main>
+
+      <main
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased',
+          fontSans.variable,
+          fontHeading.variable,
+        )}>
+        {children}
+      </main>
       {/* <SiteFooter /> */}
     </div>
   )
