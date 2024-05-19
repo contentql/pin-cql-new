@@ -63,6 +63,12 @@ const typeDefs = gql`
     NEXT_PRIVATE_DRAFT_SECRET: String
     REVALIDATION_KEY: String
     NEXT_PRIVATE_REVALIDATION_KEY: String
+    AUTH_SECRET: String
+    AUTH_TRUST_HOST: String
+    AUTH_VERPOSE: String
+    AUTH_URL: String
+    AUTH_GITHUB_ID: String
+    AUTH_GITHUB_SECRET: String
   }
 
   input VolumeInput {
@@ -80,10 +86,11 @@ const resolvers = {
     hello: () => 'Hello Manoj!',
   },
   Mutation: {
-    templateDeploy: async (_, { input }) => {
+    templateDeploy: async (_: any, { input }: any) => {
       // Set up Apollo Client
       const httpLink = new HttpLink({
         uri: 'https://hasura-template-production.up.railway.app/v1/graphql',
+        //@ts-ignore
         fetch,
       })
 
@@ -91,17 +98,17 @@ const resolvers = {
         return {
           headers: {
             ...headers,
-            authorization: `Bearer ${process.env.HASURA_GRAPHQL_TOKEN}`,
+            authorization: `Bearer 8ba64bb8-5720-491e-bc46-eea64a9e11ff`,
+            'x-hasura-admin-secret': 'iwillhack',
           },
         }
       })
-
       const client = new ApolloClient({
+        //@ts-ignore
         link: authLink.concat(httpLink),
         cache: new InMemoryCache(),
       })
 
-      // Define the mutation
       const DEPLOY_TEMPLATE_MUTATION = gql`
         mutation TemplateDeploy($input: TemplateDeployInput!) {
           railway {
@@ -115,10 +122,13 @@ const resolvers = {
 
       try {
         // Execute the mutation
-        const { data } = await client.mutate({
+        const res = await client.mutate({
           mutation: DEPLOY_TEMPLATE_MUTATION,
           variables: { input },
         })
+
+        const { data } = res
+        console.log('data', data)
         return data
       } catch (error) {
         console.error(error)
@@ -127,12 +137,6 @@ const resolvers = {
     },
   },
 }
-
-// const resolvers = {
-//   Query: {
-//     hello: () => 'Hello world!',
-//   },
-// }
 
 const server = new ApolloServer({
   typeDefs,
