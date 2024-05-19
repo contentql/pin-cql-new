@@ -1,5 +1,7 @@
 'use client'
 
+import client from '../lib/apollo/apolloClient'
+import { ApolloProvider } from '@apollo/client'
 import { env } from '@env'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -20,11 +22,13 @@ export default function Provider({ children }: { children: React.ReactNode }) {
     }),
   )
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </trpc.Provider>
+    <ApolloProvider client={client}>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </trpc.Provider>
+    </ApolloProvider>
   )
 }

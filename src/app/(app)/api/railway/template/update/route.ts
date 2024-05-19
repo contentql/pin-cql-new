@@ -4,21 +4,21 @@ import { NextRequest } from 'next/server'
 import client from '@/lib/apollo/apolloClient'
 
 // Define the mutation
-const TEMPLATE_DELETE_MUTATION = gql`
-  mutation ProjectDelete($id: String!) {
+const TEMPLATE_UPDATE_MUTATION = gql`
+  mutation UpdateEnv($input: VariableCollectionUpsertInput!) {
     railway {
-      projectDelete(id: $id)
+      variableCollectionUpsert(input: $input)
     }
   }
 `
 
 export async function POST(req: NextRequest) {
   try {
-    const { id } = await req.json()
+    const { input } = await req.json()
 
     const { data } = await client.mutate({
-      mutation: TEMPLATE_DELETE_MUTATION,
-      variables: { id },
+      mutation: TEMPLATE_UPDATE_MUTATION,
+      variables: { input },
     })
 
     return new Response(JSON.stringify(data), {
@@ -26,10 +26,10 @@ export async function POST(req: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
     })
   } catch (error) {
-    console.error('Error during template deletion:', error)
+    console.error('Error during template updating:', error)
 
     return new Response(
-      JSON.stringify({ error: 'Failed to delete template' }),
+      JSON.stringify({ error: 'Failed to update template' }),
       {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
