@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { SESSION_STRATEGY } from '@/lib/auth/config'
 import { getAuthJsCookieName, getAuthJsToken } from '@/lib/auth/edge'
 import { isWithinExpirationDate } from '@/utils/isWithinExpirationDate'
 
@@ -49,9 +48,12 @@ const validateJwtTokenAndLogoutOnFailure = async (
 }
 
 export default async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/api/form-state')) {
+    return NextResponse.next()
+  }
   const sequentialMiddlewares = [handleLogoutResponse]
-  if (SESSION_STRATEGY === 'jwt')
-    sequentialMiddlewares.push(validateJwtTokenAndLogoutOnFailure)
+  // if (SESSION_STRATEGY === 'jwt')
+  //  sequentialMiddlewares.push(validateJwtTokenAndLogoutOnFailure)
 
   for (const check of sequentialMiddlewares) {
     const result = await check(request)
