@@ -1,4 +1,4 @@
-import DashboardView from '../_components/DashboardView'
+import DashboardView from '@/app/(app)/(dashboard)/_components/DashboardView'
 
 export const metadata = {
   title: 'Dashboard',
