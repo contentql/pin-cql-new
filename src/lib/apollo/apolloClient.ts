@@ -1,7 +1,8 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { env } from '@env'
-import fetch from 'node-fetch'
+
+// import fetch from 'node-fetch'
 
 const httpLink = new HttpLink({
   uri: env.HASURA_URI,
