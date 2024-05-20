@@ -1,11 +1,11 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import {
-  ActivityIcon,
   CirclePlusIcon,
-  CreditCardIcon,
-  DollarSignIcon,
   FileIcon,
   HomeIcon,
   LineChartIcon,
@@ -54,6 +54,59 @@ import {
 } from '@/components/ui/tooltip'
 
 const DashboardView = () => {
+  const projects = [
+    {
+      id: 'aidjnx8j3e89oddd2ne8',
+      title: 'Project 1',
+      services: [{ id: '' }, { id: '' }],
+      description: 'This is project 1',
+      icon: (
+        <span className='relative flex h-3 w-3'>
+          <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75'></span>
+          <span className='relative inline-flex rounded-full h-3 w-3 bg-green-500'></span>
+        </span>
+      ),
+    },
+    {
+      id: 'xndwejn84ow9udcdiojw',
+      title: 'Project 2',
+      services: [{ id: '' }, { id: '' }],
+      description: 'This is project 2',
+      icon: (
+        <span className='relative flex h-3 w-3'>
+          <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75'></span>
+          <span className='relative inline-flex rounded-full h-3 w-3 bg-sky-500'></span>
+        </span>
+      ),
+    },
+    {
+      id: 'fxtf7u8u9kokokoi97t7gfh',
+      title: 'Project 3',
+      services: [{ id: '' }, { id: '' }],
+      description: 'This is project 3',
+      icon: (
+        <span className='relative flex h-3 w-3'>
+          <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75'></span>
+          <span className='relative inline-flex rounded-full h-3 w-3 bg-red-500'></span>
+        </span>
+      ),
+    },
+    {
+      id: 'ygfygyvghgtftgf6655768jii',
+      title: 'Project 4',
+      services: [{ id: '' }, { id: '' }],
+      description: 'This is project 4',
+      icon: (
+        <span className='relative flex h-3 w-3'>
+          <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75'></span>
+          <span className='relative inline-flex rounded-full h-3 w-3 bg-yellow-500'></span>
+        </span>
+      ),
+    },
+  ]
+
+  const router = useRouter()
+
   return (
     <div className='flex min-h-screen w-full flex-col bg-slate-100/40 dark:bg-slate-800/40'>
       <aside className='fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-white sm:flex dark:bg-slate-950'>
@@ -301,64 +354,32 @@ const DashboardView = () => {
                 </CardHeader>
                 <CardContent>
                   <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
-                    <Card
-                      x-chunk='dashboard-01-chunk-0'
-                      className='cursor-pointer'>
-                      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                        <CardTitle className='text-sm font-medium'>
-                          Total Revenue
-                        </CardTitle>
-                        <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                      </CardHeader>
-                      <CardContent>
-                        <div className='text-2xl font-bold'>$45,231.89</div>
-                        <p className='text-xs text-slate-500 dark:text-slate-400'>
-                          +20.1% from last month
-                        </p>
-                      </CardContent>
-                    </Card>
-                    <Card x-chunk='dashboard-01-chunk-1'>
-                      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                        <CardTitle className='text-sm font-medium'>
-                          Subscriptions
-                        </CardTitle>
-                        <UsersIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                      </CardHeader>
-                      <CardContent>
-                        <div className='text-2xl font-bold'>+2350</div>
-                        <p className='text-xs text-slate-500 dark:text-slate-400'>
-                          +180.1% from last month
-                        </p>
-                      </CardContent>
-                    </Card>
-                    <Card x-chunk='dashboard-01-chunk-2'>
-                      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                        <CardTitle className='text-sm font-medium'>
-                          Sales
-                        </CardTitle>
-                        <CreditCardIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                      </CardHeader>
-                      <CardContent>
-                        <div className='text-2xl font-bold'>+12,234</div>
-                        <p className='text-xs text-slate-500 dark:text-slate-400'>
-                          +19% from last month
-                        </p>
-                      </CardContent>
-                    </Card>
-                    <Card x-chunk='dashboard-01-chunk-3'>
-                      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                        <CardTitle className='text-sm font-medium'>
-                          Active Now
-                        </CardTitle>
-                        <ActivityIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                      </CardHeader>
-                      <CardContent>
-                        <div className='text-2xl font-bold'>+573</div>
-                        <p className='text-xs text-slate-500 dark:text-slate-400'>
-                          +201 since last hour
-                        </p>
-                      </CardContent>
-                    </Card>
+                    {projects?.map(project => {
+                      return (
+                        <Card
+                          key={project?.id}
+                          x-chunk='dashboard-01-chunk-0'
+                          className='cursor-pointer'
+                          onClick={() => {
+                            router.push(`/project/${project?.id}`)
+                          }}>
+                          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                            <CardTitle className='text-sm font-medium'>
+                              {project?.services?.length} services
+                            </CardTitle>
+                            {project?.icon}
+                          </CardHeader>
+                          <CardContent>
+                            <div className='text-2xl font-bold'>
+                              {project?.title}
+                            </div>
+                            <p className='text-xs text-slate-500 dark:text-slate-400'>
+                              {project?.description}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
                   </div>
                 </CardContent>
               </Card>
