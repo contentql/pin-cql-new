@@ -5,8 +5,7 @@ import { env } from '@env'
 // import fetch from 'node-fetch'
 
 const httpLink = new HttpLink({
-  uri: env.HASURA_URI,
-  //@ts-ignore
+  uri: env.NEXT_PUBLIC_HASURA_URI,
   fetch,
 })
 
