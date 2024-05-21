@@ -24,10 +24,13 @@ export const env = createEnv({
     AUTH_URL: z.string().url(),
     AUTH_GITHUB_ID: z.string(),
     AUTH_GITHUB_SECRET: z.string(),
+    HASURA_API_KEY: z.string().min(1),
+    RAILWAY_SUPER_API: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_IS_LIVE: z.boolean().default(false),
     NEXT_PUBLIC_PUBLIC_URL: z.string().url(),
+    NEXT_PUBLIC_HASURA_URI: z.string().url(),
   },
   runtimeEnv: {
     DATABASE_URI: process.env.DATABASE_URI,
@@ -53,5 +56,8 @@ export const env = createEnv({
     AUTH_URL: process.env.AUTH_URL,
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
+    NEXT_PUBLIC_HASURA_URI: process.env.NEXT_PUBLIC_HASURA_URI,
+    HASURA_API_KEY: process.env.HASURA_API_KEY,
+    RAILWAY_SUPER_API: process.env.RAILWAY_SUPER_API,
   },
 })
