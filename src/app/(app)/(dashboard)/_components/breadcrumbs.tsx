@@ -1,11 +1,10 @@
 'use client'
 
-import { ChevronDownIcon } from 'lucide-react'
+import { ChevronDownIcon, HomeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
 
-import { HomeIcon } from '@/app/(app)/(dashboard)/_components/icons'
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -115,7 +114,7 @@ const Breadcrumbs: React.FC<Props> = props => {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href='/dashboard'>
-            <HomeIcon />
+            <HomeIcon className='w-5 h-5' />
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
