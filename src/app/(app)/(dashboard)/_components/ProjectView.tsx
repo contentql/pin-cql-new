@@ -1,12 +1,14 @@
+'use client'
+
+import { useParams, useRouter } from 'next/navigation'
+
 import {
-  ActivityIcon,
   CirclePlusIcon,
-  CreditCardIcon,
   DollarSignIcon,
   FileIcon,
   ListFilterIcon,
-  UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
+import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -26,6 +28,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const ProjectView = () => {
+  const router = useRouter()
+  const params = useParams()
+
+  const projectId = params.projectId
+
+  const services = projects.find(project => project.id === projectId)?.services
+
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
       <Tabs defaultValue='all'>
@@ -82,60 +91,34 @@ const ProjectView = () => {
             </CardHeader>
             <CardContent>
               <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
-                <Card x-chunk='dashboard-01-chunk-0' className='cursor-pointer'>
-                  <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                    <CardTitle className='text-sm font-medium'>
-                      Total Revenue
-                    </CardTitle>
-                    <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                  </CardHeader>
-                  <CardContent>
-                    <div className='text-2xl font-bold'>$45,231.89</div>
-                    <p className='text-xs text-slate-500 dark:text-slate-400'>
-                      +20.1% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card x-chunk='dashboard-01-chunk-1'>
-                  <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                    <CardTitle className='text-sm font-medium'>
-                      Subscriptions
-                    </CardTitle>
-                    <UsersIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                  </CardHeader>
-                  <CardContent>
-                    <div className='text-2xl font-bold'>+2350</div>
-                    <p className='text-xs text-slate-500 dark:text-slate-400'>
-                      +180.1% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card x-chunk='dashboard-01-chunk-2'>
-                  <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                    <CardTitle className='text-sm font-medium'>Sales</CardTitle>
-                    <CreditCardIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                  </CardHeader>
-                  <CardContent>
-                    <div className='text-2xl font-bold'>+12,234</div>
-                    <p className='text-xs text-slate-500 dark:text-slate-400'>
-                      +19% from last month
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card x-chunk='dashboard-01-chunk-3'>
-                  <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                    <CardTitle className='text-sm font-medium'>
-                      Active Now
-                    </CardTitle>
-                    <ActivityIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                  </CardHeader>
-                  <CardContent>
-                    <div className='text-2xl font-bold'>+573</div>
-                    <p className='text-xs text-slate-500 dark:text-slate-400'>
-                      +201 since last hour
-                    </p>
-                  </CardContent>
-                </Card>
+                {services?.map(service => {
+                  return (
+                    <Card
+                      key={service.id}
+                      x-chunk='dashboard-01-chunk-0'
+                      className='cursor-pointer'
+                      onClick={() => {
+                        router.push(
+                          `/project/${projectId}/service/${service?.id}`,
+                        )
+                      }}>
+                      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                        <CardTitle className='text-sm font-medium'>
+                          {service?.updatedAt}
+                        </CardTitle>
+                        <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
+                      </CardHeader>
+                      <CardContent>
+                        <div className='text-2xl font-bold'>
+                          {service?.name}
+                        </div>
+                        <p className='text-xs text-slate-500 dark:text-slate-400'>
+                          {service?.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
               </div>
             </CardContent>
           </Card>

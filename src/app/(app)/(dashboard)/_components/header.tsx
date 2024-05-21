@@ -12,7 +12,6 @@ import {
   ShoppingCartIcon,
   UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
-import { projects } from '@/app/(app)/(dashboard)/_data/projects'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -24,6 +23,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+
+import { projects } from '~/src/app/(app)/(dashboard)/_data'
 
 const DashboardHeader = () => {
   const dropdownProjectItems = projects.map(project => ({

@@ -7,7 +7,6 @@ import {
   FileIcon,
   ListFilterIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
-import { projects } from '@/app/(app)/(dashboard)/_data/projects'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -25,6 +24,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
+import { projects } from '~/src/app/(app)/(dashboard)/_data'
 
 const DashboardView = () => {
   const router = useRouter()
