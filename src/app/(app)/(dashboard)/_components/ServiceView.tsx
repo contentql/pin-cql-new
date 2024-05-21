@@ -1,13 +1,14 @@
+'use client'
+
+import { X } from 'lucide-react'
+
+import DeploymentsTabContent from '@/app/(app)/(dashboard)/_components/deployments-tab-content'
 import {
   ActivityIcon,
-  CirclePlusIcon,
   CreditCardIcon,
   DollarSignIcon,
-  FileIcon,
-  ListFilterIcon,
   UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -15,19 +16,34 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
+const VariablesContent = () => {
+  return <div>Content for Variables</div>
+}
+
+const MetricsContent = () => {
+  return <div>Content for Metrics</div>
+}
+
+const SettingsContent = () => {
+  return <div>Content for Settings</div>
+}
+
 const ServiceView = () => {
+  const tabs = [
+    {
+      value: 'deployments',
+      label: 'Deployments',
+      content: <DeploymentsTabContent />,
+    },
+    { value: 'variables', label: 'Variables', content: <VariablesContent /> },
+    { value: 'metrics', label: 'Metrics', content: <MetricsContent /> },
+    { value: 'settings', label: 'Settings', content: <SettingsContent /> },
+  ]
+
   return (
-    <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
+    <main className='grid grid-cols-[26%_72%] flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
       <Tabs defaultValue='all'>
         <div className='flex items-center'>
           <TabsList>
@@ -38,39 +54,6 @@ const ServiceView = () => {
               Archived
             </TabsTrigger>
           </TabsList>
-          <div className='ml-auto flex items-center gap-2'>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className='h-8 gap-1' size='sm' variant='outline'>
-                  <ListFilterIcon className='h-3.5 w-3.5' />
-                  <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                    Filter
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='end'>
-                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  Active
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button className='h-8 gap-1' size='sm' variant='outline'>
-              <FileIcon className='h-3.5 w-3.5' />
-              <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                Export
-              </span>
-            </Button>
-            <Button className='h-8 gap-1' size='sm'>
-              <CirclePlusIcon className='h-3.5 w-3.5' />
-              <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                Add Product
-              </span>
-            </Button>
-          </div>
         </div>
         <TabsContent value='all'>
           <Card x-chunk='dashboard-06-chunk-0'>
@@ -81,7 +64,7 @@ const ServiceView = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
+              <div className='grid grid-cols-1 gap-8'>
                 <Card x-chunk='dashboard-01-chunk-0' className='cursor-pointer'>
                   <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                     <CardTitle className='text-sm font-medium'>
@@ -141,6 +124,40 @@ const ServiceView = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      <Card x-chunk='dashboard-06-chunk-0' className='p-4'>
+        <CardHeader className='flex-row justify-between'>
+          <div>
+            <CardTitle>Services</CardTitle>
+            <CardDescription>
+              Manage your services and variables.
+            </CardDescription>
+          </div>
+          <X className='w-5 h-5' onClick={() => {}} />
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue={tabs?.at(0)?.value}>
+            <TabsList>
+              {tabs?.map(tab => {
+                return (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className='rounded-md'>
+                    {tab?.label || tab.value}
+                  </TabsTrigger>
+                )
+              })}
+            </TabsList>
+            {tabs?.map(tab => {
+              return (
+                <TabsContent key={tab.value} value={tab.value} className='pt-4'>
+                  {tab?.content}
+                </TabsContent>
+              )
+            })}
+          </Tabs>
+        </CardContent>
+      </Card>
     </main>
   )
 }

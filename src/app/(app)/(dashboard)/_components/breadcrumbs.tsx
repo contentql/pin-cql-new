@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
@@ -24,7 +25,11 @@ import {
 
 interface Props {
   maxLength?: number
-  dropdownRoutes?: { route: string; items: { id: string; name: string }[] }[]
+  dropdownRoutes?: {
+    route: string
+    dynamicRouteName: string
+    items: { id: string; name: string }[]
+  }[]
   includeSegments?: string[]
   excludeSegmentsLinks?: string[]
 }
@@ -41,23 +46,47 @@ const Breadcrumbs: React.FC<Props> = props => {
 
   const segments = pathname.split('/').filter(Boolean)
 
-  const getDropdownItems = (segment: string, href: string) => {
+  const getDropdown = (segment: string, href: string) => {
     const dropdownRoute = dropdownRoutes?.find(dr => dr.route === segment)
-    return dropdownRoute?.items.map((item, index) => (
+    const selectedItem = dropdownRoute?.items.find(
+      item => item.id === segments[segments.indexOf(segment) + 1],
+    )
+
+    const dropdownItems = dropdownRoute?.items.map(item => (
       <Link
         key={`${segment}-${item.id}`}
         href={`${href}/${item.id}`}
         className='hover:underline'>
-        <DropdownMenuItem className='capitalize'>{item.name}</DropdownMenuItem>
+        <DropdownMenuCheckboxItem
+          className='capitalize'
+          checked={selectedItem?.id === item.id}>
+          {item.name}
+        </DropdownMenuCheckboxItem>
       </Link>
     ))
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger className='flex items-center gap-1.5 capitalize outline-none'>
+          {selectedItem?.name}
+          <ChevronDownIcon className='h-5 w-5' />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className='w-fit'>
+          {dropdownItems}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
   }
 
   const breadcrumbItems = segments
     .map((segment, index) => {
       const isLast = index === segments.length - 1
       const href = `/${segments.slice(0, index + 1).join('/')}`
-      const dropdownItems = getDropdownItems(segment, href)
+      const dropdown = dropdownRoutes?.find(
+        dropdownRoute => dropdownRoute.route === segment,
+      )
+        ? getDropdown(segment, href)
+        : undefined
 
       return (
         <BreadcrumbItem key={segment} className='capitalize'>
@@ -65,16 +94,8 @@ const Breadcrumbs: React.FC<Props> = props => {
             <BreadcrumbPage>{segment}</BreadcrumbPage>
           ) : excludeSegmentsLinks?.includes(segment) ? (
             <p className='cursor-not-allowed'>{segment}</p>
-          ) : dropdownItems?.length ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger className='flex items-center gap-1.5 capitalize'>
-                {segment}
-                <ChevronDownIcon className='h-5 w-5' />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className='w-fit'>
-                {dropdownItems}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          ) : dropdown ? (
+            dropdown
           ) : (
             <BreadcrumbLink href={href} className='hover:underline'>
               {segment}

@@ -12,6 +12,7 @@ import {
   ShoppingCartIcon,
   UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
+import { projects } from '@/app/(app)/(dashboard)/_data/projects'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -25,6 +26,11 @@ import { Input } from '@/components/ui/input'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 const DashboardHeader = () => {
+  const dropdownProjectItems = projects.map(project => ({
+    id: project.id,
+    name: project.title,
+  }))
+
   return (
     <header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 dark:bg-slate-950'>
       <Sheet>
@@ -77,17 +83,12 @@ const DashboardHeader = () => {
       </Sheet>
       <Breadcrumbs
         maxLength={5}
+        // ? only works for dynamic routes
         dropdownRoutes={[
           {
             route: 'project',
-            items: [
-              {
-                id: 'hcnuwehfk83484sdf',
-                name: 'project 1',
-              },
-              { id: 'mcsuc3q74h3ica349s', name: 'project 2' },
-              { id: 'csdcuaweh3u894uhwcsd', name: 'project 3' },
-            ],
+            dynamicRouteName: 'projectId',
+            items: [...dropdownProjectItems],
           },
         ]}
       />
