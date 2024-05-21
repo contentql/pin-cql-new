@@ -1,4 +1,6 @@
-import { Circle, EllipsisVertical, Star } from 'lucide-react'
+import { projects } from '../_data'
+import '@radix-ui/react-dropdown-menu'
+import { Box, EllipsisVertical, GitBranch, Github } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -10,70 +12,82 @@ import {
 } from '@/components/ui/card'
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuSeparator,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-const DeploymentCard = () => {
-  return (
-    <Card>
-      <CardHeader className='flex flex-row justify-between'>
-        <div className='space-y-1'>
-          <CardTitle>shadcn/ui</CardTitle>
-          <CardDescription>
-            Beautifully designed components built with Radix UI and Tailwind
-            CSS.
-          </CardDescription>
-        </div>
-        <div className='flex items-center space-x-6 rounded-md bg-secondary text-secondary-foreground'>
-          <Button variant='secondary' className='px-3'>
-            View Logs
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='secondary' className='px-1.5'>
-                <EllipsisVertical className='h-4 w-4 text-secondary-foreground' />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align='end'
-              alignOffset={-5}
-              className='w-[200px]'
-              forceMount>
-              <DropdownMenuCheckboxItem checked>
-                Future Ideas
-              </DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem>My Stack</DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem>Inspiration</DropdownMenuCheckboxItem>
-              <DropdownMenuSeparator />
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className='flex space-x-4 text-sm text-muted-foreground'>
-          <div className='flex items-center'>
-            <Circle className='mr-1 h-3 w-3 fill-sky-400 text-sky-400' />
-            TypeScipt
-          </div>
-          <div className='flex items-center'>
-            <Star className='mr-1 h-3 w-3' />
-            10k
-          </div>
-          <div>Updated April 2023</div>
-        </div>
-      </CardContent>
-    </Card>
-  )
+interface DeploymentsTabContentProps {
+  deployments: (typeof projects)[0]['services'][0]['deployments']
 }
 
-const DeploymentsTabContent = () => {
+const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
+  deployments,
+}) => {
   return (
     <div className='grid grid-cols-1 gap-8'>
-      <DeploymentCard />
+      {deployments?.map(deployment => {
+        return (
+          <Card
+            key={deployment.id}
+            className={`${deployment?.status === 'REMOVED' && 'opacity-65'}`}>
+            <CardHeader className='flex flex-row justify-between'>
+              <div className='space-y-1'>
+                <CardTitle className='capitalize'>
+                  {deployment?.status.toLowerCase()}
+                </CardTitle>
+                <CardDescription>
+                  {deployment?.meta?.commitMessage}
+                </CardDescription>
+              </div>
+              <div className='flex items-center space-x-4 rounded-md bg-secondary text-secondary-foreground'>
+                <Button variant='secondary' className='px-3'>
+                  View Logs
+                </Button>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant='secondary' className='px-1.5'>
+                      <EllipsisVertical className='h-4 w-4 text-secondary-foreground' />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end' alignOffset={-5} forceMount>
+                    <DropdownMenuItem>View Logs</DropdownMenuItem>
+                    <DropdownMenuItem>Restart</DropdownMenuItem>
+                    <DropdownMenuItem>Redeploy</DropdownMenuItem>
+                    <DropdownMenuItem>Remove</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className='flex space-x-4 text-sm text-muted-foreground'>
+                <div className='flex items-center'>
+                  {deployment?.meta?.image && (
+                    <>
+                      <Box className='mr-1 h-4 w-4' />
+                      Docker Image
+                    </>
+                  )}
+                  {deployment?.meta?.branch && (
+                    <>
+                      <Github className='mr-1 h-4 w-4' />
+                      Github
+                    </>
+                  )}
+                </div>
+                {deployment?.meta?.branch && (
+                  <div className='flex items-center'>
+                    <GitBranch className='mr-1 w-4 h-4' />
+                    deployment?.meta?.branch
+                  </div>
+                )}
+                <div>UpdatedAt: {deployment?.updatedAt}</div>
+              </div>
+            </CardContent>
+          </Card>
+        )
+      })}
     </div>
   )
 }

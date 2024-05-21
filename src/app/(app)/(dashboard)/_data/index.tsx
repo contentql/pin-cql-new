@@ -1,4 +1,4 @@
-import { DollarSignIcon } from 'lucide-react'
+import { Box, DollarSignIcon, Leaf } from 'lucide-react'
 
 export const projects = [
   {
@@ -16,9 +16,7 @@ export const projects = [
         id: 'asnsivicjrdj9393',
         name: 'pin-hcms',
         description: 'this is pin-hcms description',
-        icon: (
-          <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-        ),
+        icon: <Box className='h-8 w-8 text-slate-500 dark:text-slate-400' />,
         updatedAt: '12-03-2000',
         status: 'active',
         deployments: [
@@ -26,6 +24,21 @@ export const projects = [
             id: 'maskcisciwe34r9i',
             status: 'CRASHED',
             updatedAt: '12-3-333',
+            meta: {
+              // branch: 'main',
+              commitMessage: 'Chore: Updating ui for dashboard',
+              image: 'docker',
+            },
+          },
+          {
+            id: 'maskcisciwe34r9',
+            status: 'REMOVED',
+            updatedAt: '12-3-333',
+            meta: {
+              branch: 'main',
+              commitMessage: 'Chore: Updating ui for dashboard',
+              // image: 'docker',
+            },
           },
         ],
       },
@@ -33,9 +46,7 @@ export const projects = [
         id: 'cskjuhwhw98ujdsjjcdsl3',
         name: 'mongodb',
         description: 'this is mongodb description',
-        icon: (
-          <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-        ),
+        icon: <Leaf className='h-8 w-8 text-slate-500 dark:text-slate-400' />,
         updatedAt: '12-03-2000',
         status: 'sleep',
       },

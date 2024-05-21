@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react'
 
 import {
   CirclePlusIcon,
-  DollarSignIcon,
   FileIcon,
   ListFilterIcon,
+  statusIcons,
 } from '@/app/(app)/(dashboard)/_components/icons'
 import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -42,6 +43,9 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   const router = useRouter()
   const params = useParams()
 
+  const projectId = params.projectId
+  const serviceId = params.serviceId
+
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -50,15 +54,14 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     }
   }, [vertical])
 
-  const projectId = params.projectId
-
-  const services = projects.find(project => project.id === projectId)?.services
+  const services = projects?.find(project => project.id === projectId)?.services
+  const service = services?.find(service => service.id === serviceId)
 
   const serviceDetailsTabs = [
     {
       value: 'deployments',
       label: 'Deployments',
-      content: <DeploymentsTabContent />,
+      content: <DeploymentsTabContent deployments={service?.deployments} />,
     },
     {
       value: 'variables',
@@ -151,6 +154,8 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                           tab.value === 'all' || service.status === tab.value,
                       )
                       ?.map(service => {
+                        const latestDeployment = service?.deployments?.at(0)
+
                         return (
                           <Card
                             key={service.id}
@@ -165,7 +170,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                               <CardTitle className='text-sm font-medium'>
                                 {service?.updatedAt}
                               </CardTitle>
-                              <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
+                              {service?.icon}
                             </CardHeader>
                             <CardContent>
                               <div className='text-2xl font-bold'>
@@ -175,6 +180,14 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                                 {service?.description}
                               </p>
                             </CardContent>
+                            <CardFooter
+                              className={`capitalize gap-1 ${latestDeployment?.status === 'CRASHED' && 'text-red-600'}`}>
+                              {statusIcons({
+                                status: latestDeployment?.status as string,
+                              })}
+                              {latestDeployment?.status.toLowerCase() ||
+                                'No Deployments'}
+                            </CardFooter>
                           </Card>
                         )
                       })}
@@ -191,10 +204,8 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
           className={`p-4 shadow-xl shadow-cyan-100 border-double transform transition-transform duration-300 ease-in-out ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
           <CardHeader className='flex-row justify-between'>
             <div>
-              <CardTitle>Services</CardTitle>
-              <CardDescription>
-                Manage your services and variables.
-              </CardDescription>
+              <CardTitle>{service?.name}</CardTitle>
+              <CardDescription>{service?.description}</CardDescription>
             </div>
             <X
               className='w-5 h-5 cursor-pointer'

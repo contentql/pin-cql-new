@@ -1,3 +1,9 @@
+import { CircleX } from 'lucide-react'
+
+export const statusIcons = ({ status }: { status: string }) => {
+  if (status === 'CRASHED') return <CircleX className='w-4 h-4' />
+}
+
 export const CirclePlusIcon: React.FC<
   React.SVGProps<SVGSVGElement>
 > = props => {
