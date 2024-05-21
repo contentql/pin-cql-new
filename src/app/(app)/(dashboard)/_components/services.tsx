@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import {
   CirclePlusIcon,
@@ -41,6 +42,14 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   const router = useRouter()
   const params = useParams()
 
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    if (vertical) {
+      setIsVisible(true)
+    }
+  }, [vertical])
+
   const projectId = params.projectId
 
   const services = projects.find(project => project.id === projectId)?.services
@@ -60,18 +69,32 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     { value: 'settings', label: 'Settings', content: <SettingsTabContent /> },
   ]
 
+  const serviceTabs = [
+    {
+      value: 'all',
+      label: 'All',
+    },
+    {
+      value: 'active',
+      label: 'Active',
+    },
+    { value: 'sleep', label: 'Sleep' },
+    { value: 'archived', label: 'Archived' },
+  ]
+
   return (
     <main
       className={`grid flex-1 ${vertical && 'grid-cols-[26%_72%]'} items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8`}>
       <Tabs defaultValue='all'>
         <div className='flex items-center'>
           <TabsList>
-            <TabsTrigger value='all'>All</TabsTrigger>
-            <TabsTrigger value='active'>Active</TabsTrigger>
-            <TabsTrigger value='draft'>Draft</TabsTrigger>
-            <TabsTrigger className='hidden sm:flex' value='archived'>
-              Archived
-            </TabsTrigger>
+            {serviceTabs?.map(tab => {
+              return (
+                <TabsTrigger key={tab.label} value={tab.value}>
+                  {tab.label}
+                </TabsTrigger>
+              )
+            })}
           </TabsList>
           {!vertical && (
             <div className='ml-auto flex items-center gap-2'>
@@ -109,52 +132,63 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
             </div>
           )}
         </div>
-        <TabsContent value='all'>
-          <Card x-chunk='dashboard-06-chunk-0'>
-            <CardHeader>
-              <CardTitle>Services</CardTitle>
-              <CardDescription>
-                Manage your services and variables.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={`grid ${vertical ? 'grid grid-cols-1 gap-8' : 'gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'}`}>
-                {services?.map(service => {
-                  return (
-                    <Card
-                      key={service.id}
-                      x-chunk='dashboard-01-chunk-0'
-                      className='cursor-pointer'
-                      onClick={() => {
-                        router.push(
-                          `/project/${projectId}/service/${service?.id}`,
+        {serviceTabs?.map(tab => {
+          return (
+            <TabsContent key={tab.value} value={tab.value}>
+              <Card x-chunk='dashboard-06-chunk-0'>
+                <CardHeader>
+                  <CardTitle>Services</CardTitle>
+                  <CardDescription>
+                    Manage your services and variables.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div
+                    className={`grid ${vertical ? 'grid-cols-1 gap-8' : 'gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'}`}>
+                    {services
+                      ?.filter(
+                        service =>
+                          tab.value === 'all' || service.status === tab.value,
+                      )
+                      ?.map(service => {
+                        return (
+                          <Card
+                            key={service.id}
+                            x-chunk='dashboard-01-chunk-0'
+                            className='cursor-pointer'
+                            onClick={() => {
+                              router.push(
+                                `/project/${projectId}/service/${service?.id}`,
+                              )
+                            }}>
+                            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                              <CardTitle className='text-sm font-medium'>
+                                {service?.updatedAt}
+                              </CardTitle>
+                              <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
+                            </CardHeader>
+                            <CardContent>
+                              <div className='text-2xl font-bold'>
+                                {service?.name}
+                              </div>
+                              <p className='text-xs text-slate-500 dark:text-slate-400'>
+                                {service?.description}
+                              </p>
+                            </CardContent>
+                          </Card>
                         )
-                      }}>
-                      <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                        <CardTitle className='text-sm font-medium'>
-                          {service?.updatedAt}
-                        </CardTitle>
-                        <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
-                      </CardHeader>
-                      <CardContent>
-                        <div className='text-2xl font-bold'>
-                          {service?.name}
-                        </div>
-                        <p className='text-xs text-slate-500 dark:text-slate-400'>
-                          {service?.description}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                      })}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )
+        })}
       </Tabs>
       {vertical && (
-        <Card x-chunk='dashboard-06-chunk-0' className='p-4'>
+        <Card
+          x-chunk='dashboard-06-chunk-0'
+          className={`p-4 shadow-xl shadow-cyan-100 border-double transform transition-transform duration-300 ease-in-out ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
           <CardHeader className='flex-row justify-between'>
             <div>
               <CardTitle>Services</CardTitle>
@@ -162,7 +196,15 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                 Manage your services and variables.
               </CardDescription>
             </div>
-            <X className='w-5 h-5' onClick={() => {}} />
+            <X
+              className='w-5 h-5 cursor-pointer'
+              onClick={() => {
+                setIsVisible(false)
+                setTimeout(() => {
+                  router.push('../')
+                }, 200)
+              }}
+            />
           </CardHeader>
           <CardContent>
             <Tabs defaultValue={serviceDetailsTabs?.at(0)?.value}>
@@ -180,10 +222,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
               </TabsList>
               {serviceDetailsTabs?.map(tab => {
                 return (
-                  <TabsContent
-                    key={tab.value}
-                    value={tab.value}
-                    className='pt-4'>
+                  <TabsContent key={tab.value} value={tab.value}>
                     {tab?.content}
                   </TabsContent>
                 )

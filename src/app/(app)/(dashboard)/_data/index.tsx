@@ -20,6 +20,14 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'active',
+        deployments: [
+          {
+            id: 'maskcisciwe34r9i',
+            status: 'CRASHED',
+            updatedAt: '12-3-333',
+          },
+        ],
       },
       {
         id: 'cskjuhwhw98ujdsjjcdsl3',
@@ -29,6 +37,7 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'sleep',
       },
     ],
   },
@@ -51,6 +60,7 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'active',
       },
       {
         id: 'cskjuhwhw98ujdsjjcdsl3',
@@ -60,6 +70,7 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'sleep',
       },
     ],
   },
@@ -82,6 +93,7 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'active',
       },
       {
         id: 'cskjuhwhw98ujdsjjcdsl3',
@@ -91,6 +103,7 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'sleep',
       },
     ],
   },
@@ -113,6 +126,7 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'active',
       },
       {
         id: 'cskjuhwhw98ujdsjjcdsl3',
@@ -122,6 +136,7 @@ export const projects = [
           <DollarSignIcon className='h-4 w-4 text-slate-500 dark:text-slate-400' />
         ),
         updatedAt: '12-03-2000',
+        status: 'sleep',
       },
     ],
   },
