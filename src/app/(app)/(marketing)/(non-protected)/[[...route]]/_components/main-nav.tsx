@@ -10,7 +10,28 @@ import { siteConfig } from './Marketing'
 import { Icons } from './icons'
 import { MobileNav } from './mobile-nav'
 
-export function MainNav({ items, children }: any) {
+export const marketingConfig = {
+  mainNav: [
+    {
+      title: 'Features',
+      href: '/#features',
+    },
+    {
+      title: 'Pricing',
+      href: '/pricing',
+    },
+    {
+      title: 'Blog',
+      href: '/blog',
+    },
+    {
+      title: 'Documentation',
+      href: '',
+    },
+  ],
+}
+
+export function MainNav({ children }: any) {
   const segment = useSelectedLayoutSegment()
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
 
@@ -22,9 +43,9 @@ export function MainNav({ items, children }: any) {
           {siteConfig.name}
         </span>
       </Link>
-      {items?.length ? (
+      {marketingConfig.mainNav?.length ? (
         <nav className='hidden gap-6 md:flex'>
-          {items?.map((item: any, index: number) => (
+          {marketingConfig.mainNav?.map((item: any, index: number) => (
             <Link
               key={index}
               href={item.disabled ? '#' : item.href}
@@ -46,8 +67,8 @@ export function MainNav({ items, children }: any) {
         {showMobileMenu ? <Icons.close /> : <Icons.logo />}
         <span className='font-bold'>Menu</span>
       </button>
-      {showMobileMenu && items && (
-        <MobileNav items={items}>{children}</MobileNav>
+      {showMobileMenu && marketingConfig.mainNav && (
+        <MobileNav items={marketingConfig.mainNav}>{children}</MobileNav>
       )}
     </div>
   )

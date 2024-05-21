@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server'
 
 import client from '@/lib/apollo/apolloClient'
 
-export const GET_PROJECTS = gql`
+const GET_PROJECTS = gql`
   query GetProjects {
     railway {
       projects {
