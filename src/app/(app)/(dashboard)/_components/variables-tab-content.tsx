@@ -1,5 +1,5 @@
 import { projects } from '../_data'
-import { Check, Copy, EllipsisVertical, Eye, EyeOff } from 'lucide-react'
+import { Check, Copy, EllipsisVertical, Eye, EyeOff, X } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
+
+import { Input } from '~/src/components/ui/input'
 
 interface VariablesTabContentProps {
   variables: (typeof projects)[0]['services'][0]['variables']
@@ -29,11 +31,27 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
       {} as Record<string, boolean>,
     ),
   )
+  const [edit, setEdit] = useState<Record<string, undefined | string>>(
+    Object.keys(variables || {}).reduce(
+      (acc, key) => {
+        acc[key] = undefined
+        return acc
+      },
+      {} as Record<string, undefined | string>,
+    ),
+  )
 
   const toggleVisibility = (key: string) => {
     setVisibility(prevState => ({
       ...prevState,
-      [key]: !prevState![key],
+      [key]: !prevState[key],
+    }))
+  }
+
+  const toggleEdit = (key: string, value: string) => {
+    setEdit(prevState => ({
+      ...prevState,
+      [key]: prevState[key] ? undefined : value,
     }))
   }
 
@@ -64,35 +82,60 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
             <TableRow key={key} className='rounded-md'>
               <TableCell className='w-[30%]'>{key}</TableCell>
               <TableCell className='w-[60%] group'>
-                <div className='flex gap-2'>
-                  {visibility[key] ? (
-                    <>
-                      <p>{value}</p>
-                      <EyeOff
-                        className={`h-4 w-4 ml-2 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
-                        onClick={() => toggleVisibility(key)}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <p>********</p>
-                      <Eye
-                        className={`h-4 w-4 ml-2 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
-                        onClick={() => toggleVisibility(key)}
-                      />
-                    </>
-                  )}
-                  {copied[key] ? (
+                {edit[key] ? (
+                  <div className='flex items-center gap-2'>
+                    <Input
+                      type='text'
+                      placeholder='Value'
+                      value={edit[key]}
+                      className='py-1 h-fit focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
+                      onChange={e => {
+                        setEdit(prevState => ({
+                          ...prevState,
+                          [key]: e.target.value,
+                        }))
+                      }}
+                    />
+                    <X
+                      className='h-5 w-5 ml-4 cursor-pointer'
+                      onClick={() => toggleEdit(key, value)}
+                    />
                     <Check
-                      className={`h-4 w-4 ml-2 transition-all duration-300 ease-in-out text-green-600 ${!copied[key] && 'hidden'} group-hover:block`}
+                      className='h-5 w-5 ml-4 cursor-pointer'
+                      onClick={() => toggleEdit(key, value)}
                     />
-                  ) : (
-                    <Copy
-                      className={`h-4 w-4 ml-2 transition-all duration-300 ease-in-out cursor-pointer ${!copied[key] && 'hidden'} group-hover:block`}
-                      onClick={() => handleCopy(key, value)}
-                    />
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className='flex items-center gap-2'>
+                    {visibility[key] ? (
+                      <>
+                        <p>{value}</p>
+                        <EyeOff
+                          className={`h-4 w-4 ml-2 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
+                          onClick={() => toggleVisibility(key)}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <p>********</p>
+                        <Eye
+                          className={`h-4 w-4 ml-2 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
+                          onClick={() => toggleVisibility(key)}
+                        />
+                      </>
+                    )}
+                    {copied[key] ? (
+                      <Check
+                        className={`h-4 w-4 ml-2 transition-all duration-300 ease-in-out text-green-600 ${!copied[key] && 'hidden'} group-hover:block`}
+                      />
+                    ) : (
+                      <Copy
+                        className={`h-4 w-4 ml-2 transition-all duration-300 ease-in-out cursor-pointer ${!copied[key] && 'hidden'} group-hover:block`}
+                        onClick={() => handleCopy(key, value)}
+                      />
+                    )}
+                  </div>
+                )}
               </TableCell>
               <TableCell className='w-[10%] text-right'>
                 <DropdownMenu>
@@ -104,7 +147,9 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end'>
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => toggleEdit(key, value)}>
+                      Edit
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Delete</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
