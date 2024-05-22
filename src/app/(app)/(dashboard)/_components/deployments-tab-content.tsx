@@ -1,7 +1,7 @@
-import { projects } from '../_data'
 import '@radix-ui/react-dropdown-menu'
 import { Box, EllipsisVertical, GitBranch, Github } from 'lucide-react'
 
+import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -79,7 +79,7 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
                 {deployment?.meta?.branch && (
                   <div className='flex items-center'>
                     <GitBranch className='mr-1 w-4 h-4' />
-                    deployment?.meta?.branch
+                    {deployment?.meta?.branch}
                   </div>
                 )}
                 <div>UpdatedAt: {deployment?.updatedAt}</div>

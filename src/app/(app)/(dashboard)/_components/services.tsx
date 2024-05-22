@@ -66,7 +66,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     {
       value: 'variables',
       label: 'Variables',
-      content: <VariablesTabContent />,
+      content: <VariablesTabContent variables={service?.variables} />,
     },
     { value: 'metrics', label: 'Metrics', content: <MetricsTabContent /> },
     { value: 'settings', label: 'Settings', content: <SettingsTabContent /> },
