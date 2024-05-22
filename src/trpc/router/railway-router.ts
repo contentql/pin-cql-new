@@ -1,6 +1,15 @@
 import client from '@/lib/apollo/apolloClient'
-import { GET_PROJECTS, GET_TEMPLATE_DETAILS } from '@/lib/apollo/railwayQuery'
-import { getDetailsSchema } from '@/lib/apollo/railwayTypes'
+import {
+  GET_PROJECTS,
+  GET_TEMPLATE_DETAILS,
+  TEMPLATE_DELETE_MUTATION,
+  TEMPLATE_DEPLOY_MUTATION,
+} from '@/lib/apollo/railwayQuery'
+import {
+  getDetailsSchema,
+  templateCreate,
+  templateDelete,
+} from '@/lib/apollo/railwayTypes'
 import { publicProcedure, router } from '@/trpc'
 
 export const railwayRouter = router({
@@ -25,6 +34,7 @@ export const railwayRouter = router({
     .input(getDetailsSchema)
     .mutation(async ({ input, ctx }) => {
       const { id } = input
+      console.log('input:', input)
       try {
         const { data } = await client.mutate({
           mutation: GET_TEMPLATE_DETAILS,
@@ -38,6 +48,42 @@ export const railwayRouter = router({
       } catch (error) {
         console.error('Error during getting template details:', error)
         throw new Error('Error during getting template details')
+      }
+    }),
+
+  templateCreate: publicProcedure
+    .input(templateCreate)
+    .mutation(async ({ input }) => {
+      //   const { input: requestData } = input
+      console.log('requestData', input)
+      try {
+        const { data } = await client.mutate({
+          mutation: TEMPLATE_DEPLOY_MUTATION,
+          variables: { input },
+        })
+
+        return data
+      } catch (error) {
+        console.error('Error during template deployment:', error)
+        throw new Error('Error during template deployment')
+      }
+    }),
+
+  templateDelete: publicProcedure
+    .input(templateDelete)
+    .mutation(async ({ input }) => {
+      const { id } = input
+      try {
+        const { data } = await client.mutate({
+          mutation: TEMPLATE_DELETE_MUTATION,
+          variables: { id },
+        })
+
+        return data
+      } catch (error) {
+        console.error('Error during template deletion:', error)
+
+        throw new Error('Error during template deletion')
       }
     }),
 })

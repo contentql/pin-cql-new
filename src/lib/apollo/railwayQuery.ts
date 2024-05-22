@@ -72,3 +72,22 @@ export const GET_TEMPLATE_DETAILS = gql`
     }
   }
 `
+
+export const TEMPLATE_DEPLOY_MUTATION = gql`
+  mutation TemplateDeploy($input: TemplateDeployInput!) {
+    railway {
+      templateDeploy(input: $input) {
+        projectId
+        workflowId
+      }
+    }
+  }
+`
+
+export const TEMPLATE_DELETE_MUTATION = gql`
+  mutation ProjectDelete($id: String!) {
+    railway {
+      projectDelete(id: $id)
+    }
+  }
+`
