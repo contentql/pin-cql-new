@@ -4,12 +4,16 @@ import { X } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import DeploymentsTabContent from '@/app/(app)/(dashboard)/_components/deployments-tab-content'
 import {
   CirclePlusIcon,
   FileIcon,
   ListFilterIcon,
   statusIcons,
 } from '@/app/(app)/(dashboard)/_components/icons'
+import MetricsTabContent from '@/app/(app)/(dashboard)/_components/metrics-tab-content'
+import SettingsTabContent from '@/app/(app)/(dashboard)/_components/settings-tab-content'
+import VariablesTabContent from '@/app/(app)/(dashboard)/_components/variables-tab-content'
 import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,11 +33,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-
-import DeploymentsTabContent from './deployments-tab-content'
-import MetricsTabContent from './metrics-tab-content'
-import SettingsTabContent from './settings-tab-content'
-import VariablesTabContent from './variables-tab-content'
 
 interface ServicesProps {
   vertical?: boolean
