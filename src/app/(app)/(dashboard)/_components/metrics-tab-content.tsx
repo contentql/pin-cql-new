@@ -148,7 +148,7 @@ const LineChart: React.FC<LineChartProps> = props => {
 
 const MetricsTabContent = () => {
   return (
-    <main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6'>
+    <main className='flex flex-1 flex-col gap-4 md:gap-8 mt-4'>
       <div className='grid gap-6'>
         <div className='grid md:grid-cols-3 gap-6'>
           <Card className='flex flex-col'>
