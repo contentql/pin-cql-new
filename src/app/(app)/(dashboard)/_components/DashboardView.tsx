@@ -99,7 +99,7 @@ const DashboardView = () => {
             <Button className='h-8 gap-1' size='sm'>
               <CirclePlusIcon className='h-3.5 w-3.5' />
               <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                Add Product
+                Add Project
               </span>
             </Button>
           </div>

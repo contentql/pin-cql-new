@@ -5,17 +5,11 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import DeploymentsTabContent from '@/app/(app)/(dashboard)/_components/deployments-tab-content'
-import {
-  CirclePlusIcon,
-  FileIcon,
-  ListFilterIcon,
-  statusIcons,
-} from '@/app/(app)/(dashboard)/_components/icons'
+import { statusIcons } from '@/app/(app)/(dashboard)/_components/icons'
 import MetricsTabContent from '@/app/(app)/(dashboard)/_components/metrics-tab-content'
 import SettingsTabContent from '@/app/(app)/(dashboard)/_components/settings-tab-content'
 import VariablesTabContent from '@/app/(app)/(dashboard)/_components/variables-tab-content'
 import { projects } from '@/app/(app)/(dashboard)/_data'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -24,14 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface ServicesProps {
@@ -101,41 +87,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
               )
             })}
           </TabsList>
-          {!vertical && (
-            <div className='ml-auto flex items-center gap-2'>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className='h-8 gap-1' size='sm' variant='outline'>
-                    <ListFilterIcon className='h-3.5 w-3.5' />
-                    <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                      Filter
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='end'>
-                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>
-                    Active
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button className='h-8 gap-1' size='sm' variant='outline'>
-                <FileIcon className='h-3.5 w-3.5' />
-                <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                  Export
-                </span>
-              </Button>
-              <Button className='h-8 gap-1' size='sm'>
-                <CirclePlusIcon className='h-3.5 w-3.5' />
-                <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                  Add Product
-                </span>
-              </Button>
-            </div>
-          )}
         </div>
         {serviceTabs?.map(tab => {
           return (
