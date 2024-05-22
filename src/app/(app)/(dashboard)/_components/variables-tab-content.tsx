@@ -79,9 +79,9 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
       <TableBody>
         {variables &&
           Object.entries(variables).map(([key, value]) => (
-            <TableRow key={key} className='rounded-md'>
+            <TableRow key={key} className='rounded-md group'>
               <TableCell className='w-[30%]'>{key}</TableCell>
-              <TableCell className='w-[60%] group'>
+              <TableCell className='w-[60%]'>
                 {edit[key] ? (
                   <div className='flex items-center gap-2'>
                     <Input

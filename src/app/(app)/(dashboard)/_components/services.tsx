@@ -232,7 +232,10 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
               </TabsList>
               {serviceDetailsTabs?.map(tab => {
                 return (
-                  <TabsContent key={tab.value} value={tab.value}>
+                  <TabsContent
+                    key={tab.value}
+                    value={tab.value}
+                    className='mt-4'>
                     {tab?.content}
                   </TabsContent>
                 )
