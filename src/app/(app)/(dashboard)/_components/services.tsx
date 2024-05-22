@@ -92,7 +92,10 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
           <TabsList>
             {serviceTabs?.map(tab => {
               return (
-                <TabsTrigger key={tab.label} value={tab.value}>
+                <TabsTrigger
+                  key={tab.label}
+                  value={tab.value}
+                  className='rounded-md'>
                   {tab.label}
                 </TabsTrigger>
               )
