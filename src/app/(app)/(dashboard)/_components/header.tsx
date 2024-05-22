@@ -1,3 +1,4 @@
+import { Magnet, Plug } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -14,6 +15,16 @@ import {
 } from '@/app/(app)/(dashboard)/_components/icons'
 import { Button } from '@/components/ui/button'
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -25,6 +36,7 @@ import { Input } from '@/components/ui/input'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 import { projects } from '~/src/app/(app)/(dashboard)/_data'
+import { Label } from '~/src/components/ui/label'
 
 const DashboardHeader = () => {
   const dropdownProjectItems = projects.map(project => ({
@@ -101,6 +113,72 @@ const DashboardHeader = () => {
           type='search'
         />
       </div>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant='default' className='gap-1'>
+            <Plug className='h-4 w-4' />
+            Link Railway
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className='text-xl font-semibold'>
+              Link to Railway
+            </DialogTitle>
+            <DialogDescription className='mt-2 text-gray-600'>
+              Connect your Railway account to manage your project. Enter your{' '}
+              <span className='text-red-500'>API key</span> carefully, as it is
+              a <span className='text-red-500'>sensitive</span> piece of
+              information.
+            </DialogDescription>
+          </DialogHeader>
+          <div className='grid w-full gap-2 my-4'>
+            <Label htmlFor='api_key' className='font-medium text-gray-700'>
+              API Key
+            </Label>
+            <Input
+              type='text'
+              id='api_key'
+              placeholder='Enter your API Key'
+              className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+            />
+            <p className='text-sm mt-1'>
+              Don&apos;t have an account on Railway?{' '}
+              <a
+                href='https://railway.app'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-blue-500 hover:underline'>
+                Create one here
+              </a>
+              .
+            </p>
+            <p className='text-sm mt-1'>
+              Need help creating your API key?{' '}
+              <a
+                href='https://railway.app/account/tokens'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-blue-500 hover:underline'>
+                Check this page
+              </a>
+              .
+            </p>
+          </div>
+          <DialogFooter className='flex justify-end gap-2 mt-4'>
+            <DialogClose asChild>
+              <Button variant='ghost' className='hover:bg-gray-100'>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type='submit' className='gap-1 px-8'>
+              <Magnet className='h-4 w-4' />
+              Link
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
