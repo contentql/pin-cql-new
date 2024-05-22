@@ -39,3 +39,17 @@ export const getDetailsSchema = z.object({
 export const templateDelete = z.object({
   id: z.string(),
 })
+
+export const templateUpdate = z.object({
+  input: z.object({
+    environmentId: z.string(),
+    serviceId: z.string(),
+    projectId: z.string(),
+    variables: z.any(),
+  }),
+})
+
+export const templateReDeploy = z.object({
+  environmentId: z.string(),
+  serviceId: z.string(),
+})

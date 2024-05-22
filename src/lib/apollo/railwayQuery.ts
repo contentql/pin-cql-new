@@ -91,3 +91,25 @@ export const TEMPLATE_DELETE_MUTATION = gql`
     }
   }
 `
+
+export const TEMPLATE_UPDATE_MUTATION = gql`
+  mutation UpdateEnv($input: VariableCollectionUpsertInput!) {
+    railway {
+      variableCollectionUpsert(input: $input)
+    }
+  }
+`
+
+export const TEMPLATE_REDEPLOY_MUTATION = gql`
+  mutation EnvironmentTriggersDeploy(
+    $environmentId: String!
+    $serviceId: String!
+  ) {
+    railway {
+      serviceInstanceRedeploy(
+        environmentId: $environmentId
+        serviceId: $serviceId
+      )
+    }
+  }
+`
