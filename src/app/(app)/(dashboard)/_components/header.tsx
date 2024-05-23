@@ -1,6 +1,9 @@
-import { Magnet, Plug } from 'lucide-react'
+'use client'
+
+import { LoaderCircle, Magnet, Plug } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 
 import Breadcrumbs from '@/app/(app)/(dashboard)/_components/breadcrumbs'
 import {
@@ -13,6 +16,7 @@ import {
   ShoppingCartIcon,
   UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
+import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -33,12 +37,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
-import { projects } from '~/src/app/(app)/(dashboard)/_data'
-import { Label } from '~/src/components/ui/label'
-
 const DashboardHeader = () => {
+  const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
   const dropdownProjectItems = projects.map(project => ({
     id: project.id,
     name: project.title,
@@ -113,7 +118,7 @@ const DashboardHeader = () => {
           type='search'
         />
       </div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant='default' className='gap-1'>
             <Plug className='h-4 w-4' />
@@ -141,6 +146,7 @@ const DashboardHeader = () => {
               id='api_key'
               placeholder='Enter your API Key'
               className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              required
             />
             <p className='text-sm mt-1'>
               Don&apos;t have an account on Railway?{' '}
@@ -171,8 +177,20 @@ const DashboardHeader = () => {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type='submit' className='gap-1 px-8'>
-              <Magnet className='h-4 w-4' />
+            <Button
+              type='submit'
+              className='gap-1 px-8'
+              onClick={() => {
+                setIsLoading(true)
+                setTimeout(() => {
+                  setOpen(false)
+                }, 3000)
+              }}>
+              {isLoading ? (
+                <LoaderCircle className='h-4 w-4 animate-spin' />
+              ) : (
+                <Magnet className='h-4 w-4' />
+              )}
               Link
             </Button>
           </DialogFooter>
