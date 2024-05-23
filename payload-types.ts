@@ -13,6 +13,7 @@ export interface Config {
     blogs: Blog;
     pages: Page;
     sessions: Session;
+    projects: Project;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -243,6 +244,26 @@ export interface Session {
   user: string | User;
   sessionToken: string;
   expires?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: string;
+  projects?:
+    | {
+        projectId: string;
+        workflowId: string;
+        id?: string | null;
+      }[]
+    | null;
+  user_id?: {
+    relationTo: 'users';
+    value: string | User;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
