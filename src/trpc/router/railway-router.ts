@@ -55,7 +55,7 @@ export const railwayRouter = router({
     }),
 
   // Create a new template
-  templateCreate: publicProcedure.input(z.any()).mutation(async ({ input }) => {
+  templateDeploy: publicProcedure.input(z.any()).mutation(async ({ input }) => {
     const serviceVariable = input?.serviceVariable!
 
     console.log({ input })

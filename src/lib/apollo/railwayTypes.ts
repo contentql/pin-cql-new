@@ -24,7 +24,7 @@ const service = z.object({
   volumes: z.array(z.object({ mountPath: z.string() })).optional(),
 })
 
-export const templateCreate = z.object({
+export const templateDeploy = z.object({
   input: z.object({
     services: z.array(service),
     templateCode: z.string(),

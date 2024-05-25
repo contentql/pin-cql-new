@@ -82,8 +82,8 @@ const DashboardView = () => {
     },
   })
 
-  const { mutate: templateCreate, isPending: isTemplateDeploying } =
-    trpc.railway.templateCreate.useMutation({
+  const { mutate: templateDeploy, isPending: isTemplateDeploying } =
+    trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
           setModelOpen(false)
@@ -103,7 +103,7 @@ const DashboardView = () => {
 
   const handleAddProject = (data: any) => {
     try {
-      templateCreate({
+      templateDeploy({
         serviceVariable,
       })
     } catch (error) {
