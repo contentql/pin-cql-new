@@ -113,3 +113,19 @@ export const TEMPLATE_REDEPLOY_MUTATION = gql`
     }
   }
 `
+
+export const GET_VARIABLES = gql`
+  query GetVariables(
+    $environmentId: String!
+    $projectId: String!
+    $serviceId: String!
+  ) {
+    railway {
+      variables(
+        environmentId: $environmentId
+        projectId: $projectId
+        serviceId: $serviceId
+      )
+    }
+  }
+`

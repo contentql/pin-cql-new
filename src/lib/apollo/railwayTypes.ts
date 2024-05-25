@@ -53,3 +53,9 @@ export const templateReDeploy = z.object({
   environmentId: z.string(),
   serviceId: z.string(),
 })
+
+export const getVariables = z.object({
+  environmentId: z.string(),
+  projectId: z.string(),
+  serviceId: z.string(),
+})

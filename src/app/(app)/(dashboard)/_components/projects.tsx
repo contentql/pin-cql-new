@@ -12,14 +12,6 @@ const Projects = ({
 }: {
   setShowCreateAlert: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const projects = [
-    {
-      id: 'kjsndvksjnvjsnv',
-      name: 'new project',
-      description: 'This is a new project',
-    },
-  ]
-
   return (
     <div className='flex min-h-screen w-full flex-col'>
       <main className='flex min-h-[calc(100vh-_theme(spacing.16))] flex-1 flex-col gap-4 md:gap-8 md:py-3'>

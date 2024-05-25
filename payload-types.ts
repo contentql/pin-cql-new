@@ -255,6 +255,7 @@ export interface Project {
   id: string;
   projects?:
     | {
+        name: string;
         projectId: string;
         workflowId: string;
         id?: string | null;

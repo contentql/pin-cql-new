@@ -18,6 +18,13 @@ export const Projects: CollectionConfig = {
       type: 'array',
       fields: [
         {
+          name: 'name',
+          type: 'text',
+          label: 'Name',
+          required: true,
+          admin: { description: 'Name of the railway template.' },
+        },
+        {
           name: 'projectId',
           type: 'text',
           label: 'projectId',
@@ -49,9 +56,6 @@ export const Projects: CollectionConfig = {
         position: 'sidebar',
         description: 'The user associated with this cart.',
       },
-      //   hooks: {
-      //     beforeChange: [assignUserId],
-      //   },
     },
   ],
 }
