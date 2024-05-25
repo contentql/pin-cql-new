@@ -16,8 +16,8 @@ import {
   deploymentRedeploy,
   getDetailsSchema,
   getVariables,
+  serviceReDeploy,
   templateDelete,
-  templateReDeploy,
   templateUpdate,
 } from '@/lib/apollo/railwayTypes'
 import { publicProcedure, router } from '@/trpc'
@@ -212,8 +212,8 @@ export const railwayRouter = router({
     }),
 
   // Re-deploy a template
-  templateReDeploy: publicProcedure
-    .input(templateReDeploy)
+  serviceReDeploy: publicProcedure
+    .input(serviceReDeploy)
     .mutation(async ({ input }) => {
       const { environmentId, serviceId } = input
       try {

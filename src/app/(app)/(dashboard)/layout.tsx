@@ -1,3 +1,5 @@
+import { Toaster } from 'sonner'
+
 import DashboardHeader from '@/app/(app)/(dashboard)/_components/header'
 import DashboardSideNav from '@/app/(app)/(dashboard)/_components/side-nav'
 
@@ -12,6 +14,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <div className='flex flex-col sm:gap-4 sm:py-4 sm:pl-14'>
         <DashboardHeader />
         {children}
+        <Toaster />
       </div>
     </div>
   )

@@ -3,9 +3,11 @@
 import { X } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import MetricsTabContent from '@/app/(app)/(dashboard)/_components/metrics-tab-content'
 import SettingsTabContent from '@/app/(app)/(dashboard)/_components/settings-tab-content'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -54,6 +56,40 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     },
   })
 
+  const { mutate: serviceReDeploy } = trpc.railway.serviceReDeploy.useMutation()
+
+  const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation({
+    onSuccess: async data => {
+      console.log('Variables updated')
+      if (serviceId && environmentId) {
+        getVariables({
+          environmentId: environmentId,
+          projectId: projectId,
+          serviceId: serviceId,
+        })
+      }
+
+      toast.success('Service Re-deploy', {
+        description: 'Environment Variables updated',
+        action: (
+          <Button
+            onClick={() =>
+              serviceReDeploy({
+                environmentId: environmentId,
+                serviceId: serviceId,
+              })
+            }>
+            Deploy
+          </Button>
+        ),
+        style: {},
+      })
+    },
+    onError: async () => {
+      console.log('Variables update failed')
+    },
+  })
+
   useEffect(() => {
     if (serviceId && environmentId) {
       getVariables({
@@ -90,7 +126,11 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       value: 'variables',
       label: 'Variables',
       content: variables ? (
-        <VariablesTabContent variables={variables?.railway?.variables} />
+        <VariablesTabContent
+          variables={variables?.railway?.variables}
+          environmentId={environmentId}
+          templateUpdate={templateUpdate}
+        />
       ) : (
         <div>Loading variables...</div>
       ),

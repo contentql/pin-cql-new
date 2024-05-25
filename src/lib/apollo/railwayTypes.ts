@@ -49,7 +49,7 @@ export const templateUpdate = z.object({
   }),
 })
 
-export const templateReDeploy = z.object({
+export const serviceReDeploy = z.object({
   environmentId: z.string(),
   serviceId: z.string(),
 })
