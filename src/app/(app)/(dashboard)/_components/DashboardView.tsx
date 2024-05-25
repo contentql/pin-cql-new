@@ -71,7 +71,7 @@ const DashboardView = () => {
 
   console.log('userProjects', userProjects)
 
-  const projects = userProjects?.docs[0]?.projects
+  const projects = userProjects?.docs
 
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {

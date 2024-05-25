@@ -39,7 +39,9 @@ export const projectRouter = router({
         await payload.create({
           collection: 'projects',
           data: {
-            projects: [input],
+            name: input.name,
+            projectId: input.projectId,
+            workflowId: input.workflowId,
           },
           user,
         })
