@@ -69,8 +69,6 @@ const DashboardView = () => {
 
   const { data: userProjects, error } = trpc.projects.getProjects.useQuery()
 
-  console.log('userProjects', userProjects)
-
   const projects = userProjects?.docs
 
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
@@ -101,7 +99,7 @@ const DashboardView = () => {
       },
     })
 
-  const handleAddProject = (data: any) => {
+  const handleAddProject = () => {
     try {
       templateCreate({
         serviceVariable,

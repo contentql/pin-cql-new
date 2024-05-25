@@ -1,5 +1,6 @@
 'use client'
 
+import { X } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -15,6 +16,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { trpc } from '@/trpc/client'
 
+import DeploymentsTabContent from './deployments-tab-content'
+import VariablesTabContent from './variables-tab-content'
+
 interface ServicesProps {
   vertical?: boolean
 }
@@ -28,7 +32,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
 
   const [isVisible, setIsVisible] = useState(false)
   const [projectData, setProjectData] = useState<any>(null)
-  const [variables, setVariables] = useState({})
+  const [variables, setVariables] = useState<any>({})
 
   const { data: fetchedProjectData } = trpc.railway.getDetails.useQuery({
     id: projectId,
@@ -43,7 +47,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
 
   const { mutate: getVariables } = trpc.railway.getVariables.useMutation({
     onSuccess: async data => {
-      console.log(data)
       setVariables(data)
     },
     onError: async () => {
@@ -51,13 +54,15 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     },
   })
 
-  if (serviceId && environmentId) {
-    getVariables({
-      environmentId: environmentId,
-      projectId: projectId,
-      serviceId: serviceId,
-    })
-  }
+  useEffect(() => {
+    if (serviceId && environmentId) {
+      getVariables({
+        environmentId: environmentId,
+        projectId: projectId,
+        serviceId: serviceId,
+      })
+    }
+  }, [serviceId, environmentId, projectId, getVariables])
 
   useEffect(() => {
     if (vertical) {
@@ -75,16 +80,20 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     {
       value: 'deployments',
       label: 'Deployments',
-      // content: (
-      //   <DeploymentsTabContent
-      //     deployments={projectData?.railway.project.deployments}
-      //   />
-      // ),
+      content: (
+        <DeploymentsTabContent
+          deployments={projectData?.railway.project.deployments}
+        />
+      ),
     },
     {
       value: 'variables',
       label: 'Variables',
-      // content: <VariablesTabContent variables={service?.variables} />,
+      content: variables ? (
+        <VariablesTabContent variables={variables?.railway?.variables} />
+      ) : (
+        <div>Loading variables...</div>
+      ),
     },
     { value: 'metrics', label: 'Metrics', content: <MetricsTabContent /> },
     { value: 'settings', label: 'Settings', content: <SettingsTabContent /> },
@@ -162,8 +171,8 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                               <div className='text-2xl font-bold'>
                                 {service?.node.name}
                               </div>
-                              <p className='text-xs text-slate-500 dark:text-slate-400'>
-                                {/* {service?.description} */}
+                              <p className='text-xs text-slate-500 dark:text-slate-400 pt-4'>
+                                {service?.node.id}
                               </p>
                             </CardContent>
                             {/* <CardFooter
@@ -193,7 +202,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
               <CardTitle>{service?.name}</CardTitle>
               <CardDescription>{service?.description}</CardDescription>
             </div>
-            {/* <X
+            <X
               className='w-5 h-5 cursor-pointer'
               onClick={() => {
                 setIsVisible(false)
@@ -201,7 +210,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                   router.push('../')
                 }, 200)
               }}
-            /> */}
+            />
           </CardHeader>
           <CardContent>
             <Tabs defaultValue={serviceDetailsTabs?.at(0)?.value}>
