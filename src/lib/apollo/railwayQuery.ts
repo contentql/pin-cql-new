@@ -142,3 +142,26 @@ export const GET_VARIABLES = gql`
     }
   }
 `
+
+export const DEPLOYMENT_REDEPLOY = gql`
+  mutation DeploymentRedeploy($Id: String!) {
+    railway {
+      deploymentRedeploy(id: $Id) {
+        canRedeploy
+        canRollback
+        createdAt
+        environmentId
+        id
+        meta
+        projectId
+        serviceId
+        snapshotId
+        staticUrl
+        status
+        suggestAddServiceDomain
+        updatedAt
+        url
+      }
+    }
+  }
+`

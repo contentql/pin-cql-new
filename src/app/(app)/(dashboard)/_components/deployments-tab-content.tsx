@@ -1,6 +1,7 @@
 import '@radix-ui/react-dropdown-menu'
 import { Box, Database, EllipsisVertical } from 'lucide-react'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 
 import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
@@ -27,10 +28,20 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
 }: {
   deployments: any
 }) => {
-  console.log('deployments tab content', deployments)
+  const params = useParams()
+  const { serviceId } = params
+
+  const serviceDeployments = deployments?.edges.filter(
+    (deployment: any) => deployment.node.serviceId === serviceId,
+  )
+
+  const deploymentRedeploy = () => {
+    console.log('redeploy')
+  }
+
   return (
     <div className='grid grid-cols-1 gap-8'>
-      {deployments?.edges.map((deployment: any) => {
+      {serviceDeployments?.map((deployment: any) => {
         return (
           <Card
             key={deployment.node.id}
@@ -60,7 +71,9 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
                   <DropdownMenuContent align='end' alignOffset={-5} forceMount>
                     <DropdownMenuItem>View Logs</DropdownMenuItem>
                     <DropdownMenuItem>Restart</DropdownMenuItem>
-                    <DropdownMenuItem>Redeploy</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => deploymentRedeploy()}>
+                      Redeploy
+                    </DropdownMenuItem>
                     <DropdownMenuItem>Remove</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
