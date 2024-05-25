@@ -1,13 +1,12 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 import {
-  CirclePlusIcon,
   FileIcon,
   ListFilterIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
-import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -16,6 +15,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -31,9 +38,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { trpc } from '@/trpc/client'
+
+import VariablesForm from './VariablesForm'
 
 const DashboardView = () => {
   const router = useRouter()
+
+  const [serviceVariable, setServiceVariable] = useState<any>()
+  const [modelOpen, setModelOpen] = useState<any>()
 
   const projectTabs = [
     {
@@ -53,6 +66,50 @@ const DashboardView = () => {
       label: 'Failed',
     },
   ]
+
+  const { data: userProjects, error } = trpc.projects.getProjects.useQuery()
+
+  console.log('userProjects', userProjects)
+
+  const projects = userProjects?.docs[0]?.projects
+
+  const { mutate: createProject } = trpc.projects.createProject.useMutation({
+    onSuccess: async () => {
+      console.log('Project created')
+    },
+    onError: async () => {
+      console.log('Project creation failed')
+    },
+  })
+
+  const { mutate: templateCreate, isPending: isTemplateDeploying } =
+    trpc.railway.templateCreate.useMutation({
+      onSuccess: async data => {
+        try {
+          setModelOpen(false)
+          createProject({
+            name: serviceVariable?.Project_Name,
+            projectId: data.railway.templateDeploy.projectId,
+            workflowId: data.railway.templateDeploy.workflowId,
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      onError: async () => {
+        console.log('Template creation failed')
+      },
+    })
+
+  const handleAddProject = (data: any) => {
+    try {
+      templateCreate({
+        serviceVariable,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
@@ -96,12 +153,25 @@ const DashboardView = () => {
                 Export
               </span>
             </Button>
-            <Button className='h-8 gap-1' size='sm'>
-              <CirclePlusIcon className='h-3.5 w-3.5' />
-              <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                Add Project
-              </span>
-            </Button>
+            <Dialog open={modelOpen}>
+              <DialogTrigger asChild>
+                <Button variant='outline'>Add Project</Button>
+              </DialogTrigger>
+              <DialogContent className='sm:max-w-[500px]'>
+                <DialogHeader>
+                  <DialogTitle>Add Project</DialogTitle>
+                  <DialogDescription>
+                    Please provide all variable fields asked below.
+                  </DialogDescription>
+                </DialogHeader>
+                {/* <StepperForm /> */}
+                <VariablesForm
+                  setServiceVariable={setServiceVariable}
+                  handleAddProject={handleAddProject}
+                  isTemplateDeploying={isTemplateDeploying}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
         {projectTabs?.map(tab => {
@@ -117,41 +187,41 @@ const DashboardView = () => {
                 <CardContent>
                   <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
                     {projects
-                      ?.filter(
-                        project =>
-                          tab?.value === 'all' ||
-                          project?.status.toLowerCase() === tab?.value,
-                      )
+                      // ?.filter(
+                      //   project =>
+                      //     tab?.value === 'all' ||
+                      //     project?.status.toLowerCase() === tab?.value,
+                      // )
                       ?.map(project => {
                         return (
                           <Card
-                            key={project?.id}
+                            key={project?.projectId}
                             x-chunk='dashboard-01-chunk-0'
                             className='cursor-pointer'
                             onClick={() => {
-                              router.push(`/project/${project?.id}`)
+                              router.push(`/project/${project?.projectId}`)
                             }}>
                             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                               <CardTitle className='text-sm font-medium'>
-                                {project?.services?.length} services
+                                {/* {project?.services?.length} services */}
                               </CardTitle>
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger>
-                                    {project?.icon}
+                                    {/* {project?.icon} */}
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p>{project?.status}</p>
+                                    {/* <p>{project?.status}</p> */}
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
                             </CardHeader>
                             <CardContent>
                               <div className='text-2xl font-bold'>
-                                {project?.title}
+                                {project?.name}
                               </div>
                               <p className='text-xs text-slate-500 dark:text-slate-400'>
-                                {project?.description}
+                                {project?.projectId}
                               </p>
                             </CardContent>
                           </Card>

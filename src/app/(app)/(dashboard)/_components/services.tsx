@@ -1,24 +1,19 @@
 'use client'
 
-import { X } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-import DeploymentsTabContent from '@/app/(app)/(dashboard)/_components/deployments-tab-content'
-import { statusIcons } from '@/app/(app)/(dashboard)/_components/icons'
 import MetricsTabContent from '@/app/(app)/(dashboard)/_components/metrics-tab-content'
 import SettingsTabContent from '@/app/(app)/(dashboard)/_components/settings-tab-content'
-import VariablesTabContent from '@/app/(app)/(dashboard)/_components/variables-tab-content'
-import { projects } from '@/app/(app)/(dashboard)/_data'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { trpc } from '@/trpc/client'
 
 interface ServicesProps {
   vertical?: boolean
@@ -28,10 +23,41 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   const router = useRouter()
   const params = useParams()
 
-  const projectId = params.projectId
-  const serviceId = params.serviceId
+  const projectId = params.projectId?.toString()
+  const serviceId = params.serviceId?.toString()
 
   const [isVisible, setIsVisible] = useState(false)
+  const [projectData, setProjectData] = useState<any>(null)
+  const [variables, setVariables] = useState({})
+
+  const { data: fetchedProjectData } = trpc.railway.getDetails.useQuery({
+    id: projectId,
+  })
+
+  useEffect(() => {
+    setProjectData(fetchedProjectData)
+  }, [fetchedProjectData])
+
+  const environmentId =
+    projectData?.railway.project.environments.edges[0].node.id
+
+  const { mutate: getVariables } = trpc.railway.getVariables.useMutation({
+    onSuccess: async data => {
+      console.log(data)
+      setVariables(data)
+    },
+    onError: async () => {
+      console.log('Variables fetch failed')
+    },
+  })
+
+  if (serviceId && environmentId) {
+    getVariables({
+      environmentId: environmentId,
+      projectId: projectId,
+      serviceId: serviceId,
+    })
+  }
 
   useEffect(() => {
     if (vertical) {
@@ -39,19 +65,26 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     }
   }, [vertical])
 
-  const services = projects?.find(project => project.id === projectId)?.services
-  const service = services?.find(service => service.id === serviceId)
+  const services = projectData?.railway.project.services
+
+  const service = services?.edges.find(
+    (service: any) => service.node.id === serviceId,
+  )
 
   const serviceDetailsTabs = [
     {
       value: 'deployments',
       label: 'Deployments',
-      content: <DeploymentsTabContent deployments={service?.deployments} />,
+      // content: (
+      //   <DeploymentsTabContent
+      //     deployments={projectData?.railway.project.deployments}
+      //   />
+      // ),
     },
     {
       value: 'variables',
       label: 'Variables',
-      content: <VariablesTabContent variables={service?.variables} />,
+      // content: <VariablesTabContent variables={service?.variables} />,
     },
     { value: 'metrics', label: 'Metrics', content: <MetricsTabContent /> },
     { value: 'settings', label: 'Settings', content: <SettingsTabContent /> },
@@ -101,46 +134,46 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                 <CardContent>
                   <div
                     className={`grid ${vertical ? 'grid-cols-1 gap-8' : 'gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'}`}>
-                    {services
-                      ?.filter(
-                        service =>
-                          tab.value === 'all' || service.status === tab.value,
-                      )
-                      ?.map(service => {
-                        const latestDeployment = service?.deployments?.at(0)
+                    {services?.edges
+                      // ?.filter(
+                      //   service =>
+                      //     tab.value === 'all' || service.status === tab.value,
+                      // )
+                      ?.map((service: any) => {
+                        // const latestDeployment = service?.deployments?.at(0)
 
                         return (
                           <Card
-                            key={service.id}
+                            key={service.node.id}
                             x-chunk='dashboard-01-chunk-0'
                             className='cursor-pointer'
                             onClick={() => {
                               router.push(
-                                `/project/${projectId}/service/${service?.id}`,
+                                `/project/${projectId}/service/${service?.node.id}`,
                               )
                             }}>
                             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                               <CardTitle className='text-sm font-medium'>
-                                {service?.updatedAt}
+                                {/* {service?.updatedAt} */}
                               </CardTitle>
-                              {service?.icon}
+                              {/* {service?.icon} */}
                             </CardHeader>
                             <CardContent>
                               <div className='text-2xl font-bold'>
-                                {service?.name}
+                                {service?.node.name}
                               </div>
                               <p className='text-xs text-slate-500 dark:text-slate-400'>
-                                {service?.description}
+                                {/* {service?.description} */}
                               </p>
                             </CardContent>
-                            <CardFooter
+                            {/* <CardFooter
                               className={`capitalize gap-1 ${latestDeployment?.status === 'CRASHED' && 'text-red-600'}`}>
                               {statusIcons({
                                 status: latestDeployment?.status as string,
                               })}
                               {latestDeployment?.status.toLowerCase() ||
                                 'No Deployments'}
-                            </CardFooter>
+                            </CardFooter> */}
                           </Card>
                         )
                       })}
@@ -160,7 +193,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
               <CardTitle>{service?.name}</CardTitle>
               <CardDescription>{service?.description}</CardDescription>
             </div>
-            <X
+            {/* <X
               className='w-5 h-5 cursor-pointer'
               onClick={() => {
                 setIsVisible(false)
@@ -168,7 +201,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                   router.push('../')
                 }, 200)
               }}
-            />
+            /> */}
           </CardHeader>
           <CardContent>
             <Tabs defaultValue={serviceDetailsTabs?.at(0)?.value}>
