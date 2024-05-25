@@ -49,7 +49,7 @@ export const templateUpdate = z.object({
   }),
 })
 
-export const templateReDeploy = z.object({
+export const serviceReDeploy = z.object({
   environmentId: z.string(),
   serviceId: z.string(),
 })
@@ -58,4 +58,8 @@ export const getVariables = z.object({
   environmentId: z.string(),
   projectId: z.string(),
   serviceId: z.string(),
+})
+
+export const deploymentRedeploy = z.object({
+  id: z.string(),
 })

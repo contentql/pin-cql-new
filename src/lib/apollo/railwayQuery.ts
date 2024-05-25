@@ -64,7 +64,20 @@ export const GET_TEMPLATE_DETAILS = gql`
         deployments {
           edges {
             node {
+              canRedeploy
+              canRollback
+              createdAt
+              environmentId
               id
+              meta
+              projectId
+              serviceId
+              snapshotId
+              staticUrl
+              status
+              suggestAddServiceDomain
+              updatedAt
+              url
             }
           }
         }
@@ -126,6 +139,29 @@ export const GET_VARIABLES = gql`
         projectId: $projectId
         serviceId: $serviceId
       )
+    }
+  }
+`
+
+export const DEPLOYMENT_REDEPLOY = gql`
+  mutation DeploymentRedeploy($id: String!) {
+    railway {
+      deploymentRedeploy(id: $id) {
+        canRedeploy
+        canRollback
+        createdAt
+        environmentId
+        id
+        meta
+        projectId
+        serviceId
+        snapshotId
+        staticUrl
+        status
+        suggestAddServiceDomain
+        updatedAt
+        url
+      }
     }
   }
 `

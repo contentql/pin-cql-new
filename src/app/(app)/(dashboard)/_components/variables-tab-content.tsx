@@ -1,5 +1,6 @@
 import { projects } from '../_data'
 import { Check, Copy, EllipsisVertical, Eye, EyeOff, X } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -16,11 +17,19 @@ import { Input } from '~/src/components/ui/input'
 
 interface VariablesTabContentProps {
   variables: (typeof projects)[0]['services'][0]['variables']
+  environmentId: string
+  templateUpdate: any
 }
 
 const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
   variables,
+  environmentId,
+  templateUpdate,
 }) => {
+  const params = useParams()
+
+  const projectId = params.projectId?.toString()
+  const serviceId = params.serviceId?.toString()
   const [copied, setCopied] = useState<Record<string, boolean>>({})
   const [visibility, setVisibility] = useState<Record<string, boolean>>(
     Object.keys(variables || {}).reduce(
@@ -46,6 +55,20 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
       ...prevState,
       [key]: !prevState[key],
     }))
+  }
+
+  const toggleUpdate = (key: string, value: string) => {
+    console.log('Toggling edit')
+    templateUpdate({
+      input: {
+        environmentId: environmentId,
+        serviceId: serviceId,
+        projectId: projectId,
+        variables: {
+          [key]: value,
+        },
+      },
+    })
   }
 
   const toggleEdit = (key: string, value: string) => {
@@ -74,6 +97,8 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
     }, 1300)
   }
 
+  console.log(edit)
+
   return (
     <Table>
       <TableBody>
@@ -90,10 +115,9 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
                       value={edit[key]}
                       className='py-1 h-fit focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
                       onChange={e => {
-                        setEdit(prevState => ({
-                          ...prevState,
+                        setEdit({
                           [key]: e.target.value,
-                        }))
+                        })
                       }}
                     />
                     <X
@@ -102,7 +126,7 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
                     />
                     <Check
                       className='h-5 w-5 ml-4 cursor-pointer'
-                      onClick={() => toggleEdit(key, value)}
+                      onClick={() => toggleUpdate(key, edit[key]!)}
                     />
                   </div>
                 ) : (

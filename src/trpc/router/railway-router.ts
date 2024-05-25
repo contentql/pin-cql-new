@@ -3,6 +3,7 @@ import z from 'zod'
 
 import client from '@/lib/apollo/apolloClient'
 import {
+  DEPLOYMENT_REDEPLOY,
   GET_PROJECTS,
   GET_TEMPLATE_DETAILS,
   GET_VARIABLES,
@@ -12,10 +13,11 @@ import {
   TEMPLATE_UPDATE_MUTATION,
 } from '@/lib/apollo/railwayQuery'
 import {
+  deploymentRedeploy,
   getDetailsSchema,
   getVariables,
+  serviceReDeploy,
   templateDelete,
-  templateReDeploy,
   templateUpdate,
 } from '@/lib/apollo/railwayTypes'
 import { publicProcedure, router } from '@/trpc'
@@ -210,8 +212,8 @@ export const railwayRouter = router({
     }),
 
   // Re-deploy a template
-  templateReDeploy: publicProcedure
-    .input(templateReDeploy)
+  serviceReDeploy: publicProcedure
+    .input(serviceReDeploy)
     .mutation(async ({ input }) => {
       const { environmentId, serviceId } = input
       try {
@@ -240,6 +242,22 @@ export const railwayRouter = router({
       } catch (error) {
         console.error(error)
         throw new Error('Error during getting variables')
+      }
+    }),
+
+  deploymentReDeploy: publicProcedure
+    .input(deploymentRedeploy)
+    .mutation(async ({ input }) => {
+      const { id } = input
+      try {
+        const { data } = await client.mutate({
+          mutation: DEPLOYMENT_REDEPLOY,
+          variables: { id },
+        })
+        return data
+      } catch (error) {
+        console.error(error)
+        throw new Error('Error during deployment re-deployment')
       }
     }),
 })

@@ -253,14 +253,9 @@ export interface Session {
  */
 export interface Project {
   id: string;
-  projects?:
-    | {
-        name: string;
-        projectId: string;
-        workflowId: string;
-        id?: string | null;
-      }[]
-    | null;
+  name: string;
+  projectId: string;
+  workflowId: string;
   user_id?: {
     relationTo: 'users';
     value: string | User;
