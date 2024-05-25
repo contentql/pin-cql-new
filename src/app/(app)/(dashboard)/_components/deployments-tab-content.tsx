@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { trpc } from '@/trpc/client'
 
 interface DeploymentsTabContentProps {
   deployments: (typeof projects)[0]['services'][0]['deployments']
@@ -35,8 +36,17 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
     (deployment: any) => deployment.node.serviceId === serviceId,
   )
 
-  const deploymentRedeploy = () => {
-    console.log('redeploy')
+  const { mutate: deploymentReDeploy } =
+    trpc.railway.deploymentReDeploy.useMutation({
+      onSuccess: data => {
+        console.log('redeployment sucessfully deployed')
+      },
+    })
+
+  const handleRedeploy = (id: string) => {
+    deploymentReDeploy({
+      id,
+    })
   }
 
   return (
@@ -71,7 +81,8 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
                   <DropdownMenuContent align='end' alignOffset={-5} forceMount>
                     <DropdownMenuItem>View Logs</DropdownMenuItem>
                     <DropdownMenuItem>Restart</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => deploymentRedeploy()}>
+                    <DropdownMenuItem
+                      onClick={() => handleRedeploy(deployment.node.id)}>
                       Redeploy
                     </DropdownMenuItem>
                     <DropdownMenuItem>Remove</DropdownMenuItem>

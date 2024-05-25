@@ -144,9 +144,9 @@ export const GET_VARIABLES = gql`
 `
 
 export const DEPLOYMENT_REDEPLOY = gql`
-  mutation DeploymentRedeploy($Id: String!) {
+  mutation DeploymentRedeploy($id: String!) {
     railway {
-      deploymentRedeploy(id: $Id) {
+      deploymentRedeploy(id: $id) {
         canRedeploy
         canRollback
         createdAt
