@@ -88,7 +88,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       toast.success('Service Re-deploy', {
         description: 'Environment Variables updated',
         action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
-        style: {},
       })
     },
     onError: async () => {

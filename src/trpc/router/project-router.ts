@@ -10,6 +10,10 @@ const projectsSchema = z.object({
   workflowId: z.string(),
 })
 
+const deleteProjectSchema = z.object({
+  id: z.string(),
+})
+
 const payload = await getPayload({
   config: configPromise,
 })
@@ -49,6 +53,20 @@ export const projectRouter = router({
       } catch (error) {
         console.log('Error during creating project:', error)
         throw new Error('Error during creating project')
+      }
+    }),
+
+  deleteProject: userProcedure
+    .input(deleteProjectSchema)
+    .mutation(async ({ input }) => {
+      try {
+        await payload.delete({
+          collection: 'projects',
+          id: input.id,
+        })
+      } catch (error) {
+        console.log('Error during deleting project:', error)
+        throw new Error('Error during deleting project')
       }
     }),
 })

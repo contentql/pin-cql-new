@@ -3,8 +3,6 @@
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
-import { Link } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -37,18 +35,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { trpc } from '@/trpc/client'
 
+import { DashboardProjectCard } from './Dashboard-project-card'
 import VariablesForm from './VariablesForm'
 
 const DashboardView = () => {
-  const router = useRouter()
   const queryClient = useQueryClient()
 
   const [serviceVariable, setServiceVariable] = useState<any>()
@@ -81,11 +73,78 @@ const DashboardView = () => {
 
   const projects = userProjects?.docs
 
+  console.log(projects)
+
   const getProjectKeys = getQueryKey(
     trpc.projects.getProjects,
     undefined,
     'query',
   )
+
+  // const { mutate: deleteProject } = trpc.projects.deleteProject.useMutation({
+  //   onError: () => {
+  //     toast.error('Project deletion failed')
+  //   },
+  //   onSettled: () => {
+  //     queryClient.invalidateQueries({ queryKey: getProjectKeys })
+  //   },
+  //   onSuccess: () => {
+  //     toast.success('Project deleted successfully')
+  //     console.log('Project deleted successfully')
+  //   },
+  // })
+
+  // const { mutate: templateDelete, isPending: isTemplateDeleting } =
+  //   trpc.railway.templateDelete.useMutation({
+  //     onSuccess: () => {
+  //       console.log('Template deleted successfully')
+  //     },
+  //     onError: () => {
+  //       toast.error('Template deletion failed')
+  //     },
+  //   })
+
+  // // const handleTemplateDelete = ({ templateId, projectId }: any) => {
+  // //   try {
+  // //     templateDelete({
+  // //       id: templateId,
+  // //     })
+  // //   } catch (error) {
+  // //     console.log(error)
+  // //     throw new Error('Template deletion failed')
+  // //   }
+  // //   try {
+  // //     deleteProject({
+  // //       id: projectId,
+  // //     })
+  // //   } catch (error) {
+  // //     console.log(error)
+  // //   }
+  // // }
+
+  // const handleTemplateDelete = async ({ templateId, projectId }: any) => {
+  //   try {
+  //     const templateDeleteResponse: any = await templateDelete({
+  //       id: templateId,
+  //     })
+
+  //     console.log(templateDelete)
+  //     if (!templateDeleteResponse?.success) {
+  //       console.error(
+  //         'Template deletion failed:',
+  //         templateDeleteResponse?.error,
+  //       )
+  //       // throw new Error('Template deletion failed')
+  //       return
+  //     }
+  //     await deleteProject({ id: projectId })
+  //   } catch (error) {
+  //     console.error(error)
+  //     throw new Error('Template deletion failed')
+  //   }
+
+  //   console.log('Template and project deleted successfully')
+  // }
 
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
@@ -212,45 +271,11 @@ const DashboardView = () => {
                       //     tab?.value === 'all' ||
                       //     project?.status.toLowerCase() === tab?.value,
                       // )
-                      ?.map(project => {
-                        return (
-                          <Card
-                            key={project?.projectId}
-                            x-chunk='dashboard-01-chunk-0'
-                            className='cursor-pointer relative group'
-                            onClick={() => {
-                              router.push(`/project/${project?.projectId}`)
-                            }}>
-                            {/* <Button className='absolute -top-3 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-                              Delete
-                            </Button> */}
-                            <Link className='absolute border-black -top-3 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-                            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                              <CardTitle className='text-sm font-medium'>
-                                {/* {project?.services?.length} services */}
-                              </CardTitle>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    {/* {project?.icon} */}
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {/* <p>{project?.status}</p> */}
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </CardHeader>
-                            <CardContent>
-                              <div className='text-2xl font-bold'>
-                                {project?.name}
-                              </div>
-                              <p className='text-xs pt-6 text-slate-500 dark:text-slate-400'>
-                                {project?.projectId}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        )
-                      })}
+                      ?.map((project: any) => (
+                        <div key={project.id}>
+                          <DashboardProjectCard project={project} />
+                        </div>
+                      ))}
                   </div>
                 </CardContent>
               </Card>
