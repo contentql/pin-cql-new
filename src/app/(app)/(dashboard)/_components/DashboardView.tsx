@@ -1,6 +1,9 @@
 'use client'
 
 import { DialogClose } from '@radix-ui/react-dialog'
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
+import { Link } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -46,6 +49,7 @@ import VariablesForm from './VariablesForm'
 
 const DashboardView = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const [serviceVariable, setServiceVariable] = useState<any>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -77,15 +81,23 @@ const DashboardView = () => {
 
   const projects = userProjects?.docs
 
+  const getProjectKeys = getQueryKey(
+    trpc.projects.getProjects,
+    undefined,
+    'query',
+  )
+
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
       console.log('Project created')
       toast.success('Project created successfully')
-      getProjectsRefetch()
     },
     onError: async () => {
       console.log('Project creation failed')
       toast.error('Project creation failed')
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: getProjectKeys })
     },
   })
 
@@ -205,10 +217,14 @@ const DashboardView = () => {
                           <Card
                             key={project?.projectId}
                             x-chunk='dashboard-01-chunk-0'
-                            className='cursor-pointer'
+                            className='cursor-pointer relative group'
                             onClick={() => {
                               router.push(`/project/${project?.projectId}`)
                             }}>
+                            {/* <Button className='absolute -top-3 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+                              Delete
+                            </Button> */}
+                            <Link className='absolute border-black -top-3 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
                             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                               <CardTitle className='text-sm font-medium'>
                                 {/* {project?.services?.length} services */}
@@ -228,7 +244,7 @@ const DashboardView = () => {
                               <div className='text-2xl font-bold'>
                                 {project?.name}
                               </div>
-                              <p className='text-xs text-slate-500 dark:text-slate-400'>
+                              <p className='text-xs pt-6 text-slate-500 dark:text-slate-400'>
                                 {project?.projectId}
                               </p>
                             </CardContent>
