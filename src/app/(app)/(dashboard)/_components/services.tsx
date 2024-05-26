@@ -56,7 +56,23 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     },
   })
 
-  const { mutate: serviceReDeploy } = trpc.railway.serviceReDeploy.useMutation()
+  const { mutateAsync: serviceReDeploy } =
+    trpc.railway.serviceReDeploy.useMutation()
+
+  const handleRedeploy = async () => {
+    const data: any = serviceReDeploy({
+      environmentId: environmentId,
+      serviceId: serviceId,
+    })
+
+    toast.promise(data, {
+      loading: 'Deploying...',
+      success: data => {
+        return `Deployment successfully`
+      },
+      error: 'Error',
+    })
+  }
 
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation({
     onSuccess: async data => {
@@ -71,17 +87,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
 
       toast.success('Service Re-deploy', {
         description: 'Environment Variables updated',
-        action: (
-          <Button
-            onClick={() =>
-              serviceReDeploy({
-                environmentId: environmentId,
-                serviceId: serviceId,
-              })
-            }>
-            Deploy
-          </Button>
-        ),
+        action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
         style: {},
       })
     },

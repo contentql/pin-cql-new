@@ -2,6 +2,7 @@ import '@radix-ui/react-dropdown-menu'
 import { Box, Database, EllipsisVertical } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { toast } from 'sonner'
 
 import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
@@ -36,16 +37,24 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
     (deployment: any) => deployment.node.serviceId === serviceId,
   )
 
-  const { mutate: deploymentReDeploy } =
+  const { mutateAsync: deploymentReDeploy } =
     trpc.railway.deploymentReDeploy.useMutation({
       onSuccess: data => {
         console.log('redeployment sucessfully deployed')
       },
     })
 
-  const handleRedeploy = (id: string) => {
-    deploymentReDeploy({
+  const handleRedeploy = async (id: string) => {
+    const reDeploy: any = deploymentReDeploy({
       id,
+    })
+
+    toast.promise(reDeploy, {
+      loading: 'Deploying...',
+      success: data => {
+        return `Deployment successfully`
+      },
+      error: 'Error',
     })
   }
 

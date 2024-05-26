@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import {
   FileIcon,
@@ -74,9 +75,11 @@ const DashboardView = () => {
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
       console.log('Project created')
+      toast.success('Project created successfully')
     },
     onError: async () => {
       console.log('Project creation failed')
+      toast.error('Project creation failed')
     },
   })
 
@@ -96,6 +99,7 @@ const DashboardView = () => {
       },
       onError: async () => {
         console.log('Template creation failed')
+        toast.error('Template creation failed')
       },
     })
 
