@@ -81,71 +81,6 @@ const DashboardView = () => {
     'query',
   )
 
-  // const { mutate: deleteProject } = trpc.projects.deleteProject.useMutation({
-  //   onError: () => {
-  //     toast.error('Project deletion failed')
-  //   },
-  //   onSettled: () => {
-  //     queryClient.invalidateQueries({ queryKey: getProjectKeys })
-  //   },
-  //   onSuccess: () => {
-  //     toast.success('Project deleted successfully')
-  //     console.log('Project deleted successfully')
-  //   },
-  // })
-
-  // const { mutate: templateDelete, isPending: isTemplateDeleting } =
-  //   trpc.railway.templateDelete.useMutation({
-  //     onSuccess: () => {
-  //       console.log('Template deleted successfully')
-  //     },
-  //     onError: () => {
-  //       toast.error('Template deletion failed')
-  //     },
-  //   })
-
-  // // const handleTemplateDelete = ({ templateId, projectId }: any) => {
-  // //   try {
-  // //     templateDelete({
-  // //       id: templateId,
-  // //     })
-  // //   } catch (error) {
-  // //     console.log(error)
-  // //     throw new Error('Template deletion failed')
-  // //   }
-  // //   try {
-  // //     deleteProject({
-  // //       id: projectId,
-  // //     })
-  // //   } catch (error) {
-  // //     console.log(error)
-  // //   }
-  // // }
-
-  // const handleTemplateDelete = async ({ templateId, projectId }: any) => {
-  //   try {
-  //     const templateDeleteResponse: any = await templateDelete({
-  //       id: templateId,
-  //     })
-
-  //     console.log(templateDelete)
-  //     if (!templateDeleteResponse?.success) {
-  //       console.error(
-  //         'Template deletion failed:',
-  //         templateDeleteResponse?.error,
-  //       )
-  //       // throw new Error('Template deletion failed')
-  //       return
-  //     }
-  //     await deleteProject({ id: projectId })
-  //   } catch (error) {
-  //     console.error(error)
-  //     throw new Error('Template deletion failed')
-  //   }
-
-  //   console.log('Template and project deleted successfully')
-  // }
-
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
       console.log('Project created')
@@ -160,15 +95,26 @@ const DashboardView = () => {
     },
   })
 
+  const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
+
   const { mutate: templateDeploy, isPending: isTemplateDeploying } =
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
           setIsDialogOpen(false)
+
           createProject({
             name: serviceVariable?.Project_Name,
             projectId: data.railway.templateDeploy.projectId,
             workflowId: data.railway.templateDeploy.workflowId,
+          })
+
+          templateUpdate({
+            id: data.railway.templateDeploy.projectId,
+            input: {
+              name: serviceVariable?.Project_Name,
+              description: '',
+            },
           })
         } catch (error) {
           console.log(error)

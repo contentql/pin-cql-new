@@ -11,6 +11,7 @@ import {
   TEMPLATE_DEPLOY_MUTATION,
   TEMPLATE_REDEPLOY_MUTATION,
   TEMPLATE_UPDATE_MUTATION,
+  TEMPLATE_VARIABLES_UPDATE_MUTATION,
 } from '@/lib/apollo/railwayQuery'
 import {
   deploymentRedeploy,
@@ -19,8 +20,9 @@ import {
   serviceReDeploy,
   templateDelete,
   templateUpdate,
+  templateVariablesUpdate,
 } from '@/lib/apollo/railwayTypes'
-import { publicProcedure, router } from '@/trpc'
+import { publicProcedure, router, userProcedure } from '@/trpc'
 
 export const railwayRouter = router({
   // Get all projects
@@ -191,15 +193,33 @@ export const railwayRouter = router({
       }
     }),
 
-  // Update a template
-  templateUpdate: publicProcedure
+  templateUpdate: userProcedure
     .input(templateUpdate)
+    .mutation(async ({ input: request }) => {
+      const { id, input } = request
+      try {
+        const { data } = await client.mutate({
+          mutation: TEMPLATE_UPDATE_MUTATION,
+          variables: { id, input },
+        })
+
+        return data
+      } catch (error) {
+        console.error('Error during template updating:', error)
+
+        throw new Error('Error during template update')
+      }
+    }),
+
+  // Update a template
+  templateVariablesUpdate: publicProcedure
+    .input(templateVariablesUpdate)
     .mutation(async ({ input: requestData }) => {
       const { input } = requestData
       console.log('requestData', requestData)
       try {
         const { data } = await client.mutate({
-          mutation: TEMPLATE_UPDATE_MUTATION,
+          mutation: TEMPLATE_VARIABLES_UPDATE_MUTATION,
           variables: { input },
         })
 

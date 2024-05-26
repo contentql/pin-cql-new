@@ -74,26 +74,27 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     })
   }
 
-  const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation({
-    onSuccess: async data => {
-      console.log('Variables updated')
-      if (serviceId && environmentId) {
-        getVariables({
-          environmentId: environmentId,
-          projectId: projectId,
-          serviceId: serviceId,
-        })
-      }
+  const { mutate: templateVariablesUpdate } =
+    trpc.railway.templateVariablesUpdate.useMutation({
+      onSuccess: async data => {
+        console.log('Variables updated')
+        if (serviceId && environmentId) {
+          getVariables({
+            environmentId: environmentId,
+            projectId: projectId,
+            serviceId: serviceId,
+          })
+        }
 
-      toast.success('Service Re-deploy', {
-        description: 'Environment Variables updated',
-        action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
-      })
-    },
-    onError: async () => {
-      console.log('Variables update failed')
-    },
-  })
+        toast.success('Service Re-deploy', {
+          description: 'Environment Variables updated',
+          action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
+        })
+      },
+      onError: async () => {
+        console.log('Variables update failed')
+      },
+    })
 
   useEffect(() => {
     if (serviceId && environmentId) {
@@ -134,7 +135,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
         <VariablesTabContent
           variables={variables?.railway?.variables}
           environmentId={environmentId}
-          templateUpdate={templateUpdate}
+          templateVariablesUpdate={templateVariablesUpdate}
         />
       ) : (
         <div>Loading variables...</div>

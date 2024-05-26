@@ -40,12 +40,20 @@ export const templateDelete = z.object({
   id: z.string(),
 })
 
-export const templateUpdate = z.object({
+export const templateVariablesUpdate = z.object({
   input: z.object({
     environmentId: z.string(),
     serviceId: z.string(),
     projectId: z.string(),
     variables: z.any(),
+  }),
+})
+
+export const templateUpdate = z.object({
+  id: z.string(),
+  input: z.object({
+    name: z.string(),
+    description: z.string(),
   }),
 })
 
