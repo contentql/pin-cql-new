@@ -1,5 +1,6 @@
 'use client'
 
+import { DialogClose } from '@radix-ui/react-dialog'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -47,7 +48,7 @@ const DashboardView = () => {
   const router = useRouter()
 
   const [serviceVariable, setServiceVariable] = useState<any>()
-  const [modelOpen, setModelOpen] = useState<any>()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const projectTabs = [
     {
@@ -68,7 +69,11 @@ const DashboardView = () => {
     },
   ]
 
-  const { data: userProjects, error } = trpc.projects.getProjects.useQuery()
+  const {
+    data: userProjects,
+    error,
+    refetch: getProjectsRefetch,
+  } = trpc.projects.getProjects.useQuery()
 
   const projects = userProjects?.docs
 
@@ -76,6 +81,7 @@ const DashboardView = () => {
     onSuccess: async () => {
       console.log('Project created')
       toast.success('Project created successfully')
+      getProjectsRefetch()
     },
     onError: async () => {
       console.log('Project creation failed')
@@ -87,7 +93,7 @@ const DashboardView = () => {
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
-          setModelOpen(false)
+          setIsDialogOpen(false)
           createProject({
             name: serviceVariable?.Project_Name,
             projectId: data.railway.templateDeploy.projectId,
@@ -103,10 +109,10 @@ const DashboardView = () => {
       },
     })
 
-  const handleAddProject = () => {
+  const handleAddProject = (data: any) => {
     try {
       templateDeploy({
-        serviceVariable,
+        data,
       })
     } catch (error) {
       console.log(error)
@@ -155,7 +161,7 @@ const DashboardView = () => {
                 Export
               </span>
             </Button>
-            <Dialog open={modelOpen}>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant='outline'>Add Project</Button>
               </DialogTrigger>
@@ -166,12 +172,12 @@ const DashboardView = () => {
                     Please provide all variable fields asked below.
                   </DialogDescription>
                 </DialogHeader>
-                {/* <StepperForm /> */}
                 <VariablesForm
                   setServiceVariable={setServiceVariable}
                   handleAddProject={handleAddProject}
                   isTemplateDeploying={isTemplateDeploying}
                 />
+                <DialogClose asChild>close</DialogClose>
               </DialogContent>
             </Dialog>
           </div>

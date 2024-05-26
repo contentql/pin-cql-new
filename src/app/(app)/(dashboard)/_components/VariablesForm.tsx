@@ -59,7 +59,7 @@ const VariablesForm = ({
 
   const onSubmit: SubmitHandler<FormSchemaType> = data => {
     setServiceVariable(data)
-    handleAddProject()
+    handleAddProject(data)
   }
 
   return (
