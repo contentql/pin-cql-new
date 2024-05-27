@@ -22,11 +22,11 @@ import {
   templateUpdate,
   templateVariablesUpdate,
 } from '@/lib/apollo/railwayTypes'
-import { publicProcedure, router, userProcedure } from '@/trpc'
+import { router, userProcedure } from '@/trpc'
 
 export const railwayRouter = router({
   // Get all projects
-  getProjects: publicProcedure.query(async ({}) => {
+  getProjects: userProcedure.query(async ({}) => {
     try {
       // Fetch data using Apollo Client
       const { data } = await client.query({
@@ -42,7 +42,7 @@ export const railwayRouter = router({
   }),
 
   // Get details of a specific template
-  getDetails: publicProcedure
+  getDetails: userProcedure
     .input(getDetailsSchema)
     .query(async ({ input, ctx }) => {
       const { id } = input
@@ -59,7 +59,7 @@ export const railwayRouter = router({
     }),
 
   // Create a new template
-  templateDeploy: publicProcedure.input(z.any()).mutation(async ({ input }) => {
+  templateDeploy: userProcedure.input(z.any()).mutation(async ({ input }) => {
     const serviceVariable = input?.data!
 
     console.log({ input })
@@ -175,7 +175,7 @@ export const railwayRouter = router({
   }),
 
   // Delete a template
-  templateDelete: publicProcedure
+  templateDelete: userProcedure
     .input(templateDelete)
     .mutation(async ({ input }) => {
       const { id } = input
@@ -212,7 +212,7 @@ export const railwayRouter = router({
     }),
 
   // Update a template
-  templateVariablesUpdate: publicProcedure
+  templateVariablesUpdate: userProcedure
     .input(templateVariablesUpdate)
     .mutation(async ({ input: requestData }) => {
       const { input } = requestData
@@ -232,7 +232,7 @@ export const railwayRouter = router({
     }),
 
   // Re-deploy a template
-  serviceReDeploy: publicProcedure
+  serviceReDeploy: userProcedure
     .input(serviceReDeploy)
     .mutation(async ({ input }) => {
       const { environmentId, serviceId } = input
@@ -248,7 +248,7 @@ export const railwayRouter = router({
       }
     }),
 
-  getVariables: publicProcedure
+  getVariables: userProcedure
     .input(getVariables)
     .mutation(async ({ input }) => {
       const { environmentId, projectId, serviceId } = input
@@ -265,7 +265,7 @@ export const railwayRouter = router({
       }
     }),
 
-  deploymentReDeploy: publicProcedure
+  deploymentReDeploy: userProcedure
     .input(deploymentRedeploy)
     .mutation(async ({ input }) => {
       const { id } = input
