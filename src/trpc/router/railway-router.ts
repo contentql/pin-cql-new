@@ -193,6 +193,7 @@ export const railwayRouter = router({
       }
     }),
 
+  // Update a template
   templateUpdate: userProcedure
     .input(templateUpdate)
     .mutation(async ({ input: request }) => {
