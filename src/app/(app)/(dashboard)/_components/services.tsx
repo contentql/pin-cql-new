@@ -33,19 +33,19 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   const serviceId = params.serviceId?.toString()
 
   const [isVisible, setIsVisible] = useState(false)
-  const [projectData, setProjectData] = useState<any>(null)
+  // const [projectData, setProjectData] = useState<any>(null)
   const [variables, setVariables] = useState<any>({})
 
   const { data: fetchedProjectData } = trpc.railway.getDetails.useQuery({
     id: projectId,
   })
 
-  useEffect(() => {
-    setProjectData(fetchedProjectData)
-  }, [fetchedProjectData])
+  // useEffect(() => {
+  //   setProjectData(fetchedProjectData)
+  // }, [fetchedProjectData])
 
   const environmentId =
-    projectData?.railway.project.environments.edges[0].node.id
+    fetchedProjectData?.railway.project.environments.edges[0].node.id
 
   const { mutate: getVariables } = trpc.railway.getVariables.useMutation({
     onSuccess: async data => {
@@ -74,27 +74,27 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     })
   }
 
-  const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation({
-    onSuccess: async data => {
-      console.log('Variables updated')
-      if (serviceId && environmentId) {
-        getVariables({
-          environmentId: environmentId,
-          projectId: projectId,
-          serviceId: serviceId,
-        })
-      }
+  const { mutate: templateVariablesUpdate } =
+    trpc.railway.templateVariablesUpdate.useMutation({
+      onSuccess: async data => {
+        console.log('Variables updated')
+        if (serviceId && environmentId) {
+          getVariables({
+            environmentId: environmentId,
+            projectId: projectId,
+            serviceId: serviceId,
+          })
+        }
 
-      toast.success('Service Re-deploy', {
-        description: 'Environment Variables updated',
-        action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
-        style: {},
-      })
-    },
-    onError: async () => {
-      console.log('Variables update failed')
-    },
-  })
+        toast.success('Service Re-deploy', {
+          description: 'Environment Variables updated',
+          action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
+        })
+      },
+      onError: async () => {
+        console.log('Variables update failed')
+      },
+    })
 
   useEffect(() => {
     if (serviceId && environmentId) {
@@ -112,7 +112,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     }
   }, [vertical])
 
-  const services = projectData?.railway.project.services
+  const services = fetchedProjectData?.railway.project.services
 
   const service = services?.edges.find(
     (service: any) => service.node.id === serviceId,
@@ -124,7 +124,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       label: 'Deployments',
       content: (
         <DeploymentsTabContent
-          deployments={projectData?.railway.project.deployments}
+          deployments={fetchedProjectData?.railway.project.deployments}
         />
       ),
     },
@@ -135,7 +135,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
         <VariablesTabContent
           variables={variables?.railway?.variables}
           environmentId={environmentId}
-          templateUpdate={templateUpdate}
+          templateVariablesUpdate={templateVariablesUpdate}
         />
       ) : (
         <div>Loading variables...</div>
@@ -150,12 +150,12 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       value: 'all',
       label: 'All',
     },
-    {
-      value: 'active',
-      label: 'Active',
-    },
-    { value: 'sleep', label: 'Sleep' },
-    { value: 'archived', label: 'Archived' },
+    // {
+    //   value: 'active',
+    //   label: 'Active',
+    // },
+    // { value: 'sleep', label: 'Sleep' },
+    // { value: 'archived', label: 'Archived' },
   ]
 
   return (

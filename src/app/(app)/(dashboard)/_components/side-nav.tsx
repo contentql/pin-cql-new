@@ -2,12 +2,9 @@ import Link from 'next/link'
 
 import {
   HomeIcon,
-  LineChartIcon,
   Package2Icon,
   PackageIcon,
   SettingsIcon,
-  ShoppingCartIcon,
-  UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
 import {
   Tooltip,
@@ -38,7 +35,7 @@ const DashboardSideNav = () => {
             </TooltipTrigger>
             <TooltipContent side='right'>Dashboard</TooltipContent>
           </Tooltip>
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
               <Link
                 className='flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-900 transition-colors hover:text-slate-950 md:h-8 md:w-8 dark:bg-slate-800 dark:text-slate-50 dark:hover:text-slate-50'
@@ -48,7 +45,7 @@ const DashboardSideNav = () => {
               </Link>
             </TooltipTrigger>
             <TooltipContent side='right'>Orders</TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -60,7 +57,7 @@ const DashboardSideNav = () => {
             </TooltipTrigger>
             <TooltipContent side='right'>Products</TooltipContent>
           </Tooltip>
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
               <Link
                 className='flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:text-slate-950 md:h-8 md:w-8 dark:text-slate-400 dark:hover:text-slate-50'
@@ -81,7 +78,7 @@ const DashboardSideNav = () => {
               </Link>
             </TooltipTrigger>
             <TooltipContent side='right'>Analytics</TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
         </TooltipProvider>
       </nav>
       <nav className='mt-auto flex flex-col items-center gap-4 px-2 sm:py-5'>

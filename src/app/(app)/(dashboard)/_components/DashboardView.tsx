@@ -1,6 +1,8 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { DialogClose } from '@radix-ui/react-dialog'
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -33,44 +35,49 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { trpc } from '@/trpc/client'
 
+import { DashboardProjectCard } from './Dashboard-project-card'
 import VariablesForm from './VariablesForm'
 
 const DashboardView = () => {
-  const router = useRouter()
+  const queryClient = useQueryClient()
 
   const [serviceVariable, setServiceVariable] = useState<any>()
-  const [modelOpen, setModelOpen] = useState<any>()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const projectTabs = [
     {
       value: 'all',
       label: 'All',
     },
-    {
-      value: 'active',
-      label: 'Active',
-    },
-    {
-      value: 'deploying',
-      label: 'Deploying',
-    },
-    {
-      value: 'failed',
-      label: 'Failed',
-    },
+    // {
+    //   value: 'active',
+    //   label: 'Active',
+    // },
+    // {
+    //   value: 'deploying',
+    //   label: 'Deploying',
+    // },
+    // {
+    //   value: 'failed',
+    //   label: 'Failed',
+    // },
   ]
 
-  const { data: userProjects, error } = trpc.projects.getProjects.useQuery()
+  const {
+    data: userProjects,
+    error,
+    refetch: getProjectsRefetch,
+  } = trpc.projects.getProjects.useQuery()
 
   const projects = userProjects?.docs
+
+  const getProjectKeys = getQueryKey(
+    trpc.projects.getProjects,
+    undefined,
+    'query',
+  )
 
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
@@ -81,17 +88,31 @@ const DashboardView = () => {
       console.log('Project creation failed')
       toast.error('Project creation failed')
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: getProjectKeys })
+    },
   })
+
+  const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 
   const { mutate: templateDeploy, isPending: isTemplateDeploying } =
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
-          setModelOpen(false)
+          setIsDialogOpen(false)
+
           createProject({
             name: serviceVariable?.Project_Name,
             projectId: data.railway.templateDeploy.projectId,
             workflowId: data.railway.templateDeploy.workflowId,
+          })
+
+          templateUpdate({
+            id: data.railway.templateDeploy.projectId,
+            input: {
+              name: serviceVariable?.Project_Name,
+              description: '',
+            },
           })
         } catch (error) {
           console.log(error)
@@ -103,10 +124,10 @@ const DashboardView = () => {
       },
     })
 
-  const handleAddProject = () => {
+  const handleAddProject = (data: any) => {
     try {
       templateDeploy({
-        serviceVariable,
+        data,
       })
     } catch (error) {
       console.log(error)
@@ -155,9 +176,9 @@ const DashboardView = () => {
                 Export
               </span>
             </Button>
-            <Dialog open={modelOpen}>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant='outline'>Add Project</Button>
+                <Button variant='outline'>Create</Button>
               </DialogTrigger>
               <DialogContent className='sm:max-w-[500px]'>
                 <DialogHeader>
@@ -166,12 +187,12 @@ const DashboardView = () => {
                     Please provide all variable fields asked below.
                   </DialogDescription>
                 </DialogHeader>
-                {/* <StepperForm /> */}
                 <VariablesForm
                   setServiceVariable={setServiceVariable}
                   handleAddProject={handleAddProject}
                   isTemplateDeploying={isTemplateDeploying}
                 />
+                <DialogClose asChild>close</DialogClose>
               </DialogContent>
             </Dialog>
           </div>
@@ -194,41 +215,11 @@ const DashboardView = () => {
                       //     tab?.value === 'all' ||
                       //     project?.status.toLowerCase() === tab?.value,
                       // )
-                      ?.map(project => {
-                        return (
-                          <Card
-                            key={project?.projectId}
-                            x-chunk='dashboard-01-chunk-0'
-                            className='cursor-pointer'
-                            onClick={() => {
-                              router.push(`/project/${project?.projectId}`)
-                            }}>
-                            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                              <CardTitle className='text-sm font-medium'>
-                                {/* {project?.services?.length} services */}
-                              </CardTitle>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    {/* {project?.icon} */}
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {/* <p>{project?.status}</p> */}
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </CardHeader>
-                            <CardContent>
-                              <div className='text-2xl font-bold'>
-                                {project?.name}
-                              </div>
-                              <p className='text-xs text-slate-500 dark:text-slate-400'>
-                                {project?.projectId}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        )
-                      })}
+                      ?.map((project: any) => (
+                        <div key={project.id}>
+                          <DashboardProjectCard project={project} />
+                        </div>
+                      ))}
                   </div>
                 </CardContent>
               </Card>

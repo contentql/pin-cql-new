@@ -18,13 +18,13 @@ import { Input } from '~/src/components/ui/input'
 interface VariablesTabContentProps {
   variables: (typeof projects)[0]['services'][0]['variables']
   environmentId: string
-  templateUpdate: any
+  templateVariablesUpdate: any
 }
 
 const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
   variables,
   environmentId,
-  templateUpdate,
+  templateVariablesUpdate,
 }) => {
   const params = useParams()
 
@@ -59,7 +59,7 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
 
   const toggleUpdate = (key: string, value: string) => {
     console.log('Toggling edit')
-    templateUpdate({
+    templateVariablesUpdate({
       input: {
         environmentId: environmentId,
         serviceId: serviceId,

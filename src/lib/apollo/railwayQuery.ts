@@ -105,10 +105,34 @@ export const TEMPLATE_DELETE_MUTATION = gql`
   }
 `
 
-export const TEMPLATE_UPDATE_MUTATION = gql`
+export const TEMPLATE_VARIABLES_UPDATE_MUTATION = gql`
   mutation UpdateEnv($input: VariableCollectionUpsertInput!) {
     railway {
       variableCollectionUpsert(input: $input)
+    }
+  }
+`
+
+export const TEMPLATE_UPDATE_MUTATION = gql`
+  mutation Railway($input: ProjectUpdateInput!, $id: String!) {
+    railway {
+      projectUpdate(id: $id, input: $input) {
+        baseEnvironmentId
+        createdAt
+        deletedAt
+        description
+        expiredAt
+        id
+        isPublic
+        isTempProject
+        name
+        prDeploys
+        prForks
+        subscriptionPlanLimit
+        subscriptionType
+        teamId
+        updatedAt
+      }
     }
   }
 `

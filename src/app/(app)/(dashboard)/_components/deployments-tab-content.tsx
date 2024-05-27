@@ -1,4 +1,6 @@
 import '@radix-ui/react-dropdown-menu'
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
 import { Box, Database, EllipsisVertical } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -32,6 +34,13 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
 }) => {
   const params = useParams()
   const { serviceId } = params
+  const queryClient = useQueryClient()
+
+  const getDetailsKeys = getQueryKey(
+    trpc.railway.getDetails,
+    undefined,
+    'query',
+  )
 
   const serviceDeployments = deployments?.edges.filter(
     (deployment: any) => deployment.node.serviceId === serviceId,
@@ -41,6 +50,9 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
     trpc.railway.deploymentReDeploy.useMutation({
       onSuccess: data => {
         console.log('redeployment sucessfully deployed')
+      },
+      onSettled: newTodo => {
+        queryClient.invalidateQueries({ queryKey: getDetailsKeys })
       },
     })
 
