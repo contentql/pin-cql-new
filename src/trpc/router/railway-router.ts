@@ -108,6 +108,8 @@ export const railwayRouter = router({
                 name: 'pin-hcms',
                 isPrivate: false,
                 commit: null,
+                serviceIcon:
+                  'https://pub-ce94fe258c7740b3a579a329e72059e4.r2.dev/pin-hcms%2FContentQL_Brandmark_Light%402x-1000x1000.png',
                 variables: {
                   DATABASE_URI:
                     serviceVariable?.DATABASE_URI || '${{MongoDB.MONGO_URL}}',
@@ -153,7 +155,6 @@ export const railwayRouter = router({
                 },
                 template: 'ghcr.io/contentql/pin-hcms:latest',
                 serviceName: 'pin-hcms',
-                serviceIcon: null,
                 startCommand: null,
                 rootDirectory: null,
                 healthcheckPath: null,
