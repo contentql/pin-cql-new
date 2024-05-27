@@ -1,13 +1,17 @@
+import { redirect } from 'next/navigation'
 import { Toaster } from 'sonner'
 
 import DashboardHeader from '@/app/(app)/(dashboard)/_components/header'
 import DashboardSideNav from '@/app/(app)/(dashboard)/_components/side-nav'
+import { auth } from '@/lib/auth'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
+  const session = await auth()
+  if (!session) return redirect('/sign-in')
   return (
     <div className='flex min-h-screen w-full flex-col bg-slate-100/40 dark:bg-slate-800/40'>
       <DashboardSideNav />

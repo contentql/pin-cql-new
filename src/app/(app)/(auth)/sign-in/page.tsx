@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth'
 
 const SignInPage = async () => {
   const session = await auth()
-  if (session) return redirect('/')
+  if (session) return redirect('/dashboard')
   return (
     <div className='my-auto flex h-full justify-center pb-10 pt-[100px]'>
       <SignInForm />

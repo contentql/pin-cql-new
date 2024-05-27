@@ -75,7 +75,7 @@ const SignInForm = () => {
       signInWithCredentials({ ...data, redirectTo: '/' }).then(result => {
         if (!result) return
         if (result.success === true) {
-          router.push('/')
+          router.push('/dashboard')
         }
         if ('error' in result) {
           setBackendLoginResponse(result)
