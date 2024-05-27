@@ -51,18 +51,18 @@ const DashboardView = () => {
       value: 'all',
       label: 'All',
     },
-    {
-      value: 'active',
-      label: 'Active',
-    },
-    {
-      value: 'deploying',
-      label: 'Deploying',
-    },
-    {
-      value: 'failed',
-      label: 'Failed',
-    },
+    // {
+    //   value: 'active',
+    //   label: 'Active',
+    // },
+    // {
+    //   value: 'deploying',
+    //   label: 'Deploying',
+    // },
+    // {
+    //   value: 'failed',
+    //   label: 'Failed',
+    // },
   ]
 
   const {
@@ -72,8 +72,6 @@ const DashboardView = () => {
   } = trpc.projects.getProjects.useQuery()
 
   const projects = userProjects?.docs
-
-  console.log(projects)
 
   const getProjectKeys = getQueryKey(
     trpc.projects.getProjects,
@@ -180,7 +178,7 @@ const DashboardView = () => {
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant='outline'>Add Project</Button>
+                <Button variant='outline'>Create</Button>
               </DialogTrigger>
               <DialogContent className='sm:max-w-[500px]'>
                 <DialogHeader>

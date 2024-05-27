@@ -1,5 +1,8 @@
 'use client'
 
+import { projects } from '../_data'
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
 import { LoaderCircle, Magnet, Plug } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -16,7 +19,6 @@ import {
   ShoppingCartIcon,
   UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
-import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -39,14 +41,29 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { trpc } from '@/trpc/client'
 
 const DashboardHeader = () => {
+  const queryClient = useQueryClient()
+
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const dropdownProjectItems = projects.map(project => ({
-    id: project.id,
-    name: project.title,
+  const getProjectKeys = getQueryKey(
+    trpc.projects.getProjects,
+    undefined,
+    'query',
+  )
+
+  const previousProjects: any = queryClient.getQueryData(getProjectKeys)
+
+  console.log(previousProjects)
+
+  console.log(getProjectKeys)
+
+  const dropdownProjectItems = projects?.map((project: any) => ({
+    id: project?.id,
+    name: project?.title,
   }))
 
   return (
