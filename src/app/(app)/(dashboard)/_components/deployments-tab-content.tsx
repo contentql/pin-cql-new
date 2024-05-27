@@ -80,7 +80,10 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
             <CardHeader className='flex flex-row justify-between'>
               <div className='space-y-1'>
                 <CardTitle>
-                  <Link href={`https://${deployment?.node.staticUrl || '#'}`}>
+                  <Link
+                    href={`https://${deployment?.node.staticUrl || '#'}`}
+                    rel='noopener noreferrer'
+                    target='_blank'>
                     {deployment?.node.staticUrl}
                   </Link>
                 </CardTitle>

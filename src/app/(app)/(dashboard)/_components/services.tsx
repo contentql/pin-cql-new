@@ -201,7 +201,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                           <Card
                             key={service.node.id}
                             x-chunk='dashboard-01-chunk-0'
-                            className='cursor-pointer'
+                            className={`'cursor-pointer' ${service?.node.id === serviceId ? 'border-r-2 border-black' : 'border-r-2 border-gray-200'} `}
                             onClick={() => {
                               router.push(
                                 `/project/${projectId}/service/${service?.node.id}`,
@@ -242,11 +242,10 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       {vertical && (
         <Card
           x-chunk='dashboard-06-chunk-0'
-          className={`p-4 shadow-xl shadow-cyan-100 border-double transform transition-transform duration-300 ease-in-out ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
+          className={`p-4 shadow-xl shadow-cyan-100 border-double transform transition-transform duration-300 ease-in-out  ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
           <CardHeader className='flex-row justify-between'>
             <div>
-              <CardTitle>{service?.name}</CardTitle>
-              <CardDescription>{service?.description}</CardDescription>
+              <CardTitle>{service?.node.name}</CardTitle>
             </div>
             <X
               className='w-5 h-5 cursor-pointer'
