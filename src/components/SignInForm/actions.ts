@@ -43,5 +43,5 @@ export const signInWithCredentials = async ({
 }
 
 export const signInWithGithub = async () => {
-  await signIn('github', { redirectTo: '/' })
+  await signIn('github', { redirectTo: '/dashboard' })
 }
