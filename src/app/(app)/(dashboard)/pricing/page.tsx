@@ -13,26 +13,26 @@ declare global {
 
 const Pricing = () => {
   return (
-    <section className='bg-white pt-10 lg:pt-[40px] relative z-20 overflow-hidden '>
+    <section className='relative z-20 overflow-hidden bg-white pt-10 lg:pt-[40px] '>
       <div className='container'>
-        <div className='flex flex-wrap -mx-4'>
+        <div className='-mx-4 flex flex-wrap'>
           <div className='w-full px-4'>
-            <div className='text-center mx-auto mb-[60px] lg:mb-20 max-w-[510px]'>
-              <span className='font-semibold text-lg text-primary mb-2 block'>
+            <div className='mx-auto mb-[60px] max-w-[510px] text-center lg:mb-20'>
+              <span className='text-primary mb-2 block text-lg font-semibold'>
                 Pricing Table
               </span>
               <h2
                 className='
-                  font-bold
-                  text-3xl
-                  sm:text-4xl
-                  md:text-[40px]
                   text-dark
                   mb-4
+                  text-3xl
+                  font-bold
+                  sm:text-4xl
+                  md:text-[40px]
                   '>
                 Our Pricing Plan
               </h2>
-              <p className='text-base text-body-color'>
+              <p className='text-body-color text-base'>
                 There are many variations of passages of Lorem Ipsum available
                 but the majority have suffered alteration in some form.
               </p>
