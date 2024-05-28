@@ -72,15 +72,17 @@ const SignInForm = () => {
 
   const onSubmit = (data: z.infer<typeof loginFormSchema>) => {
     startTransition(() => {
-      signInWithCredentials({ ...data, redirectTo: '/' }).then(result => {
-        if (!result) return
-        if (result.success === true) {
-          router.push('/dashboard')
-        }
-        if ('error' in result) {
-          setBackendLoginResponse(result)
-        }
-      })
+      signInWithCredentials({ ...data, redirectTo: '/dashboard' }).then(
+        result => {
+          if (!result) return
+          if (result.success === true) {
+            router.push('/dashboard')
+          }
+          if ('error' in result) {
+            setBackendLoginResponse(result)
+          }
+        },
+      )
     })
   }
 

@@ -4,8 +4,10 @@ import { projects } from '../_data'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { LoaderCircle, Magnet, Plug } from 'lucide-react'
+import { cookies } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { useState } from 'react'
 
 import Breadcrumbs from '@/app/(app)/(dashboard)/_components/breadcrumbs'
@@ -45,6 +47,7 @@ import { trpc } from '@/trpc/client'
 
 const DashboardHeader = () => {
   const queryClient = useQueryClient()
+  const cookieStore = cookies()
 
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -63,6 +66,13 @@ const DashboardHeader = () => {
     id: project?.id,
     name: project?.title,
   }))
+
+  const handleLogout = () => {
+    cookieStore.getAll().forEach(cookie => {
+      cookieStore.delete(cookie.name)
+    })
+    redirect('/')
+  }
 
   return (
     <header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 dark:bg-slate-950'>
@@ -237,7 +247,12 @@ const DashboardHeader = () => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              handleLogout()
+            }}>
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
