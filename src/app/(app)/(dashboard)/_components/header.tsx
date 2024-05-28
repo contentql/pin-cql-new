@@ -59,8 +59,6 @@ const DashboardHeader = () => {
 
   console.log(previousProjects)
 
-  console.log(getProjectKeys)
-
   const dropdownProjectItems = projects?.map((project: any) => ({
     id: project?.id,
     name: project?.title,

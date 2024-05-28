@@ -135,15 +135,16 @@ export const DashboardProjectCard = ({ project }: any) => {
               <DropdownMenuItem
                 onClick={e => {
                   e.stopPropagation()
+                  router.push(`/project/${project?.projectId}`)
                 }}>
                 Services
               </DropdownMenuItem>
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={e => {
                   e.stopPropagation()
                 }}>
                 Deployments
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem
                 onClick={e => {
                   e.stopPropagation()
