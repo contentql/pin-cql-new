@@ -13,7 +13,7 @@ declare global {
 
 const Pricing = () => {
   return (
-    <section className='relative z-20 overflow-hidden bg-white pt-10 lg:pt-[40px] '>
+    <section className='relative z-20 overflow-hidden bg-white pb-12 pt-20 lg:pb-[90px] lg:pt-[120px]'>
       <div className='container'>
         <div className='-mx-4 flex flex-wrap'>
           <div className='w-full px-4'>
@@ -21,15 +21,7 @@ const Pricing = () => {
               <span className='text-primary mb-2 block text-lg font-semibold'>
                 Pricing Table
               </span>
-              <h2
-                className='
-                  text-dark
-                  mb-4
-                  text-3xl
-                  font-bold
-                  sm:text-4xl
-                  md:text-[40px]
-                  '>
+              <h2 className='text-dark mb-4 text-3xl font-bold sm:text-4xl md:text-[40px]'>
                 Our Pricing Plan
               </h2>
               <p className='text-body-color text-base'>
