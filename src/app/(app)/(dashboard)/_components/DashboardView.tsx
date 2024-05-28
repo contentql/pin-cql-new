@@ -199,8 +199,12 @@ const DashboardView = () => {
         </div>
         {projectTabs?.map(tab => {
           return (
-            <TabsContent key={tab.value} value={tab.value}>
-              <Card x-chunk='dashboard-06-chunk-0'>
+            <TabsContent key={tab.value} value={tab.value} className='h-screen'>
+              <Card
+                x-chunk='dashboard-06-chunk-0'
+                className='min-h-full'
+                // style={{ minHeight: '600px' }}
+              >
                 <CardHeader>
                   <CardTitle>Projects</CardTitle>
                   <CardDescription>
@@ -217,7 +221,10 @@ const DashboardView = () => {
                       // )
                       ?.map((project: any) => (
                         <div key={project.id}>
-                          <DashboardProjectCard project={project} />
+                          <DashboardProjectCard
+                            project={project}
+                            templateUpdate={templateUpdate}
+                          />
                         </div>
                       ))}
                   </div>

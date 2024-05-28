@@ -2,11 +2,21 @@
 
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
+import { Check, Settings, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 import {
   Tooltip,
   TooltipContent,
@@ -15,9 +25,28 @@ import {
 } from '@/components/ui/tooltip'
 import { trpc } from '@/trpc/client'
 
-export const DashboardProjectCard = ({ project }: { project: any }) => {
+export const DashboardProjectCard = ({ project }: any) => {
   const queryClient = useQueryClient()
   const router = useRouter()
+
+  const [projectName, setProjectName] = useState(project?.name || '')
+  const [toggleNameEdit, setToggleNameEdit] = useState(false)
+
+  const { mutate: updateProject } = trpc.projects.updateProject.useMutation({
+    onSuccess: async data => {
+      setToggleNameEdit(false)
+      toast.success('Project updated successfully')
+    },
+  })
+
+  const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation({
+    onSuccess: async data => {
+      updateProject({
+        id: project?.id,
+        name: projectName,
+      })
+    },
+  })
 
   const getProjectKeys = getQueryKey(
     trpc.projects.getProjects,
@@ -66,6 +95,21 @@ export const DashboardProjectCard = ({ project }: { project: any }) => {
     }
   }
 
+  const handleEdit = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    e.stopPropagation()
+    try {
+      templateUpdate({
+        id: project?.projectId,
+        input: {
+          name: projectName,
+          description: '',
+        },
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div>
       <Card
@@ -75,22 +119,52 @@ export const DashboardProjectCard = ({ project }: { project: any }) => {
         onClick={() => {
           router.push(`/project/${project?.projectId}`)
         }}>
-        <div className='w-10 h-10 rounded-full bg-black border border-gray-500 absolute -top-4 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
-          <Button
-            disabled={isTemplateDeleting}
-            variant='destructive'
-            onClick={e => {
-              e.stopPropagation()
-              handleTemplateDelete({
-                templateId: project?.projectId,
-              })
-            }}>
-            Delete
-          </Button>
+        <div className='w-6 h-6 rounded-full bg-black border border-gray-500 absolute -top-3 -right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Settings color='white' size='15' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel
+                onClick={e => {
+                  e.stopPropagation()
+                }}>
+                Project Settings
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                  router.push(`/project/${project?.projectId}`)
+                }}>
+                Services
+              </DropdownMenuItem>
+              {/* <DropdownMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                }}>
+                Deployments
+              </DropdownMenuItem> */}
+              <DropdownMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                  setToggleNameEdit(true)
+                }}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className='text-red-600'
+                onClick={e => {
+                  e.stopPropagation()
+                  handleTemplateDelete({
+                    templateId: project?.projectId,
+                  })
+                }}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        {/* <div className='w-10 h-10 rounded-full bg-red-600 border border-gray-500 absolute -top-3 right-8 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
-                              <Delete  size={20} color='white' />
-                            </div> */}
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>
             {/* {project?.services?.length} services */}
@@ -103,7 +177,36 @@ export const DashboardProjectCard = ({ project }: { project: any }) => {
           </TooltipProvider>
         </CardHeader>
         <CardContent>
-          <div className='text-2xl font-bold'>{project?.name}</div>
+          {toggleNameEdit ? (
+            <div className='flex items-center gap-1'>
+              <Input
+                type='text'
+                placeholder='Enter new project name'
+                onChange={e => {
+                  setProjectName(e.target.value)
+                }}
+                onClick={e => e.stopPropagation()}
+                value={projectName}
+                className='py-1 h-fit focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
+              />
+
+              <X
+                color='red'
+                className='h-5 w-5 ml-4 cursor-pointer'
+                onClick={e => {
+                  e.stopPropagation()
+                  setToggleNameEdit(false)
+                }}
+              />
+              <Check
+                color='green'
+                onClick={e => handleEdit(e)}
+                className='h-5 w-5 ml-4 cursor-pointer'
+              />
+            </div>
+          ) : (
+            <div className='text-2xl font-bold'>{projectName}</div>
+          )}
           <p className='text-xs pt-6 text-slate-500 dark:text-slate-400'>
             {project?.projectId}
           </p>
