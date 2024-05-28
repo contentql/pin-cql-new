@@ -221,7 +221,10 @@ const DashboardView = () => {
                       // )
                       ?.map((project: any) => (
                         <div key={project.id}>
-                          <DashboardProjectCard project={project} />
+                          <DashboardProjectCard
+                            project={project}
+                            templateUpdate={templateUpdate}
+                          />
                         </div>
                       ))}
                   </div>

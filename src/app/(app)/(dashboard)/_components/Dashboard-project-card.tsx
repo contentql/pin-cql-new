@@ -2,7 +2,7 @@
 
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
-import { Settings } from 'lucide-react'
+import { Check, Settings, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -25,12 +25,28 @@ import {
 } from '@/components/ui/tooltip'
 import { trpc } from '@/trpc/client'
 
-export const DashboardProjectCard = ({ project }: { project: any }) => {
+export const DashboardProjectCard = ({ project }: any) => {
   const queryClient = useQueryClient()
   const router = useRouter()
 
   const [projectName, setProjectName] = useState(project?.name || '')
   const [toggleNameEdit, setToggleNameEdit] = useState(false)
+
+  const { mutate: updateProject } = trpc.projects.updateProject.useMutation({
+    onSuccess: async data => {
+      setToggleNameEdit(false)
+      toast.success('Project updated successfully')
+    },
+  })
+
+  const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation({
+    onSuccess: async data => {
+      updateProject({
+        id: project?.id,
+        name: projectName,
+      })
+    },
+  })
 
   const getProjectKeys = getQueryKey(
     trpc.projects.getProjects,
@@ -79,6 +95,21 @@ export const DashboardProjectCard = ({ project }: { project: any }) => {
     }
   }
 
+  const handleEdit = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    e.stopPropagation()
+    try {
+      templateUpdate({
+        id: project?.projectId,
+        input: {
+          name: projectName,
+          description: '',
+        },
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div>
       <Card
@@ -116,6 +147,7 @@ export const DashboardProjectCard = ({ project }: { project: any }) => {
               <DropdownMenuItem
                 onClick={e => {
                   e.stopPropagation()
+                  setToggleNameEdit(true)
                 }}>
                 Edit
               </DropdownMenuItem>
@@ -145,7 +177,32 @@ export const DashboardProjectCard = ({ project }: { project: any }) => {
         </CardHeader>
         <CardContent>
           {toggleNameEdit ? (
-            <Input placeholder='Enter new project name' value={projectName} />
+            <div className='flex items-center gap-1'>
+              <Input
+                type='text'
+                placeholder='Enter new project name'
+                onChange={e => {
+                  setProjectName(e.target.value)
+                }}
+                onClick={e => e.stopPropagation()}
+                value={projectName}
+                className='py-1 h-fit focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
+              />
+
+              <X
+                color='red'
+                className='h-5 w-5 ml-4 cursor-pointer'
+                onClick={e => {
+                  e.stopPropagation()
+                  setToggleNameEdit(false)
+                }}
+              />
+              <Check
+                color='green'
+                onClick={e => handleEdit(e)}
+                className='h-5 w-5 ml-4 cursor-pointer'
+              />
+            </div>
           ) : (
             <div className='text-2xl font-bold'>{projectName}</div>
           )}
