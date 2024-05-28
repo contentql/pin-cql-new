@@ -71,3 +71,7 @@ export const getVariables = z.object({
 export const deploymentRedeploy = z.object({
   id: z.string(),
 })
+
+export const deploymentLogs = z.object({
+  id: z.string(),
+})

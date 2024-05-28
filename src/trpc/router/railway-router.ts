@@ -3,6 +3,7 @@ import z from 'zod'
 
 import client from '@/lib/apollo/apolloClient'
 import {
+  DEPLOYMENT_LOGS,
   DEPLOYMENT_REDEPLOY,
   GET_PROJECTS,
   GET_TEMPLATE_DETAILS,
@@ -14,6 +15,7 @@ import {
   TEMPLATE_VARIABLES_UPDATE_MUTATION,
 } from '@/lib/apollo/railwayQuery'
 import {
+  deploymentLogs,
   deploymentRedeploy,
   getDetailsSchema,
   getVariables,
@@ -22,7 +24,7 @@ import {
   templateUpdate,
   templateVariablesUpdate,
 } from '@/lib/apollo/railwayTypes'
-import { router, userProcedure } from '@/trpc'
+import { publicProcedure, router, userProcedure } from '@/trpc'
 
 export const railwayRouter = router({
   // Get all projects
@@ -280,6 +282,22 @@ export const railwayRouter = router({
       } catch (error) {
         console.error(error)
         throw new Error('Error during deployment re-deployment')
+      }
+    }),
+
+  deploymentLogs: publicProcedure
+    .input(deploymentLogs)
+    .subscription(async ({ input }) => {
+      const { id } = input
+      try {
+        const data = client.subscribe({
+          query: DEPLOYMENT_LOGS,
+          variables: { id },
+        })
+        return data
+      } catch (error) {
+        console.log(error)
+        throw new Error('Error getting deployment logs')
       }
     }),
 })

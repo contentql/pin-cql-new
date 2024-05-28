@@ -37,7 +37,6 @@ export const projectRouter = router({
   createProject: userProcedure
     .input(projectsSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log('input', input)
       const { user } = ctx
       try {
         await payload.create({

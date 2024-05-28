@@ -73,6 +73,7 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
   return (
     <div className='grid grid-cols-1 gap-8'>
       {serviceDeployments?.map((deployment: any) => {
+        console.log('id', deployment?.node.id)
         return (
           <Card
             key={deployment.node.id}
