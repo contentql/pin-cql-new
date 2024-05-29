@@ -7,7 +7,17 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Tooltip,
   TooltipContent,
@@ -31,6 +42,10 @@ export const DashboardProjectCard = ({ project }: any) => {
 
   const [projectName, setProjectName] = useState(project?.name || '')
   const [toggleNameEdit, setToggleNameEdit] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [confirmation, setConfirmation] = useState('')
+  const [isAllowedToDelete, setIsAllowedToDelete] = useState(false)
+
 
   const { mutate: updateProject } = trpc.projects.updateProject.useMutation({
     onSuccess: async data => {
@@ -112,7 +127,58 @@ export const DashboardProjectCard = ({ project }: any) => {
 
   return (
     <div>
-      <Card
+      <>
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className='mb-2 md:text-2xl'>
+                  Are you sure?
+                </DialogTitle>
+                <DialogDescription className='text-base dark:text-white'>
+                  This action cannot be undone. This will permanently delete
+                  your project and remove your data from our servers.
+                </DialogDescription>
+              </DialogHeader>
+              <Label>
+                Type{' '}
+                <span className='rounded-md border bg-zinc-50 p-0.5 italic dark:border-zinc-700 dark:bg-zinc-800'>
+                  {projectName}
+                </span>{' '}
+                to confirm
+              </Label>
+              <Input
+                type='text'
+                placeholder='We are sad to see you go!'
+                value={confirmation}
+                onChange={e => {
+                  setConfirmation(e.target.value)
+                  if (e.target.value === projectName) {
+                    setIsAllowedToDelete(true)
+                  } else {
+                    setIsAllowedToDelete(false)
+                  }
+                }}
+              />
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type='button' variant='secondary'>
+                    Close
+                  </Button>
+                </DialogClose>
+
+                  <Button variant='destructive' onClick={() => {
+                    handleTemplateDelete({
+                    templateId: project?.projectId,
+                  })
+                  }} disabled={!isAllowedToDelete}>
+                    Delete Account
+                  </Button>
+
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+                  <Card
         key={project?.projectId}
         x-chunk='dashboard-01-chunk-0'
         className='cursor-pointer relative group hover:border-gray-600'
@@ -139,12 +205,6 @@ export const DashboardProjectCard = ({ project }: any) => {
                 }}>
                 Services
               </DropdownMenuItem>
-              {/* <DropdownMenuItem
-                onClick={e => {
-                  e.stopPropagation()
-                }}>
-                Deployments
-              </DropdownMenuItem> */}
               <DropdownMenuItem
                 onClick={e => {
                   e.stopPropagation()
@@ -156,9 +216,10 @@ export const DashboardProjectCard = ({ project }: any) => {
                 className='text-red-600'
                 onClick={e => {
                   e.stopPropagation()
-                  handleTemplateDelete({
-                    templateId: project?.projectId,
-                  })
+                  // handleTemplateDelete({
+                  //   templateId: project?.projectId,
+                  // })
+                  setIsDialogOpen(true)
                 }}>
                 Delete
               </DropdownMenuItem>
@@ -212,6 +273,8 @@ export const DashboardProjectCard = ({ project }: any) => {
           </p>
         </CardContent>
       </Card>
+      </>
+
     </div>
   )
 }
