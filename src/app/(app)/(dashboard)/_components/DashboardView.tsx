@@ -99,6 +99,7 @@ const DashboardView = () => {
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
+          console.log('Template deployed', data)
           setIsDialogOpen(false)
 
           createProject({
@@ -178,7 +179,7 @@ const DashboardView = () => {
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant='outline'>Create</Button>
+                <Button variant='outline'>New Project</Button>
               </DialogTrigger>
               <DialogContent className='sm:max-w-[500px]'>
                 <DialogHeader>

@@ -71,10 +71,10 @@ const SignUpForm = () => {
 
   const onSubmit = async (data: SignUpFormData) => {
     startTransition(async () => {
-      const result = await signUp({ ...data, redirectTo: '/profile' })
+      const result = await signUp({ ...data, redirectTo: '/dashboard' })
       setBackendSignUpResponse(result)
       if (result.success) {
-        router.push('/profile')
+        router.push('/dashboard')
       }
     })
   }
