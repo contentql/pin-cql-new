@@ -84,8 +84,8 @@ export default buildConfig({
       ],
     },
   },
-  cors: [env.NEXT_PUBLIC_PUBLIC_URL],
-  csrf: [env.NEXT_PUBLIC_PUBLIC_URL],
+  cors: [env.PAYLOAD_URL],
+  csrf: [env.PAYLOAD_URL],
   collections: [Users, Media, Blogs, Pages, Sessions, Projects],
   globals: [siteSettings],
   plugins: [

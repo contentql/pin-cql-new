@@ -26,17 +26,14 @@ const payload = await getPayload({
 export const projectRouter = router({
   getProjects: userProcedure.query(async ({ ctx }) => {
     const { user } = ctx
+
     try {
       const projects = await payload.find({
         collection: 'projects',
         user,
-        where : {
-          "user_id.value": {
-            equals: user.id,
-          },
-        }
+        overrideAccess: false,
       })
-      
+
       return projects
     } catch (error) {
       console.error('Error during getting projects:', error)

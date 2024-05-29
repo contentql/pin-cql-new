@@ -1,17 +1,20 @@
-import { isAdminOrCurrentUser } from '../../access'
 import { User } from '@payload-types'
 import { CollectionConfig } from 'payload/types'
+
+import { isAdminOrCurrentUser } from './access'
 
 // import { assignUserId } from './field-level-hooks/assignUserId'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
+
   access: {
     create: isAdminOrCurrentUser,
     read: isAdminOrCurrentUser,
     update: isAdminOrCurrentUser,
     delete: isAdminOrCurrentUser,
   },
+
   fields: [
     {
       name: 'name',
@@ -41,14 +44,12 @@ export const Projects: CollectionConfig = {
       relationTo: ['users'],
       hasMany: false,
       defaultValue: ({ user }: { user: User }) => {
-        console.log('user', user)
         if (!user) return undefined
 
         return { relationTo: 'users', value: user?.id }
       },
       admin: {
         position: 'sidebar',
-        description: 'The user associated with this cart.',
       },
     },
   ],
