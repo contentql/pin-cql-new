@@ -1,4 +1,4 @@
-import { UserRound } from 'lucide-react'
+import { MoveLeftIcon, UserRound } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
@@ -19,9 +19,13 @@ const ProfilePage = async () => {
                 <li>
                   <Link
                     href='/profile'
-                    className='flex items-center gap-x-2 transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white'>
+                    className='flex items-center gap-x-2 mb-4 transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white'>
                     <UserRound className='h-5 w-5' />
                     Profile
+                  </Link>
+                  <Link href='../' className='flex items-center gap-x-2'>
+                    <MoveLeftIcon className='h-5 w-5' />
+                    Back
                   </Link>
                 </li>
               </ul>
