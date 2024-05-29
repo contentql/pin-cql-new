@@ -115,7 +115,7 @@ export const DashboardProjectCard = ({ project }: any) => {
       <Card
         key={project?.projectId}
         x-chunk='dashboard-01-chunk-0'
-        className='cursor-pointer relative group'
+        className='cursor-pointer relative group hover:border-gray-600'
         onClick={() => {
           router.push(`/project/${project?.projectId}`)
         }}>
