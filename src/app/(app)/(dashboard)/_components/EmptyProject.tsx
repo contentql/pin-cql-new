@@ -11,7 +11,7 @@ export function EmptyProject() {
           No Projects Created
         </h1>
         <div className='relative mx-auto mt-6'>
-          <Button className='bg-black  text-white'>Create Now</Button>
+          <Button >Create Now</Button>
         </div>
       </div>
       <BackgroundBeams />

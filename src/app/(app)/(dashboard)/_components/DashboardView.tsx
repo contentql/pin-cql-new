@@ -6,10 +6,6 @@ import { getQueryKey } from '@trpc/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import {
-  FileIcon,
-  ListFilterIcon,
-} from '@/app/(app)/(dashboard)/_components/icons'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -26,14 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { trpc } from '@/trpc/client'
 
@@ -153,7 +141,7 @@ const DashboardView = () => {
             })}
           </TabsList>
           <div className='ml-auto flex items-center gap-2'>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className='h-8 gap-1' size='sm' variant='outline'>
                   <ListFilterIcon className='h-3.5 w-3.5' />
@@ -177,7 +165,7 @@ const DashboardView = () => {
               <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
                 Export
               </span>
-            </Button>
+            </Button> */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant='outline'>New Project</Button>
