@@ -201,7 +201,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                           <Card
                             key={service.node.id}
                             x-chunk='dashboard-01-chunk-0'
-                            className={`cursor-pointer ${service?.node.id === serviceId ? 'border-r-2 border-black' : 'border-r-2 border-gray-200'} `}
+                            className={`cursor-pointer  ${service?.node.id === serviceId ? 'border-r-2 border-black' : 'border-r-2 border-gray-200 hover:border-gray-400'} `}
                             onClick={() => {
                               router.push(
                                 `/project/${projectId}/service/${service?.node.id}`,
