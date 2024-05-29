@@ -1,17 +1,17 @@
+import { isAdminOrCurrentUser } from '../../access'
 import { User } from '@payload-types'
 import { CollectionConfig } from 'payload/types'
 
-// import { self } from './access/self'
 // import { assignUserId } from './field-level-hooks/assignUserId'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
-  //   access: {
-  //     create: self,
-  //     read: self,
-  //     update: self,
-  //     delete: self,
-  //   },
+  access: {
+    create: isAdminOrCurrentUser,
+    read: isAdminOrCurrentUser,
+    update: isAdminOrCurrentUser,
+    delete: isAdminOrCurrentUser,
+  },
   fields: [
     {
       name: 'name',
