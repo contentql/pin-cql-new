@@ -20,7 +20,7 @@ const DashboardSideNav = () => {
         <TooltipProvider>
           <Link
             className='group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-900 text-lg font-semibold text-slate-50 md:h-8 md:w-8 md:text-base dark:bg-slate-50 dark:text-slate-900'
-            href='#'>
+            href='/'>
             <Package2Icon className='h-4 w-4 transition-all group-hover:scale-110' />
             <span className='sr-only'>Acme Inc</span>
           </Link>

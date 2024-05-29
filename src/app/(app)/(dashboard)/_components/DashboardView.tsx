@@ -35,6 +35,7 @@ const DashboardView = () => {
   const [serviceVariable, setServiceVariable] = useState<any>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
+
   const projectTabs = [
     {
       value: 'all',
@@ -203,7 +204,7 @@ const DashboardView = () => {
                 </CardHeader>
                 <CardContent>
                   {projects?.length === 0 ? (
-                    <EmptyProject />
+                    <EmptyProject setIsDialogOpen={setIsDialogOpen}/>
                   ) : (
                     <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
                       {projects
