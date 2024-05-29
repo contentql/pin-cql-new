@@ -72,7 +72,6 @@ const DashboardView = () => {
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
       console.log('Project created')
-      toast.success('Project created successfully')
     },
     onError: async () => {
       console.log('Project creation failed')
@@ -85,12 +84,10 @@ const DashboardView = () => {
 
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 
-  const { mutate: templateDeploy, isPending: isTemplateDeploying } =
+  const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
-          console.log('Template deployed', data)
-          setIsDialogOpen(false)
 
           createProject({
             name: serviceVariable?.Project_Name,
@@ -116,10 +113,19 @@ const DashboardView = () => {
     })
 
   const handleAddProject = (data: any) => {
+          setIsDialogOpen(false)
+
     try {
-      templateDeploy({
+      const templateDeployPromise = templateDeploy({
         data,
       })
+          toast.promise(templateDeployPromise, {
+      loading: 'Deploying...',
+      success: data => {
+        return `Deployment successfully`
+      },
+      error: 'Error',
+    })
     } catch (error) {
       console.log(error)
     }
