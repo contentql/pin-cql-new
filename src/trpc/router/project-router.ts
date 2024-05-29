@@ -30,8 +30,13 @@ export const projectRouter = router({
       const projects = await payload.find({
         collection: 'projects',
         user,
+        where : {
+          "user_id.value": {
+            equals: user.id,
+          },
+        }
       })
-
+      
       return projects
     } catch (error) {
       console.error('Error during getting projects:', error)
