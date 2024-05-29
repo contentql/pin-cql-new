@@ -1,12 +1,17 @@
 'use client'
 
 import { projects } from '../_data'
+
 // import { useQueryClient } from '@tanstack/react-query'
 // import { getQueryKey } from '@trpc/react-query'
 import { LoaderCircle, Magnet, Plug } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { getQueryKey } from '@trpc/react-query'
+import { BadgePercent, LoaderCircle, Magnet, Plug } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import Breadcrumbs from '@/app/(app)/(dashboard)/_components/breadcrumbs'
@@ -51,11 +56,15 @@ const DashboardHeader = () => {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+
   // const getProjectKeys = getQueryKey(
   //   trpc.projects.getProjects,
   //   undefined,
   //   'query',
   // )
+
+  const router = useRouter()
+
 
   // const previousProjects: any = queryClient.getQueryData(getProjectKeys)
 
@@ -211,6 +220,19 @@ const DashboardHeader = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Manage Plan  */}
+      <Button
+        variant='default'
+        className='gap-1 capitalize'
+        onClick={() => {
+          router.push(
+            'https://billing.stripe.com/p/login/test_7sI9EngYn0ZA6tO144',
+          )
+        }}>
+        <BadgePercent className='h-4 w-4' />
+        Manage subscription
+      </Button>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
