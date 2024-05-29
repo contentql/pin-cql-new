@@ -18,9 +18,8 @@ import {
   Package2Icon,
   PackageIcon,
   PanelLeftIcon,
-  SearchIcon,
   ShoppingCartIcon,
-  UsersIcon,
+  UsersIcon
 } from '@/app/(app)/(dashboard)/_components/icons'
 import { Button } from '@/components/ui/button'
 import {
@@ -132,12 +131,6 @@ const DashboardHeader = () => {
         ]}
       />
       <div className='relative ml-auto flex-1 md:grow-0'>
-        <SearchIcon className='absolute left-2.5 top-2.5 h-4 w-4 text-slate-500 dark:text-slate-400' />
-        <Input
-          className='w-full rounded-lg bg-white pl-8 md:w-[200px] lg:w-[336px] dark:bg-slate-950'
-          placeholder='Search...'
-          type='search'
-        />
       </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>

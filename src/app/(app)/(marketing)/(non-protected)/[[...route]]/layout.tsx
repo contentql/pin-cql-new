@@ -72,12 +72,14 @@ export default async function MarketingLayout({
                 <DropdownMenuContent align='end'>
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                    <DropdownMenuItem><Link href='/dashboard'>Dashboard</Link></DropdownMenuItem>
+                   {/* <DropdownMenuSeparator /> */}
                   <DropdownMenuItem>
                     <Link href='/profile'>Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>Support</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                   <DropdownMenuSeparator />
+            
                     <form
                       action={async () => {
                         'use server'
@@ -85,12 +87,13 @@ export default async function MarketingLayout({
                       }}>
                       <Button
                         type='submit'
-                        variant='link'
-                        className='text-center text-red-600'>
+                        variant='destructive'
+                        size='sm'
+                        className='w-full'>
                         Logout
                       </Button>
                     </form>
-                  </DropdownMenuItem>
+          
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
