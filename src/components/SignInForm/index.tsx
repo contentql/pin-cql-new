@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { MoveLeftIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { type ComponentProps, useEffect, useState, useTransition } from 'react'
@@ -87,99 +88,109 @@ const SignInForm = () => {
   }
 
   return (
-    <FormWrapper
-      outerContent={
-        <p className='mb-3 mt-4 text-center text-zinc-500 dark:text-zinc-400'>
-          Don&apos;t have an account?{' '}
-          <Link
-            tabIndex={10}
-            className='text-black underline dark:text-white'
-            href='/sign-up'>
-            Sign Up
-          </Link>
-        </p>
-      }>
-      <h2 className='mb-3 text-center text-2xl font-bold'>Welcome Back!</h2>
-      <p className='mb-5 text-center text-zinc-500'>
-        Please enter your details to login.
-      </p>
-      <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-          {backendLoginResponse && 'error' in backendLoginResponse ? (
-            <Alert color='red'>
-              {backendLoginResponse?.error?.code === 'credentials' &&
-                'Sign in failed. Check the details you provided are correct.'}
-            </Alert>
-          ) : null}
-          {backendLoginResponse && backendLoginResponse?.success === true ? (
-            <Alert color='green'>Successfully logged in! Redirecting...</Alert>
-          ) : null}
-          <FormField
-            control={form.control}
-            name='email'
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor='email'>E-mail</Label>
-                <FormControl>
-                  <Input
-                    type='email'
-                    autoComplete='email'
-                    placeholder='john.doe@example.com'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage>
-                  {errors.email && errors.email.message}
-                </FormMessage>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='password'
-            render={({ field }) => (
-              <FormItem>
-                <Label htmlFor='password'>Password</Label>
-                <FormControl>
-                  <Input
-                    type='password'
-                    placeholder='● ● ● ● ● ● ● ● ●'
-                    autoComplete='current-password'
-                    {...field}
-                    className='placeholder:-translate-y-[2px] placeholder:text-[10px]'
-                  />
-                </FormControl>
-                <FormMessage>
-                  {errors.password && errors.password.message}
-                </FormMessage>
-              </FormItem>
-            )}
-          />
-
-          <p className='text-sm text-zinc-600 dark:text-zinc-500'>
-            Forgot your password?{' '}
+    <>
+      <FormWrapper
+        outerContent={
+          <p className='mb-3 mt-4 text-center text-zinc-500 dark:text-zinc-400'>
+            Don&apos;t have an account?{' '}
             <Link
-              className='underline dark:text-zinc-50'
-              href='/reset-password'>
-              Reset it.
+              tabIndex={10}
+              className='text-black underline dark:text-white'
+              href='/sign-up'>
+              Sign Up
             </Link>
           </p>
+        }>
+        <Link
+          href='../'
+          className='flex gap-x-2 mb-6  justify-end -top-4 items-center underline'>
+          <MoveLeftIcon className='h-4 w-4' />
+          Back
+        </Link>
+        <h2 className='mb-3 text-center text-2xl font-bold'>Welcome Back!</h2>
+        <p className='mb-5 text-center text-zinc-500'>
+          Please enter your details to login.
+        </p>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+            {backendLoginResponse && 'error' in backendLoginResponse ? (
+              <Alert color='red'>
+                {backendLoginResponse?.error?.code === 'credentials' &&
+                  'Sign in failed. Check the details you provided are correct.'}
+              </Alert>
+            ) : null}
+            {backendLoginResponse && backendLoginResponse?.success === true ? (
+              <Alert color='green'>
+                Successfully logged in! Redirecting...
+              </Alert>
+            ) : null}
+            <FormField
+              control={form.control}
+              name='email'
+              render={({ field }) => (
+                <FormItem>
+                  <Label htmlFor='email'>E-mail</Label>
+                  <FormControl>
+                    <Input
+                      type='email'
+                      autoComplete='email'
+                      placeholder='john.doe@example.com'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage>
+                    {errors.email && errors.email.message}
+                  </FormMessage>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='password'
+              render={({ field }) => (
+                <FormItem>
+                  <Label htmlFor='password'>Password</Label>
+                  <FormControl>
+                    <Input
+                      type='password'
+                      placeholder='● ● ● ● ● ● ● ● ●'
+                      autoComplete='current-password'
+                      {...field}
+                      className='placeholder:-translate-y-[2px] placeholder:text-[10px]'
+                    />
+                  </FormControl>
+                  <FormMessage>
+                    {errors.password && errors.password.message}
+                  </FormMessage>
+                </FormItem>
+              )}
+            />
 
-          <Button type='submit' disabled={isPending} className='w-full'>
-            {isPending ? 'Loading...' : 'Sign In'}
+            <p className='text-sm text-zinc-600 dark:text-zinc-500'>
+              Forgot your password?{' '}
+              <Link
+                className='underline dark:text-zinc-50'
+                href='/reset-password'>
+                Reset it.
+              </Link>
+            </p>
+
+            <Button type='submit' disabled={isPending} className='w-full'>
+              {isPending ? 'Loading...' : 'Sign In'}
+            </Button>
+          </form>
+        </Form>
+
+        <Separator>or</Separator>
+
+        <form className='flex gap-4' action={signInWithGithub}>
+          <Button type='submit' tabIndex={9} className='w-full'>
+            {/* <GithubLogo className='h-5 w-5 text-black' /> */}
+            Sign In with Github
           </Button>
         </form>
-      </Form>
-
-      <Separator>or</Separator>
-
-      <form className='flex gap-4' action={signInWithGithub}>
-        <Button type='submit' tabIndex={9} className='w-full'>
-          {/* <GithubLogo className='h-5 w-5 text-black' /> */}
-          Sign In with Github
-        </Button>
-      </form>
-    </FormWrapper>
+      </FormWrapper>
+    </>
   )
 }
 

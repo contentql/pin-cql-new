@@ -38,6 +38,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { trpc } from '@/trpc/client'
 
 import { DashboardProjectCard } from './Dashboard-project-card'
+import { EmptyProject } from './EmptyProject'
 import VariablesForm from './VariablesForm'
 
 const DashboardView = () => {
@@ -99,6 +100,7 @@ const DashboardView = () => {
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
+          console.log('Template deployed', data)
           setIsDialogOpen(false)
 
           createProject({
@@ -178,7 +180,7 @@ const DashboardView = () => {
             </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant='outline'>Create</Button>
+                <Button variant='outline'>New Project</Button>
               </DialogTrigger>
               <DialogContent className='sm:max-w-[500px]'>
                 <DialogHeader>
@@ -212,22 +214,26 @@ const DashboardView = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
-                    {projects
-                      // ?.filter(
-                      //   project =>
-                      //     tab?.value === 'all' ||
-                      //     project?.status.toLowerCase() === tab?.value,
-                      // )
-                      ?.map((project: any) => (
-                        <div key={project.id}>
-                          <DashboardProjectCard
-                            project={project}
-                            templateUpdate={templateUpdate}
-                          />
-                        </div>
-                      ))}
-                  </div>
+                  {projects?.length === 0 ? (
+                    <EmptyProject />
+                  ) : (
+                    <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
+                      {projects
+                        // ?.filter(
+                        //   project =>
+                        //     tab?.value === 'all' ||
+                        //     project?.status.toLowerCase() === tab?.value,
+                        // )
+                        ?.map((project: any) => (
+                          <div key={project.id}>
+                            <DashboardProjectCard
+                              project={project}
+                              templateUpdate={templateUpdate}
+                            />
+                          </div>
+                        ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
