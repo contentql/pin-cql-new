@@ -14,6 +14,11 @@ const deleteProjectSchema = z.object({
   id: z.string(),
 })
 
+const updateProjectSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+})
+
 const payload = await getPayload({
   config: configPromise,
 })
@@ -37,7 +42,6 @@ export const projectRouter = router({
   createProject: userProcedure
     .input(projectsSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log('input', input)
       const { user } = ctx
       try {
         await payload.create({
@@ -53,6 +57,22 @@ export const projectRouter = router({
       } catch (error) {
         console.log('Error during creating project:', error)
         throw new Error('Error during creating project')
+      }
+    }),
+
+  updateProject: userProcedure
+    .input(updateProjectSchema)
+    .mutation(async ({ input }) => {
+      try {
+        await payload.update({
+          collection: 'projects',
+          id: input.id,
+          data: {
+            name: input.name,
+          },
+        })
+      } catch (error) {
+        console.log('Error during updating project:', error)
       }
     }),
 

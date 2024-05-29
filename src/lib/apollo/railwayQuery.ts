@@ -189,3 +189,10 @@ export const DEPLOYMENT_REDEPLOY = gql`
     }
   }
 `
+export const DEPLOYMENT_LOGS = gql`
+  subscription subscriptionDeployemnt($id: string!) {
+    buildLogs(deploymentId: $id) {
+      message
+    }
+  }
+`

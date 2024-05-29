@@ -4,6 +4,7 @@ import { projects } from '../_data'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { BadgePercent, LoaderCircle, Magnet, Plug } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -61,8 +62,6 @@ const DashboardHeader = () => {
   const previousProjects: any = queryClient.getQueryData(getProjectKeys)
 
   console.log(previousProjects)
-
-  console.log(getProjectKeys)
 
   const dropdownProjectItems = projects?.map((project: any) => ({
     id: project?.id,
@@ -255,7 +254,12 @@ const DashboardHeader = () => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              signOut()
+            }}>
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

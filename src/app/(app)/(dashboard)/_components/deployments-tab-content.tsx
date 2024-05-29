@@ -73,6 +73,7 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
   return (
     <div className='grid grid-cols-1 gap-8'>
       {serviceDeployments?.map((deployment: any) => {
+        console.log('id', deployment?.node.id)
         return (
           <Card
             key={deployment.node.id}
@@ -80,12 +81,14 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
             <CardHeader className='flex flex-row justify-between'>
               <div className='space-y-1'>
                 <CardTitle>
-                  <Link
-                    href={`https://${deployment?.node.staticUrl || '#'}`}
-                    rel='noopener noreferrer'
-                    target='_blank'>
-                    {deployment?.node.staticUrl}
-                  </Link>
+                  {deployment?.node.staticUrl && (
+                    <Link
+                      href={`https://${deployment?.node.staticUrl}`}
+                      rel='noopener noreferrer'
+                      target='_blank'>
+                      {deployment?.node.staticUrl}
+                    </Link>
+                  )}
                 </CardTitle>
                 <CardDescription className='pt-2'>
                   {deployment?.node?.status}
