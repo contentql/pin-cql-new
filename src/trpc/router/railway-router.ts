@@ -64,7 +64,7 @@ export const railwayRouter = router({
   templateDeploy: userProcedure.input(z.any()).mutation(async ({ input }) => {
     const serviceVariable = input?.data!
 
-    console.log({ input })
+    console.log({ serviceVariable })
     try {
       // Mutate data using Apollo Client with variables
       const { data } = await client.mutate({
@@ -107,7 +107,7 @@ export const railwayRouter = router({
               },
               {
                 owner: 'akhil-naidu',
-                name: 'pin-hcms',
+                name: serviceVariable?.Project_Name,
                 isPrivate: false,
                 commit: null,
                 serviceIcon:
@@ -156,7 +156,7 @@ export const railwayRouter = router({
                     '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
                 },
                 template: 'ghcr.io/contentql/pin-hcms:latest',
-                serviceName: 'pin-hcms',
+                serviceName: serviceVariable?.Project_Name,
                 startCommand: null,
                 rootDirectory: null,
                 healthcheckPath: null,
