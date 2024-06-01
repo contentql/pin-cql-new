@@ -1,13 +1,18 @@
 import { env } from '@env'
+<<<<<<< Updated upstream
 import {
   adjectives,
   colors,
   uniqueNamesGenerator,
 } from 'unique-names-generator'
 import z from 'zod'
+=======
+>>>>>>> Stashed changes
 
 import client from '@/lib/apollo/apolloClient'
 import {
+  CREATE_EMPTY_PROJECT,
+  CREATE_WEBHOOK,
   DEPLOYMENT_LOGS,
   DEPLOYMENT_REDEPLOY,
   GET_PROJECTS,
@@ -20,10 +25,13 @@ import {
   TEMPLATE_VARIABLES_UPDATE_MUTATION,
 } from '@/lib/apollo/railwayQuery'
 import {
+  createEmptyTemplate,
+  createWebhook,
   deploymentLogs,
   deploymentRedeploy,
   getDetailsSchema,
   getVariables,
+  mongoTemplateDeploy,
   serviceReDeploy,
   templateDelete,
   templateUpdate,
@@ -32,6 +40,38 @@ import {
 import { publicProcedure, router, userProcedure } from '@/trpc'
 
 export const railwayRouter = router({
+  //create empty project
+
+  createEmptyTemplate: userProcedure
+    .input(createEmptyTemplate)
+    .mutation(async ({ input }) => {
+      try {
+        const { data } = await client.mutate({
+          mutation: CREATE_EMPTY_PROJECT,
+          variables: { input },
+        })
+        return data
+      } catch (error) {
+        console.log('Error creating empty project', error)
+      }
+    }),
+
+  //create webhook project
+
+  createWebhook: userProcedure
+    .input(createWebhook)
+    .mutation(async ({ input }) => {
+      try {
+        const { data } = await client.mutate({
+          mutation: CREATE_WEBHOOK,
+          variables: { input },
+        })
+        return data
+      } catch (error) {
+        console.log('Error creating webhook project', error)
+      }
+    }),
+
   // Get all projects
   getProjects: userProcedure.query(async ({}) => {
     try {
@@ -65,9 +105,59 @@ export const railwayRouter = router({
       }
     }),
 
+  mongoTemplateDeploy: userProcedure
+    .input(mongoTemplateDeploy)
+    .mutation(async ({ input }) => {
+      try {
+        const { environmentId, projectId } = input
+        const { data } = await client.mutate({
+          mutation: TEMPLATE_DEPLOY_MUTATION,
+          variables: {
+            input: {
+              environmentId: environmentId,
+              projectId: projectId,
+              services: [
+                {
+                  hasDomain: false,
+                  serviceIcon: 'https://devicons.railway.app/i/mongodb.svg',
+                  serviceName: 'MongoDB',
+                  startCommand:
+                    'docker-entrypoint.sh mongod --ipv6 --bind_ip ::,0.0.0.0',
+                  tcpProxyApplicationPort: 27017,
+                  template: 'mongo',
+                  variables: {
+                    MONGOHOST: '${{ RAILWAY_TCP_PROXY_DOMAIN }}',
+                    MONGOPORT: '${{ RAILWAY_TCP_PROXY_PORT }}',
+                    MONGOUSER: '${{ MONGO_INITDB_ROOT_USERNAME }}',
+                    MONGO_URL:
+                      'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}',
+                    MONGOPASSWORD: '${{ MONGO_INITDB_ROOT_PASSWORD }}',
+                    MONGO_PRIVATE_URL:
+                      'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:27017',
+                    MONGO_INITDB_ROOT_PASSWORD:
+                      '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
+                    MONGO_INITDB_ROOT_USERNAME: 'mongo',
+                  },
+                  volumes: [
+                    {
+                      mountPath: '/data/db',
+                      name: 'MongoDB disk',
+                    },
+                  ],
+                },
+              ],
+              templateCode: 'mongo',
+            },
+          },
+        })
+        return data
+      } catch (error) {
+        console.log('Error creating database', error)
+      }
+    }),
   // Create a new template
-  templateDeploy: userProcedure.input(z.any()).mutation(async ({ input }) => {
-    const serviceVariable = input?.data!
+  templateDeploy: userProcedure.mutation(async ({ input }) => {
+    // const serviceVariable = input?.data!
 
     // const customConfig: Config = {
     //   dictionaries: [adjectives, colors, starWars],
@@ -91,40 +181,42 @@ export const railwayRouter = router({
         mutation: TEMPLATE_DEPLOY_MUTATION,
         variables: {
           input: {
+            environmentId: 'e3adfcb8-50cd-492f-9c38-855a89ea8b3b',
+            projectId: 'e147aa5f-5633-48da-9ab6-7898dfcd29b5',
             services: [
-              {
-                owner: 'akhil-naidu',
-                name: 'MongoDB',
-                isPrivate: false,
-                commit: null,
-                variables: {
-                  MONGOHOST: '${{ RAILWAY_TCP_PROXY_DOMAIN }}',
-                  MONGOPORT: '${{ RAILWAY_TCP_PROXY_PORT }}',
-                  MONGOUSER: '${{ MONGO_INITDB_ROOT_USERNAME }}',
-                  MONGO_URL:
-                    'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}',
-                  MONGOPASSWORD: '${{ MONGO_INITDB_ROOT_PASSWORD }}',
-                  MONGO_PRIVATE_URL:
-                    'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:27017',
-                  MONGO_INITDB_ROOT_PASSWORD:
-                    '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
-                  MONGO_INITDB_ROOT_USERNAME: 'mongo',
-                },
-                template: 'mongo',
-                serviceName: 'MongoDB',
-                serviceIcon: 'https://devicons.railway.app/i/mongodb.svg',
-                startCommand:
-                  'docker-entrypoint.sh mongod --ipv6 --bind_ip ::,0.0.0.0',
-                rootDirectory: null,
-                healthcheckPath: null,
-                hasDomain: false,
-                tcpProxyApplicationPort: 27017,
-                volumes: [
-                  {
-                    mountPath: '/data/db',
-                  },
-                ],
-              },
+              // {
+              //   owner: 'akhil-naidu',
+              //   name: 'MongoDB',
+              //   isPrivate: false,
+              //   commit: null,
+              //   variables: {
+              //     MONGOHOST: '${{ RAILWAY_TCP_PROXY_DOMAIN }}',
+              //     MONGOPORT: '${{ RAILWAY_TCP_PROXY_PORT }}',
+              //     MONGOUSER: '${{ MONGO_INITDB_ROOT_USERNAME }}',
+              //     MONGO_URL:
+              //       'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}',
+              //     MONGOPASSWORD: '${{ MONGO_INITDB_ROOT_PASSWORD }}',
+              //     MONGO_PRIVATE_URL:
+              //       'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:27017',
+              //     MONGO_INITDB_ROOT_PASSWORD:
+              //       '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
+              //     MONGO_INITDB_ROOT_USERNAME: 'mongo',
+              //   },
+              //   template: 'mongo',
+              //   serviceName: 'MongoDB',
+              //   serviceIcon: 'https://devicons.railway.app/i/mongodb.svg',
+              //   startCommand:
+              //     'docker-entrypoint.sh mongod --ipv6 --bind_ip ::,0.0.0.0',
+              //   rootDirectory: null,
+              //   healthcheckPath: null,
+              //   hasDomain: false,
+              //   tcpProxyApplicationPort: 27017,
+              //   volumes: [
+              //     {
+              //       mountPath: '/data/db',
+              //     },
+              //   ],
+              // },
               {
                 owner: 'akhil-naidu',
                 name: serviceVariable?.Project_Name,
@@ -133,28 +225,19 @@ export const railwayRouter = router({
                 serviceIcon:
                   'https://pub-ce94fe258c7740b3a579a329e72059e4.r2.dev/pin-hcms%2FContentQL_Brandmark_Light%402x-1000x1000.png',
                 variables: {
-                  DATABASE_URI:
-                    serviceVariable?.DATABASE_URI || '${{MongoDB.MONGO_URL}}',
+                  DATABASE_URI: '${{MongoDB.MONGO_URL}}',
                   PAYLOAD_SECRET:
                     '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
                   NEXT_PUBLIC_PUBLIC_URL: 'https://${{RAILWAY_PUBLIC_DOMAIN}}',
                   PAYLOAD_URL: 'https://${{RAILWAY_PUBLIC_DOMAIN}}',
-                  S3_ENDPOINT: serviceVariable.S3_ENDPOINT || env.S3_ENDPOINT,
-                  S3_ACCESS_KEY_ID:
-                    serviceVariable.S3_ACCESS_KEY_ID || env.S3_ACCESS_KEY_ID,
-                  S3_SECRET_ACCESS_KEY:
-                    serviceVariable.S3_SECRET_ACCESS_KEY ||
-                    env.S3_SECRET_ACCESS_KEY,
-                  S3_BUCKET: serviceVariable.S3_BUCKET || env.S3_BUCKET,
-                  S3_REGION: serviceVariable.S3_REGION || env.S3_REGION,
-                  RESEND_API_KEY:
-                    serviceVariable.RESEND_API_KEY || env.RESEND_API_KEY,
-                  RESEND_SENDER_EMAIL:
-                    serviceVariable.RESEND_SENDER_EMAIL ||
-                    env.RESEND_SENDER_EMAIL,
-                  RESEND_SENDER_NAME:
-                    serviceVariable.RESEND_SENDER_NAME ||
-                    env.RESEND_SENDER_NAME,
+                  S3_ENDPOINT: env.S3_ENDPOINT,
+                  S3_ACCESS_KEY_ID: env.S3_ACCESS_KEY_ID,
+                  S3_SECRET_ACCESS_KEY: env.S3_SECRET_ACCESS_KEY,
+                  S3_BUCKET: env.S3_BUCKET,
+                  S3_REGION: env.S3_REGION,
+                  RESEND_API_KEY: env.RESEND_API_KEY,
+                  RESEND_SENDER_EMAIL: env.RESEND_SENDER_EMAIL,
+                  RESEND_SENDER_NAME: env.RESEND_SENDER_NAME,
                   NEXT_PUBLIC_IS_LIVE: 'true',
                   PAYLOAD_PUBLIC_DRAFT_SECRET:
                     '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")}}',
@@ -166,12 +249,9 @@ export const railwayRouter = router({
                   AUTH_TRUST_HOST: 'true',
                   AUTH_VERPOSE: 'true',
                   AUTH_URL: 'https://${{RAILWAY_PUBLIC_DOMAIN}}',
-                  AUTH_GITHUB_ID:
-                    serviceVariable.AUTH_GITHUB_ID || env.AUTH_GITHUB_ID,
-                  AUTH_GITHUB_SECRET:
-                    serviceVariable.AUTH_GITHUB_SECRET ||
-                    env.AUTH_GITHUB_SECRET,
-                  OPENAPI_KEY: serviceVariable.OPENAPI_KEY || env.OPENAPI_KEY,
+                  AUTH_GITHUB_ID: env.AUTH_GITHUB_ID,
+                  AUTH_GITHUB_SECRET: env.AUTH_GITHUB_SECRET,
+                  OPENAPI_KEY: env.OPENAPI_KEY,
                   NEXT_PRIVATE_REVALIDATION_KEY:
                     '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
                 },

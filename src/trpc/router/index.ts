@@ -11,10 +11,10 @@ export const appRouter = router({
   blog: getBlogs,
   railway: railwayRouter,
   projects: projectRouter,
-  test: publicProcedure.query(async () => {
-    return {
-      success: 'working',
-    }
+  webhook: publicProcedure.mutation(async ({ ctx }) => {
+    const { req } = ctx
+    console.log('req', req?.headers)
+    return req
   }),
 })
 

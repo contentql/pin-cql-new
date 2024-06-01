@@ -24,6 +24,25 @@ const service = z.object({
   volumes: z.array(z.object({ mountPath: z.string() })).optional(),
 })
 
+export const createEmptyTemplate = z.object({
+  // input: z.object({
+  defaultEnvironmentName: z.string(),
+  name: z.string(),
+  // }),
+})
+
+export const createWebhook = z.object({
+  // input: z.object({
+  projectId: z.string(),
+  url: z.string(),
+  // }),
+})
+
+export const mongoTemplateDeploy = z.object({
+  environmentId: z.string(),
+  projectId: z.string(),
+})
+
 export const templateDeploy = z.object({
   input: z.object({
     services: z.array(service),

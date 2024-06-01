@@ -35,7 +35,6 @@ const DashboardView = () => {
   const [serviceVariable, setServiceVariable] = useState<any>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-
   const projectTabs = [
     {
       value: 'all',
@@ -69,6 +68,38 @@ const DashboardView = () => {
     'query',
   )
 
+  const { mutate: createWebhook } = trpc.railway.createWebhook.useMutation({
+    onSuccess: async data => {
+      toast.success('Project updated successfully')
+      mongoTemplateDeploy({
+        environmentId: '',
+        projectId: data.projectId,
+      })
+    },
+  })
+
+  const { mutate: createEmptyTemplate } =
+    trpc.railway.createEmptyTemplate.useMutation({
+      onSuccess: async data => {
+        toast.success('Empty template created successfully')
+        console.log(data)
+
+        createWebhook({
+          // input: {
+          projectId: data.railway.projectCreate.id.toString(),
+          url: 'https://882e-103-88-103-74.ngrok-free.app/api/railway/webhook',
+          // },
+        })
+      },
+      onError: async () => {
+        console.log('Template creation failed')
+        toast.error('Template creation failed')
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: getProjectKeys })
+      },
+    })
+
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
       console.log('Project created')
@@ -88,20 +119,18 @@ const DashboardView = () => {
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
-
-          createProject({
-            name: serviceVariable?.Project_Name,
-            projectId: data.railway.templateDeploy.projectId,
-            workflowId: data.railway.templateDeploy.workflowId,
-          })
-
-          templateUpdate({
-            id: data.railway.templateDeploy.projectId,
-            input: {
-              name: serviceVariable?.Project_Name,
-              description: '',
-            },
-          })
+          // createProject({
+          //   name: serviceVariable?.Project_Name,
+          //   projectId: data.railway.templateDeploy.projectId,
+          //   workflowId: data.railway.templateDeploy.workflowId,
+          // })
+          // templateUpdate({
+          //   id: data.railway.templateDeploy.projectId,
+          //   input: {
+          //     name: serviceVariable?.Project_Name,
+          //     description: '',
+          //   },
+          // })
         } catch (error) {
           console.log(error)
         }
@@ -112,20 +141,25 @@ const DashboardView = () => {
       },
     })
 
-  const handleAddProject = (data: any) => {
-          setIsDialogOpen(false)
-
-    try {
-      const templateDeployPromise = templateDeploy({
-        data,
-      })
-          toast.promise(templateDeployPromise, {
-      loading: 'Deploying...',
-      success: data => {
-        return `Deployment successfully`
+  const { mutate: mongoTemplateDeploy } =
+    trpc.railway.mongoTemplateDeploy.useMutation({
+      onSuccess: async data => {
+        // templateDeploy({
+        //   data,
+        // })
+        toast.success('DB Deploying...')
       },
-      error: 'Error',
     })
+
+  const handleAddProject = (data: any) => {
+    setIsDialogOpen(false)
+    try {
+      createEmptyTemplate({
+        // input: {
+        defaultEnvironmentName: 'production',
+        name: data.Project_Name,
+        // },
+      })
     } catch (error) {
       console.log(error)
     }
@@ -210,7 +244,7 @@ const DashboardView = () => {
                 </CardHeader>
                 <CardContent>
                   {projects?.length === 0 ? (
-                    <EmptyProject setIsDialogOpen={setIsDialogOpen}/>
+                    <EmptyProject setIsDialogOpen={setIsDialogOpen} />
                   ) : (
                     <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
                       {projects

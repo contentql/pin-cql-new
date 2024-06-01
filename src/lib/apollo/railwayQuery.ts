@@ -1,5 +1,29 @@
 import { gql } from '@apollo/client'
 
+export const CREATE_EMPTY_PROJECT = gql`
+  mutation createProject($input: ProjectCreateInput!) {
+    railway {
+      projectCreate(input: $input) {
+        name
+        id
+      }
+    }
+  }
+`
+
+export const CREATE_WEBHOOK = gql`
+  mutation createWebhook($input: WebhookCreateInput!) {
+    railway {
+      webhookCreate(input: $input) {
+        id
+        lastStatus
+        projectId
+        url
+      }
+    }
+  }
+`
+
 export const GET_PROJECTS = gql`
   query GetProjects {
     railway {
