@@ -37,6 +37,7 @@ const VariablesForm = ({
   handleAddProject,
   setServiceVariable,
   isTemplateDeploying,
+  setIsDialogOpen,
 }: any) => {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -63,7 +64,7 @@ const VariablesForm = ({
   }
 
   return (
-    <div className='max-w-7xl max-h-96 overflow-y-auto pt-4'>
+    <div className='max-h-96 max-w-7xl overflow-y-auto pb-16 pt-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
           {Object.keys(form.control._defaultValues).map(key => (
@@ -91,9 +92,19 @@ const VariablesForm = ({
               )}
             />
           ))}
-          <Button disabled={isTemplateDeploying} type='submit'>
-            Submit
-          </Button>
+          <div className='fixed bottom-0 left-0 flex  w-full justify-center gap-2 bg-white p-4'>
+            {' '}
+            {/* Fixed button container */}
+            <Button disabled={isTemplateDeploying} type='submit'>
+              Submit
+            </Button>
+            <Button
+              variant='outline'
+              disabled={isTemplateDeploying}
+              onClick={() => setIsDialogOpen(false)}>
+              Close
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
