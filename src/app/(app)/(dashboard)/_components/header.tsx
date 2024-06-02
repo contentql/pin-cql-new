@@ -1,7 +1,6 @@
 'use client'
 
 import { projects } from '../_data'
-
 // import { useQueryClient } from '@tanstack/react-query'
 // import { getQueryKey } from '@trpc/react-query'
 import { BadgePercent, LoaderCircle, Magnet, Plug } from 'lucide-react'
@@ -19,7 +18,7 @@ import {
   PackageIcon,
   PanelLeftIcon,
   ShoppingCartIcon,
-  UsersIcon
+  UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
 import { Button } from '@/components/ui/button'
 import {
@@ -52,7 +51,6 @@ const DashboardHeader = () => {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-
   // const getProjectKeys = getQueryKey(
   //   trpc.projects.getProjects,
   //   undefined,
@@ -60,7 +58,6 @@ const DashboardHeader = () => {
   // )
 
   const router = useRouter()
-
 
   // const previousProjects: any = queryClient.getQueryData(getProjectKeys)
 
@@ -70,7 +67,7 @@ const DashboardHeader = () => {
   }))
 
   return (
-    <header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 dark:bg-slate-950'>
+    <header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-4 dark:bg-slate-950 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
       <Sheet>
         <SheetTrigger asChild>
           <Button className='sm:hidden' size='icon' variant='outline'>
@@ -81,7 +78,7 @@ const DashboardHeader = () => {
         <SheetContent className='sm:max-w-xs' side='left'>
           <nav className='grid gap-6 text-lg font-medium'>
             <Link
-              className='group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-900 text-lg font-semibold text-slate-50 md:text-base dark:bg-slate-50 dark:text-slate-900'
+              className='group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-900 text-lg font-semibold text-slate-50 dark:bg-slate-50 dark:text-slate-900 md:text-base'
               href='#'>
               <Package2Icon className='h-5 w-5 transition-all group-hover:scale-110' />
               <span className='sr-only'>Acme Inc</span>
@@ -130,8 +127,7 @@ const DashboardHeader = () => {
           },
         ]}
       />
-      <div className='relative ml-auto flex-1 md:grow-0'>
-      </div>
+      <div className='relative ml-auto flex-1 md:grow-0'></div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant='default' className='gap-1'>
@@ -151,7 +147,7 @@ const DashboardHeader = () => {
               information.
             </DialogDescription>
           </DialogHeader>
-          <div className='grid w-full gap-2 my-4'>
+          <div className='my-4 grid w-full gap-2'>
             <Label htmlFor='api_key' className='font-medium text-gray-700'>
               API Key
             </Label>
@@ -159,10 +155,10 @@ const DashboardHeader = () => {
               type='text'
               id='api_key'
               placeholder='Enter your API Key'
-              className='p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
               required
             />
-            <p className='text-sm mt-1'>
+            <p className='mt-1 text-sm'>
               Don&apos;t have an account on Railway?{' '}
               <a
                 href='https://railway.app'
@@ -173,7 +169,7 @@ const DashboardHeader = () => {
               </a>
               .
             </p>
-            <p className='text-sm mt-1'>
+            <p className='mt-1 text-sm'>
               Need help creating your API key?{' '}
               <a
                 href='https://railway.app/account/tokens'
@@ -185,7 +181,7 @@ const DashboardHeader = () => {
               .
             </p>
           </div>
-          <DialogFooter className='flex justify-end gap-2 mt-4'>
+          <DialogFooter className='mt-4 flex justify-end gap-2'>
             <DialogClose asChild>
               <Button variant='ghost' className='hover:bg-gray-100'>
                 Cancel
