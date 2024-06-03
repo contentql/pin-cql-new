@@ -20,11 +20,11 @@ import { Blogs } from '@/payload/collections/Blogs'
 import { Media } from '@/payload/collections/Media'
 import { Pages } from '@/payload/collections/Pages'
 import { Projects } from '@/payload/collections/Projects'
+import { Services } from '@/payload/collections/Services'
 import { Sessions } from '@/payload/collections/Sessions'
 import { Users } from '@/payload/collections/Users'
 import { COLLECTION_SLUG_PAGE } from '@/payload/collections/constants'
 import { siteSettings } from '@/payload/globals/SiteSettings'
-import { variables } from '@/payload/globals/Variables'
 import generateBreadcrumbsUrl from '@/utils/generateBreadcrumbsUrl'
 import {
   generateDescription,
@@ -87,8 +87,8 @@ export default buildConfig({
   },
   cors: [env.PAYLOAD_URL],
   csrf: [env.PAYLOAD_URL],
-  collections: [Users, Media, Blogs, Pages, Sessions, Projects],
-  globals: [siteSettings, variables],
+  collections: [Users, Media, Blogs, Pages, Sessions, Projects, Services],
+  globals: [siteSettings],
   plugins: [
     nestedDocsPlugin({
       collections: [COLLECTION_SLUG_PAGE],

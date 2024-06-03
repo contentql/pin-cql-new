@@ -41,10 +41,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     id: projectId,
   })
 
-  // useEffect(() => {
-  //   setProjectData(fetchedProjectData)
-  // }, [fetchedProjectData])
-
   const environmentId =
     fetchedProjectData?.railway.project.environments.edges[0].node.id
 
