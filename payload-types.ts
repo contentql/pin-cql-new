@@ -19,6 +19,7 @@ export interface Config {
   };
   globals: {
     'site-settings': SiteSetting;
+    'variables': Variable;
   };
   locale: null;
   user: User & {
@@ -3017,6 +3018,22 @@ export interface SiteSetting {
   footer: {
     copyright?: string | null;
   };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variables".
+ */
+export interface Variable {
+  id: string;
+  project_id?: string | null;
+  changed_variable?: string | null;
+  is_varaible_changed?: boolean | null;
+  user_id?: {
+    relationTo: 'users';
+    value: string | User;
+  } | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

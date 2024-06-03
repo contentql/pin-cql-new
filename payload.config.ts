@@ -24,6 +24,7 @@ import { Sessions } from '@/payload/collections/Sessions'
 import { Users } from '@/payload/collections/Users'
 import { COLLECTION_SLUG_PAGE } from '@/payload/collections/constants'
 import { siteSettings } from '@/payload/globals/SiteSettings'
+import { variables } from '@/payload/globals/Variables'
 import generateBreadcrumbsUrl from '@/utils/generateBreadcrumbsUrl'
 import {
   generateDescription,
@@ -87,7 +88,7 @@ export default buildConfig({
   cors: [env.PAYLOAD_URL],
   csrf: [env.PAYLOAD_URL],
   collections: [Users, Media, Blogs, Pages, Sessions, Projects],
-  globals: [siteSettings],
+  globals: [siteSettings, variables],
   plugins: [
     nestedDocsPlugin({
       collections: [COLLECTION_SLUG_PAGE],
