@@ -70,9 +70,17 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
     })
   }
 
+  const serviceDeploymentsSorted = serviceDeployments?.sort(
+    (a: any, b: any) => {
+      const dateA: number = new Date(a.node.createdAt).getTime()
+      const dateB: number = new Date(b.node.createdAt).getTime()
+      return dateB - dateA
+    },
+  )
+
   return (
     <div className='grid grid-cols-1 gap-8'>
-      {serviceDeployments?.map((deployment: any) => {
+      {serviceDeploymentsSorted?.map((deployment: any) => {
         return (
           <Card
             key={deployment.node.id}
@@ -93,7 +101,7 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
                   {deployment?.node?.status}
                 </CardDescription>
               </div>
-              <div className='flex items-center space-x-4 rounded-md bg-secondary text-secondary-foreground'>
+              <div className='bg-secondary text-secondary-foreground flex items-center space-x-4 rounded-md'>
                 <Button variant='secondary' className='px-3'>
                   View Logs
                 </Button>
@@ -101,7 +109,7 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant='secondary' className='px-1.5'>
-                      <EllipsisVertical className='h-4 w-4 text-secondary-foreground' />
+                      <EllipsisVertical className='text-secondary-foreground h-4 w-4' />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end' alignOffset={-5} forceMount>
@@ -117,7 +125,7 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
               </div>
             </CardHeader>
             <CardContent>
-              <div className='flex space-x-4 text-sm text-muted-foreground'>
+              <div className='text-muted-foreground flex space-x-4 text-sm'>
                 <div className='flex items-center'>
                   {deployment?.node.meta?.image &&
                   deployment?.node.meta?.image === 'mongo' ? (
