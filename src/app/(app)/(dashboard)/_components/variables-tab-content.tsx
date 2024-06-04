@@ -60,7 +60,7 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
 
   const toggleUpdate = (key: string, value: string) => {
     console.log('Toggling edit')
-    toggleEdit(key, value)
+
     templateVariablesUpdate({
       input: {
         environmentId: environmentId,
@@ -71,6 +71,11 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
         },
       },
     })
+
+    setEdit(prevState => ({
+      ...prevState,
+      [key]: undefined,
+    }))
   }
 
   const toggleEdit = (key: string, value: string) => {

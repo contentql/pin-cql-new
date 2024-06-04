@@ -66,7 +66,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     toast.promise(data, {
       loading: 'Deploying...',
       success: data => {
-        return `Deployment successfully`
+        return `Deployment started`
       },
       error: 'Error',
     })

@@ -124,7 +124,7 @@ const DashboardView = () => {
       toast.promise(templateDeployPromise, {
         loading: 'Deploying...',
         success: data => {
-          return `Deployment successfully`
+          return `Deployment started`
         },
         error: 'Error',
       })
