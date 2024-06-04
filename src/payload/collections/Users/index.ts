@@ -190,5 +190,16 @@ export const Users: CollectionConfig = {
       label: 'Railway Api Token',
       saveToJWT: true,
     },
+    {
+      name: 'plan',
+      type: 'select',
+      options: [
+        { label: 'Basic', value: 'basic' },
+        { label: 'Standard', value: 'standard' },
+        { label: 'Premium', value: 'premium' },
+      ],
+      defaultValue: ['basic'],
+      saveToJWT: true,
+    },
   ],
 } as const
