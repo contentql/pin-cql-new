@@ -208,7 +208,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                               {/* {service?.icon} */}
                             </CardHeader>
                             <CardContent>
-                              <div className='text-2xl font-bold'>
+                              <div className='truncate text-2xl font-bold'>
                                 {service?.node.name}
                               </div>
                               <p className='pt-4 text-xs text-slate-500 dark:text-slate-400'>

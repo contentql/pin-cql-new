@@ -269,7 +269,7 @@ export const DashboardProjectCard = ({ project }: any) => {
                 />
               </div>
             ) : (
-              <div className='text-2xl font-bold'>{projectName}</div>
+              <div className='truncate text-2xl font-bold'>{projectName}</div>
             )}
             <p className='pt-6 text-xs text-slate-500 dark:text-slate-400'>
               {project?.projectId}
