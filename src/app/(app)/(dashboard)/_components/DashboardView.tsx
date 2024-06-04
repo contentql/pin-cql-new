@@ -35,7 +35,6 @@ const DashboardView = () => {
   const [serviceVariable, setServiceVariable] = useState<any>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-
   const projectTabs = [
     {
       value: 'all',
@@ -82,13 +81,16 @@ const DashboardView = () => {
     },
   })
 
+  const { data: key } = trpc.user.getRailwayAPi.useQuery()
+
+  console.log('env,', key)
+
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 
   const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
     trpc.railway.templateDeploy.useMutation({
       onSuccess: async data => {
         try {
-
           createProject({
             name: serviceVariable?.Project_Name,
             projectId: data.railway.templateDeploy.projectId,
@@ -113,19 +115,19 @@ const DashboardView = () => {
     })
 
   const handleAddProject = (data: any) => {
-          setIsDialogOpen(false)
+    setIsDialogOpen(false)
 
     try {
       const templateDeployPromise = templateDeploy({
         data,
       })
-          toast.promise(templateDeployPromise, {
-      loading: 'Deploying...',
-      success: data => {
-        return `Deployment successfully`
-      },
-      error: 'Error',
-    })
+      toast.promise(templateDeployPromise, {
+        loading: 'Deploying...',
+        success: data => {
+          return `Deployment started`
+        },
+        error: 'Error',
+      })
     } catch (error) {
       console.log(error)
     }
@@ -188,6 +190,7 @@ const DashboardView = () => {
                   setServiceVariable={setServiceVariable}
                   handleAddProject={handleAddProject}
                   isTemplateDeploying={isTemplateDeploying}
+                  setIsDialogOpen={setIsDialogOpen}
                 />
                 <DialogClose asChild>close</DialogClose>
               </DialogContent>
@@ -210,7 +213,7 @@ const DashboardView = () => {
                 </CardHeader>
                 <CardContent>
                   {projects?.length === 0 ? (
-                    <EmptyProject setIsDialogOpen={setIsDialogOpen}/>
+                    <EmptyProject setIsDialogOpen={setIsDialogOpen} />
                   ) : (
                     <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
                       {projects

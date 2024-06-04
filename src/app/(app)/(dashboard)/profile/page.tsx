@@ -1,5 +1,3 @@
-import { MoveLeftIcon, UserRound } from 'lucide-react'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import Container from '@/components/Container'
@@ -13,13 +11,13 @@ const ProfilePage = async () => {
     <Container>
       <div className='pb-10 pt-[100px]'>
         <div className='grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-4'>
-          <div>
+          {/* <div>
             <nav>
               <ul className='flex flex-col gap-y-2 dark:text-zinc-500'>
                 <li>
                   <Link
                     href='/profile'
-                    className='flex items-center gap-x-2 mb-4 transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white'>
+                    className='mb-4 flex items-center gap-x-2 transition-all duration-300 ease-in-out hover:text-zinc-900 dark:hover:text-white'>
                     <UserRound className='h-5 w-5' />
                     Profile
                   </Link>
@@ -30,7 +28,7 @@ const ProfilePage = async () => {
                 </li>
               </ul>
             </nav>
-          </div>
+          </div> */}
           <div className='col-span-3'>
             <ProfileForm user={user} />
           </div>

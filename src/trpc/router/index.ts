@@ -4,6 +4,7 @@ import { getLayouts } from '@/trpc/router/page-router'
 import { projectRouter } from '@/trpc/router/project-router'
 import { railwayRouter } from '@/trpc/router/railway-router'
 import { todoRouter } from '@/trpc/router/todo'
+import { userRouter } from '@/trpc/router/user-router'
 
 export const appRouter = router({
   todo: todoRouter,
@@ -11,6 +12,7 @@ export const appRouter = router({
   blog: getBlogs,
   railway: railwayRouter,
   projects: projectRouter,
+  user: userRouter,
   test: publicProcedure.query(async () => {
     return {
       success: 'working',

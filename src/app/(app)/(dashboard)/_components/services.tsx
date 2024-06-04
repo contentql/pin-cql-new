@@ -35,14 +35,11 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   const [isVisible, setIsVisible] = useState(false)
   // const [projectData, setProjectData] = useState<any>(null)
   const [variables, setVariables] = useState<any>({})
+  const [showNotification, setShowNotification] = useState(false)
 
   const { data: fetchedProjectData } = trpc.railway.getDetails.useQuery({
     id: projectId,
   })
-
-  // useEffect(() => {
-  //   setProjectData(fetchedProjectData)
-  // }, [fetchedProjectData])
 
   const environmentId =
     fetchedProjectData?.railway.project.environments.edges[0].node.id
@@ -60,6 +57,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     trpc.railway.serviceReDeploy.useMutation()
 
   const handleRedeploy = async () => {
+    setShowNotification(false)
     const data: any = serviceReDeploy({
       environmentId: environmentId,
       serviceId: serviceId,
@@ -68,7 +66,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     toast.promise(data, {
       loading: 'Deploying...',
       success: data => {
-        return `Deployment successfully`
+        return `Deployment started`
       },
       error: 'Error',
     })
@@ -77,6 +75,7 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   const { mutate: templateVariablesUpdate } =
     trpc.railway.templateVariablesUpdate.useMutation({
       onSuccess: async data => {
+        setShowNotification(true)
         console.log('Variables updated')
         if (serviceId && environmentId) {
           getVariables({
@@ -86,10 +85,11 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
           })
         }
 
-        toast.success('Service Re-deploy', {
-          description: 'Environment Variables updated',
-          action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
-        })
+        // toast.success('Service Re-deploy', {
+        //   description: 'Environment Variables updated',
+        //   duration: 60000,
+        //   action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
+        // })
       },
       onError: async () => {
         console.log('Variables update failed')
@@ -150,12 +150,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       value: 'all',
       label: 'All',
     },
-    // {
-    //   value: 'active',
-    //   label: 'Active',
-    // },
-    // { value: 'sleep', label: 'Sleep' },
-    // { value: 'archived', label: 'Archived' },
   ]
 
   return (
@@ -214,14 +208,13 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                               {/* {service?.icon} */}
                             </CardHeader>
                             <CardContent>
-                              <div className='text-2xl font-bold'>
+                              <div className='truncate text-2xl font-bold'>
                                 {service?.node.name}
                               </div>
-                              <p className='text-xs text-slate-500 dark:text-slate-400 pt-4'>
+                              <p className='pt-4 text-xs text-slate-500 dark:text-slate-400'>
                                 {service?.node.id}
                               </p>
                             </CardContent>
-
                           </Card>
                         )
                       })}
@@ -235,13 +228,13 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       {vertical && (
         <Card
           x-chunk='dashboard-06-chunk-0'
-          className={`p-4 border-double transform transition-transform duration-300 ease-in-out  ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
+          className={`transform border-double p-4 transition-transform duration-300 ease-in-out  ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
           <CardHeader className='flex-row justify-between'>
             <div>
               <CardTitle>{service?.node.name}</CardTitle>
             </div>
             <X
-              className='w-5 h-5 cursor-pointer'
+              className='h-5 w-5 cursor-pointer'
               onClick={() => {
                 setIsVisible(false)
                 setTimeout(() => {
@@ -277,6 +270,18 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
             </Tabs>
           </CardContent>
         </Card>
+      )}
+
+      {showNotification && (
+        <div className='fixed bottom-4 right-4 flex items-center rounded-lg bg-gray-800 p-4 text-white shadow-lg'>
+          <span className='mr-4'>Variable changes need to deploy</span>
+          <Button
+            onClick={() => {
+              handleRedeploy()
+            }}>
+            Deploy
+          </Button>
+        </div>
       )}
     </main>
   )

@@ -184,5 +184,11 @@ export const Users: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'railwayApiToken',
+      type: 'text',
+      label: 'Railway Api Token',
+      saveToJWT: true,
+    },
   ],
 } as const
