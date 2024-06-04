@@ -33,7 +33,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   const serviceId = params.serviceId?.toString()
 
   const [isVisible, setIsVisible] = useState(false)
-  // const [projectData, setProjectData] = useState<any>(null)
   const [variables, setVariables] = useState<any>({})
   const [showNotification, setShowNotification] = useState(false)
 
@@ -84,12 +83,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
             serviceId: serviceId,
           })
         }
-
-        // toast.success('Service Re-deploy', {
-        //   description: 'Environment Variables updated',
-        //   duration: 60000,
-        //   action: <Button onClick={() => handleRedeploy()}>Deploy</Button>,
-        // })
       },
       onError: async () => {
         console.log('Variables update failed')
@@ -113,6 +106,14 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
   }, [vertical])
 
   const services = fetchedProjectData?.railway.project.services
+
+  const deployments = fetchedProjectData?.railway.project.deployments
+
+  const deploymentsSorted = deployments?.edges.sort((a: any, b: any) => {
+    const dateA: number = new Date(a.node.createdAt).getTime()
+    const dateB: number = new Date(b.node.createdAt).getTime()
+    return dateB - dateA
+  })
 
   const service = services?.edges.find(
     (service: any) => service.node.id === serviceId,
@@ -152,6 +153,25 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
     },
   ]
 
+  const getDotClass = (serviceId: string) => {
+    const serviceDeployments = deploymentsSorted?.filter(
+      (deployment: any) => deployment.node.serviceId === serviceId,
+    )
+    const firstDeployment = serviceDeployments?.[0]
+    if (!firstDeployment) return 'bg-gray-200'
+
+    switch (firstDeployment.node.status) {
+      case 'SUCCESS':
+        return 'bg-green-500'
+      case 'CRASHED':
+        return 'bg-red-500'
+      case 'DEPLOYING':
+        return 'bg-yellow-500'
+      default:
+        return 'bg-gray-200'
+    }
+  }
+
   return (
     <main
       className={`grid flex-1 ${vertical && 'grid-cols-[26%_72%]'} items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8`}>
@@ -183,41 +203,38 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
                 <CardContent>
                   <div
                     className={`grid ${vertical ? 'grid-cols-1 gap-8' : 'gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'}`}>
-                    {services?.edges
-                      // ?.filter(
-                      //   service =>
-                      //     tab.value === 'all' || service.status === tab.value,
-                      // )
-                      ?.map((service: any) => {
-                        // const latestDeployment = service?.deployments?.at(0)
-
-                        return (
-                          <Card
-                            key={service.node.id}
-                            x-chunk='dashboard-01-chunk-0'
-                            className={`cursor-pointer  ${service?.node.id === serviceId ? 'border-r-2 border-black' : 'border-r-2 border-gray-200 hover:border-gray-400'} `}
-                            onClick={() => {
-                              router.push(
-                                `/project/${projectId}/service/${service?.node.id}`,
-                              )
-                            }}>
-                            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                              <CardTitle className='text-sm font-medium'>
-                                {/* {service?.updatedAt} */}
-                              </CardTitle>
-                              {/* {service?.icon} */}
-                            </CardHeader>
-                            <CardContent>
-                              <div className='truncate text-2xl font-bold'>
-                                {service?.node.name}
-                              </div>
-                              <p className='pt-4 text-xs text-slate-500 dark:text-slate-400'>
-                                {service?.node.id}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        )
-                      })}
+                    {services?.edges?.map((service: any) => {
+                      const dotClass = getDotClass(service.node.id)
+                      return (
+                        <Card
+                          key={service.node.id}
+                          x-chunk='dashboard-01-chunk-0'
+                          className='relative cursor-pointer border-r-2 border-gray-200 hover:border-gray-400'
+                          onClick={() => {
+                            router.push(
+                              `/project/${projectId}/service/${service?.node.id}`,
+                            )
+                          }}>
+                          <div
+                            className={`absolute right-2 top-2 h-4 w-4 rounded-full ${dotClass}`}
+                          />
+                          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+                            <CardTitle className='text-sm font-medium'>
+                              {/* {service?.updatedAt} */}
+                            </CardTitle>
+                            {/* {service?.icon} */}
+                          </CardHeader>
+                          <CardContent>
+                            <div className='truncate text-2xl font-bold'>
+                              {service?.node.name}
+                            </div>
+                            <p className='pt-4 text-xs text-slate-500 dark:text-slate-400'>
+                              {service?.node.id}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
                   </div>
                 </CardContent>
               </Card>

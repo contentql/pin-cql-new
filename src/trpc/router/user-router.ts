@@ -34,7 +34,7 @@ export const userRouter = router({
       }
     }),
 
-  getRailwayAPi: userProcedure.query(async ({ ctx }) => {
+  getUser: userProcedure.query(async ({ ctx }) => {
     const { user } = ctx
 
     try {

@@ -52,6 +52,7 @@ export interface User {
       }[]
     | null;
   railwayApiToken?: string | null;
+  plan?: ('basic' | 'standard' | 'premium') | null;
   updatedAt: string;
   createdAt: string;
   email: string;

@@ -46,18 +46,28 @@ import { Label } from '@/components/ui/label'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { trpc } from '@/trpc/client'
 
-const DashboardHeader = () => {
-  // const queryClient = useQueryClient()
+type Plan =
+  | 'link'
+  | 'default'
+  | 'basic'
+  | 'destructive'
+  | 'outline'
+  | 'secondary'
+  | 'ghost'
+  | 'standard'
+  | 'premium'
+  | null
+  | undefined
 
+const DashboardHeader = () => {
   const [open, setOpen] = useState(false)
-  // const [isLoading, setIsLoading] = useState(false)
   const [railwayApiKey, setRailwayApiKey] = useState<string>('')
 
-  // const getProjectKeys = getQueryKey(
-  //   trpc.projects.getProjects,
-  //   undefined,
-  //   'query',
-  // )
+  const { data: user } = trpc.user.getUser.useQuery()
+
+  const plan = (user?.plan ? user?.plan : 'default') as Plan
+
+  console.log(plan)
 
   const { mutate: updateRailwayApi, isPending: isLoading } =
     trpc.user.updateRailwayApi.useMutation({
@@ -154,9 +164,10 @@ const DashboardHeader = () => {
       <div className='relative ml-auto flex-1 md:grow-0'></div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant='default' className='gap-1'>
+          {/* button click  */}
+          <Button variant={plan} className='gap-1'>
             <Plug className='h-4 w-4' />
-            Link Railway
+            {user?.railwayApiToken ? 'Update Railway' : 'Link Railway'}
           </Button>
         </DialogTrigger>
         <DialogContent>
