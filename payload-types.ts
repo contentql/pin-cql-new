@@ -51,6 +51,7 @@ export interface User {
         id?: string | null;
       }[]
     | null;
+  railwayApiToken?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -278,6 +279,7 @@ export interface Service {
         id?: string | null;
       }[]
     | null;
+  isVariableChanged?: boolean | null;
   project_id?: {
     relationTo: 'projects';
     value: string | Project;

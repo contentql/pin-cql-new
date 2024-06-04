@@ -9,6 +9,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import Breadcrumbs from '@/app/(app)/(dashboard)/_components/breadcrumbs'
 import {
@@ -20,6 +21,7 @@ import {
   ShoppingCartIcon,
   UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
+// import { updateRailwayApi } from '@/components/ProfileForm/actions'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -42,20 +44,31 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-
-// import { trpc } from '@/trpc/client'
+import { trpc } from '@/trpc/client'
 
 const DashboardHeader = () => {
   // const queryClient = useQueryClient()
 
   const [open, setOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  // const [isLoading, setIsLoading] = useState(false)
+  const [railwayApiKey, setRailwayApiKey] = useState<string>('')
 
   // const getProjectKeys = getQueryKey(
   //   trpc.projects.getProjects,
   //   undefined,
   //   'query',
   // )
+
+  const { mutate: updateRailwayApi, isPending: isLoading } =
+    trpc.user.updateRailwayApi.useMutation({
+      onSuccess: async () => {
+        setOpen(false)
+        toast.success('Railway API updated successfully')
+      },
+      onError: async () => {
+        toast.error('Updating railway Api Error')
+      },
+    })
 
   const router = useRouter()
 
@@ -65,6 +78,17 @@ const DashboardHeader = () => {
     id: project?.id,
     name: project?.title,
   }))
+
+  const handleSubmit = () => {
+    try {
+      console.log('clicked')
+      // updateRailwayApi(c)
+      updateRailwayApi({ railwayApiKey })
+      // railwayFrom(railwayApiKey)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-4 dark:bg-slate-950 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
@@ -154,6 +178,8 @@ const DashboardHeader = () => {
             <Input
               type='text'
               id='api_key'
+              value={railwayApiKey}
+              onChange={e => setRailwayApiKey(e.target.value)}
               placeholder='Enter your API Key'
               className='rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
               required
@@ -191,10 +217,7 @@ const DashboardHeader = () => {
               type='submit'
               className='gap-1 px-8'
               onClick={() => {
-                setIsLoading(true)
-                setTimeout(() => {
-                  setOpen(false)
-                }, 3000)
+                handleSubmit()
               }}>
               {isLoading ? (
                 <LoaderCircle className='h-4 w-4 animate-spin' />

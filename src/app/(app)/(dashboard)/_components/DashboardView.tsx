@@ -81,6 +81,10 @@ const DashboardView = () => {
     },
   })
 
+  const { data: key } = trpc.user.getRailwayAPi.useQuery()
+
+  console.log('env,', key)
+
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 
   const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =

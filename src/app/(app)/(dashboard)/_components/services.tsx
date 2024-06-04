@@ -150,12 +150,6 @@ const Services: React.FC<ServicesProps> = ({ vertical }) => {
       value: 'all',
       label: 'All',
     },
-    // {
-    //   value: 'active',
-    //   label: 'Active',
-    // },
-    // { value: 'sleep', label: 'Sleep' },
-    // { value: 'archived', label: 'Archived' },
   ]
 
   return (
