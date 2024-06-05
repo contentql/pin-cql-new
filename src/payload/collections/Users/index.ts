@@ -157,7 +157,7 @@ export const Users: CollectionConfig = {
       saveToJWT: true,
     },
     { name: 'emailVerified', type: 'date' },
-    { name: 'stripeCID', type: 'text', required: true, saveToJWT: true },
+    { name: 'stripeCID', type: 'text', saveToJWT: true },
     { name: 'stripeJSON', type: 'json', hidden: true },
     {
       name: 'accounts',
@@ -206,7 +206,7 @@ export const Users: CollectionConfig = {
         { label: 'Standard', value: 'standard' },
         { label: 'Premium', value: 'premium' },
       ],
-      defaultValue: ['basic'],
+      defaultValue: 'basic',
       saveToJWT: true,
     },
   ],
