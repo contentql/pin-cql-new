@@ -65,9 +65,16 @@ const DashboardHeader = () => {
 
   const { data: user } = trpc.user.getUser.useQuery()
 
-  const plan = (user?.plan ? user?.plan : 'default') as Plan
+  const router = useRouter()
 
-  console.log(plan)
+  const { mutate: createCustomerPortalSession } =
+    trpc.stripe.createCustomerPortalSession.useMutation({
+      onSuccess: async data => {
+        router.push(data?.url)
+      },
+    })
+
+  const plan = (user?.plan ? user?.plan : 'default') as Plan
 
   const { mutate: updateRailwayApi, isPending: isLoading } =
     trpc.user.updateRailwayApi.useMutation({
@@ -79,8 +86,6 @@ const DashboardHeader = () => {
         toast.error('Updating railway Api Error')
       },
     })
-
-  const router = useRouter()
 
   // const previousProjects: any = queryClient.getQueryData(getProjectKeys)
 
@@ -246,9 +251,7 @@ const DashboardHeader = () => {
         variant='default'
         className='gap-1 capitalize'
         onClick={() => {
-          router.push(
-            'https://billing.stripe.com/p/login/test_7sI9EngYn0ZA6tO144',
-          )
+          createCustomerPortalSession()
         }}>
         <BadgePercent className='h-4 w-4' />
         Manage subscription
