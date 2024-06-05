@@ -36,6 +36,16 @@ export interface User {
   imageUrl?: string | null;
   role?: ('admin' | 'user') | null;
   emailVerified?: string | null;
+  stripeCID: string;
+  stripeJSON?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   accounts?:
     | {
         provider?: string | null;
