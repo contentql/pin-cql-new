@@ -28,6 +28,8 @@ export const env = createEnv({
     RAILWAY_SUPER_API: z.string().min(1),
     OPENAPI_KEY: z.string().min(1),
     ENCRYPTION_KEY: z.string(),
+    STRIPE_SECRET_KEY: z.string().min(1),
+    STRIPE_PUBLISHABLE_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_IS_LIVE: z.boolean().default(false),
@@ -63,5 +65,7 @@ export const env = createEnv({
     RAILWAY_SUPER_API: process.env.RAILWAY_SUPER_API,
     OPENAPI_KEY: process.env.OPENAPI_KEY,
     ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
   },
 })

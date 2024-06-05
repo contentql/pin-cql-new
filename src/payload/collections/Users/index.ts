@@ -4,6 +4,7 @@ import { ADMIN_ACCESS_ROLES, DEFAULT_USER_ROLE } from '@/lib/auth/config'
 import { getAuthJsCookieName, getCurrentUser } from '@/lib/auth/edge'
 import { revalidateUser } from '@/lib/payload/actions'
 import { isAdmin, isAdminOrCurrentUser } from '@/payload/access'
+import { createStripeCustomer } from '@/payload/collections/Users/hooks/create-stripe-customer'
 import {
   ADMIN_AUTH_GROUP,
   COLLECTION_SLUG_USER,
@@ -130,6 +131,7 @@ export const Users: CollectionConfig = {
         const payload = req.payload
         await revalidateUser(doc, payload)
       },
+      createStripeCustomer,
     ],
   },
   access: {
