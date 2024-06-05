@@ -13,8 +13,8 @@ const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
   const user = await getCurrentUser()
   if (!user) return redirect('/sign-in')
   return (
-    <div className='grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]'>
-      <div className='bg-muted/40 hidden md:block'>
+    <div className='grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr]'>
+      <div className='bg-muted/40 hidden md:block '>
         <DashboardSideNav />
       </div>
       <div className='flex flex-col sm:gap-4 sm:py-4'>
