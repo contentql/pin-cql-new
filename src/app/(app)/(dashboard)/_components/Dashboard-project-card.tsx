@@ -126,157 +126,153 @@ export const DashboardProjectCard = ({ project }: any) => {
 
   return (
     <div>
-      <>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className='mb-2 md:text-2xl'>
-                Are you sure?
-              </DialogTitle>
-              <DialogDescription className='text-base dark:text-white'>
-                This action cannot be undone. This will permanently delete your
-                project and remove your data from our servers.
-              </DialogDescription>
-            </DialogHeader>
-            <Label>
-              Type{' '}
-              <span className='rounded-md border bg-zinc-50 p-0.5 italic dark:border-zinc-700 dark:bg-zinc-800'>
-                {projectName}
-              </span>{' '}
-              to confirm
-            </Label>
-            <Input
-              type='text'
-              placeholder='We are sad to see you go!'
-              value={confirmation}
-              onChange={e => {
-                setConfirmation(e.target.value)
-                if (e.target.value === projectName) {
-                  setIsAllowedToDelete(true)
-                } else {
-                  setIsAllowedToDelete(false)
-                }
-              }}
-            />
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type='button' variant='secondary'>
-                  Close
-                </Button>
-              </DialogClose>
-
-              <Button
-                variant='destructive'
-                onClick={() => {
-                  handleTemplateDelete({
-                    templateId: project?.projectId,
-                  })
-                }}
-                disabled={!isAllowedToDelete}>
-                Delete Account
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className='mb-2 md:text-2xl'>
+              Are you sure?
+            </DialogTitle>
+            <DialogDescription className='text-base dark:text-white'>
+              This action cannot be undone. This will permanently delete your
+              project and remove your data from our servers.
+            </DialogDescription>
+          </DialogHeader>
+          <Label>
+            Type{' '}
+            <span className='rounded-md border bg-zinc-50 p-0.5 italic dark:border-zinc-700 dark:bg-zinc-800'>
+              {projectName}
+            </span>{' '}
+            to confirm
+          </Label>
+          <Input
+            type='text'
+            placeholder='We are sad to see you go!'
+            value={confirmation}
+            onChange={e => {
+              setConfirmation(e.target.value)
+              if (e.target.value === projectName) {
+                setIsAllowedToDelete(true)
+              } else {
+                setIsAllowedToDelete(false)
+              }
+            }}
+          />
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type='button' variant='secondary'>
+                Close
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogClose>
 
-        <Card
-          key={project?.projectId}
-          x-chunk='dashboard-01-chunk-0'
-          className='group relative cursor-pointer hover:border-gray-600'
-          onClick={() => {
-            router.push(`/project/${project?.projectId}`)
-          }}>
-          <div className='absolute -right-2 -top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-500 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Settings color='white' size='15' />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel
-                  onClick={e => {
-                    e.stopPropagation()
-                  }}>
-                  Project Settings
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={e => {
-                    e.stopPropagation()
-                    router.push(`/project/${project?.projectId}`)
-                  }}>
-                  Services
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={e => {
-                    e.stopPropagation()
-                    setToggleNameEdit(true)
-                  }}>
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className='text-red-600'
-                  onClick={e => {
-                    e.stopPropagation()
-                    // handleTemplateDelete({
-                    //   templateId: project?.projectId,
-                    // })
-                    setIsDialogOpen(true)
-                  }}>
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>
-              {/* {project?.services?.length} services */}
-            </CardTitle>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>{/* {project?.icon} */}</TooltipTrigger>
-                <TooltipContent>
-                  {/* <p>{project?.status}</p> */}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </CardHeader>
-          <CardContent>
-            {toggleNameEdit ? (
-              <div className='flex items-center gap-1'>
-                <Input
-                  type='text'
-                  placeholder='Enter new project name'
-                  onChange={e => {
-                    setProjectName(e.target.value)
-                  }}
-                  onClick={e => e.stopPropagation()}
-                  value={projectName}
-                  className='h-fit py-1 focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
-                />
+            <Button
+              variant='destructive'
+              onClick={() => {
+                handleTemplateDelete({
+                  templateId: project?.projectId,
+                })
+              }}
+              disabled={!isAllowedToDelete}>
+              Delete Account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-                <X
-                  color='red'
-                  className='ml-4 h-5 w-5 cursor-pointer'
-                  onClick={e => {
-                    e.stopPropagation()
-                    setToggleNameEdit(false)
-                  }}
-                />
-                <Check
-                  color='green'
-                  onClick={e => handleEdit(e)}
-                  className='ml-4 h-5 w-5 cursor-pointer'
-                />
-              </div>
-            ) : (
-              <div className='truncate text-2xl font-bold'>{projectName}</div>
-            )}
-            <p className='pt-6 text-xs text-slate-500 dark:text-slate-400'>
-              {project?.projectId}
-            </p>
-          </CardContent>
-        </Card>
-      </>
+      <Card
+        key={project?.projectId}
+        x-chunk='dashboard-01-chunk-0'
+        className='group relative  w-80 cursor-pointer bg-purple-50 duration-300 hover:border-purple-600'
+        onClick={() => {
+          router.push(`/project/${project?.projectId}`)
+        }}>
+        <div className='absolute -right-2 -top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-500 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Settings color='white' size='15' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel
+                onClick={e => {
+                  e.stopPropagation()
+                }}>
+                Project Settings
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                  router.push(`/project/${project?.projectId}`)
+                }}>
+                Services
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                  setToggleNameEdit(true)
+                }}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className='text-red-600'
+                onClick={e => {
+                  e.stopPropagation()
+                  // handleTemplateDelete({
+                  //   templateId: project?.projectId,
+                  // })
+                  setIsDialogOpen(true)
+                }}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>
+            {/* {project?.services?.length} services */}
+          </CardTitle>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>{/* {project?.icon} */}</TooltipTrigger>
+              <TooltipContent>{/* <p>{project?.status}</p> */}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </CardHeader>
+        <CardContent>
+          {toggleNameEdit ? (
+            <div className='flex items-center gap-1'>
+              <Input
+                type='text'
+                placeholder='Enter new project name'
+                onChange={e => {
+                  setProjectName(e.target.value)
+                }}
+                onClick={e => e.stopPropagation()}
+                value={projectName}
+                className='h-fit py-1 focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
+              />
+
+              <X
+                color='red'
+                className='ml-4 h-5 w-5 cursor-pointer'
+                onClick={e => {
+                  e.stopPropagation()
+                  setToggleNameEdit(false)
+                }}
+              />
+              <Check
+                color='green'
+                onClick={e => handleEdit(e)}
+                className='ml-4 h-5 w-5 cursor-pointer'
+              />
+            </div>
+          ) : (
+            <div className='truncate text-2xl font-bold'>{projectName}</div>
+          )}
+          <p className='pt-6 text-xs text-slate-500 dark:text-slate-400'>
+            {project?.projectId}
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }
