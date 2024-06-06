@@ -1,8 +1,4 @@
-'use client'
-
-import * as React from 'react'
-
-import { trpc } from '~/src/trpc/client'
+import StripePricingTable from '@/app/(app)/(dashboard)/_components/StripePricingTable'
 
 declare global {
   namespace JSX {
@@ -16,11 +12,6 @@ declare global {
 }
 
 const Pricing = () => {
-  const { data: customerSession } = trpc.stripe.createCustomerSession.useQuery()
-
-  const { data: user } = trpc.user.getUser.useQuery()
-
-  console.log(customerSession)
   return (
     <section className='relative z-20 overflow-hidden bg-white pb-12 pt-20 lg:pb-[90px] lg:pt-[120px]'>
       <div className='container'>
@@ -40,13 +31,7 @@ const Pricing = () => {
             </div>
           </div>
         </div>
-        <div>
-          <stripe-pricing-table
-            pricing-table-id='prctbl_1POCi6P2ZUGTn5p0OXrmQaCx'
-            publishable-key='pk_live_51P5hjZP2ZUGTn5p03pmLLEaGp7TIrATI6Hb3wuMbOJ7w7wWlDE5rvr00ZLhzKjXd0lM678Uq83IHG0uJR8yNTQUV00TY9updQb'
-            customer-session-client-secret={customerSession?.client_secret}
-          />
-        </div>
+        <StripePricingTable />
       </div>
     </section>
   )

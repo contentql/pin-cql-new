@@ -35,6 +35,8 @@ export const env = createEnv({
     NEXT_PUBLIC_IS_LIVE: z.boolean().default(false),
     NEXT_PUBLIC_PUBLIC_URL: z.string().url(),
     NEXT_PUBLIC_HASURA_URI: z.string().url(),
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
+    NEXT_PUBLIC_PRICING_TABLE_ID: z.string().min(1),
   },
   runtimeEnv: {
     DATABASE_URI: process.env.DATABASE_URI,
@@ -67,5 +69,8 @@ export const env = createEnv({
     ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_PRICING_TABLE_ID: process.env.NEXT_PUBLIC_PRICING_TABLE_ID,
   },
 })
