@@ -92,39 +92,39 @@ export const railwayRouter = router({
         variables: {
           input: {
             services: [
-              {
-                owner: 'akhil-naidu',
-                name: 'MongoDB',
-                isPrivate: false,
-                commit: null,
-                variables: {
-                  MONGOHOST: '${{ RAILWAY_TCP_PROXY_DOMAIN }}',
-                  MONGOPORT: '${{ RAILWAY_TCP_PROXY_PORT }}',
-                  MONGOUSER: '${{ MONGO_INITDB_ROOT_USERNAME }}',
-                  MONGO_URL:
-                    'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}',
-                  MONGOPASSWORD: '${{ MONGO_INITDB_ROOT_PASSWORD }}',
-                  MONGO_PRIVATE_URL:
-                    'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:27017',
-                  MONGO_INITDB_ROOT_PASSWORD:
-                    '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
-                  MONGO_INITDB_ROOT_USERNAME: 'mongo',
-                },
-                template: 'mongo',
-                serviceName: 'MongoDB',
-                serviceIcon: 'https://devicons.railway.app/i/mongodb.svg',
-                startCommand:
-                  'docker-entrypoint.sh mongod --ipv6 --bind_ip ::,0.0.0.0',
-                rootDirectory: null,
-                healthcheckPath: null,
-                hasDomain: false,
-                tcpProxyApplicationPort: 27017,
-                volumes: [
-                  {
-                    mountPath: '/data/db',
-                  },
-                ],
-              },
+              // {
+              //   owner: 'akhil-naidu',
+              //   name: 'MongoDB',
+              //   isPrivate: false,
+              //   commit: null,
+              //   variables: {
+              //     MONGOHOST: '${{ RAILWAY_TCP_PROXY_DOMAIN }}',
+              //     MONGOPORT: '${{ RAILWAY_TCP_PROXY_PORT }}',
+              //     MONGOUSER: '${{ MONGO_INITDB_ROOT_USERNAME }}',
+              //     MONGO_URL:
+              //       'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_TCP_PROXY_DOMAIN}}:${{RAILWAY_TCP_PROXY_PORT}}',
+              //     MONGOPASSWORD: '${{ MONGO_INITDB_ROOT_PASSWORD }}',
+              //     MONGO_PRIVATE_URL:
+              //       'mongodb://${{MONGO_INITDB_ROOT_USERNAME}}:${{MONGO_INITDB_ROOT_PASSWORD}}@${{RAILWAY_PRIVATE_DOMAIN}}:27017',
+              //     MONGO_INITDB_ROOT_PASSWORD:
+              //       '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
+              //     MONGO_INITDB_ROOT_USERNAME: 'mongo',
+              //   },
+              //   template: 'mongo',
+              //   serviceName: 'MongoDB',
+              //   serviceIcon: 'https://devicons.railway.app/i/mongodb.svg',
+              //   startCommand:
+              //     'docker-entrypoint.sh mongod --ipv6 --bind_ip ::,0.0.0.0',
+              //   rootDirectory: null,
+              //   healthcheckPath: null,
+              //   hasDomain: false,
+              //   tcpProxyApplicationPort: 27017,
+              //   volumes: [
+              //     {
+              //       mountPath: '/data/db',
+              //     },
+              //   ],
+              // },
               {
                 owner: 'akhil-naidu',
                 name: serviceVariable?.Project_Name,
@@ -133,8 +133,7 @@ export const railwayRouter = router({
                 serviceIcon:
                   'https://pub-ce94fe258c7740b3a579a329e72059e4.r2.dev/pin-hcms%2FContentQL_Brandmark_Light%402x-1000x1000.png',
                 variables: {
-                  DATABASE_URI:
-                    serviceVariable?.DATABASE_URI || '${{MongoDB.MONGO_URL}}',
+                  DATABASE_URI: `mongodb+srv://akhil:iwillhack@contentql.av5ynge.mongodb.net/prod-${updatedProjectName}`,
                   PAYLOAD_SECRET:
                     '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
                   NEXT_PUBLIC_PUBLIC_URL: 'https://${{RAILWAY_PUBLIC_DOMAIN}}',
@@ -171,6 +170,7 @@ export const railwayRouter = router({
                   AUTH_GITHUB_SECRET:
                     serviceVariable.AUTH_GITHUB_SECRET ||
                     env.AUTH_GITHUB_SECRET,
+                  SUBSCRIPTION_PLAN: 'creator',
                   OPENAPI_KEY: serviceVariable.OPENAPI_KEY || env.OPENAPI_KEY,
                   NEXT_PRIVATE_REVALIDATION_KEY:
                     '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
