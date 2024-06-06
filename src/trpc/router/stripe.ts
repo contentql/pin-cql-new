@@ -21,4 +21,22 @@ export const stripe = router({
       }
     },
   ),
+
+  createCustomerSession: userProcedure.query(async ({ ctx: { user } }) => {
+    try {
+      const customerSession = await stripeSDK.customerSessions.create({
+        customer: user.stripeCID as string,
+        components: {
+          pricing_table: {
+            enabled: true,
+          },
+        },
+      })
+      console.log(customerSession)
+      return customerSession
+    } catch (error) {
+      console.log(error)
+      throw new Error('error creating customer session')
+    }
+  }),
 })

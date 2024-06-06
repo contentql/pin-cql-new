@@ -96,7 +96,6 @@ const DashboardHeader = () => {
 
   const handleSubmit = () => {
     try {
-      console.log('clicked')
       // updateRailwayApi(c)
       updateRailwayApi({ railwayApiKey })
       // railwayFrom(railwayApiKey)
