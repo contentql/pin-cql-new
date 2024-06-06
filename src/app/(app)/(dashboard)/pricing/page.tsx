@@ -42,8 +42,8 @@ const Pricing = () => {
         </div>
         <div>
           <stripe-pricing-table
-            pricing-table-id='prctbl_1PL6daSANsDuJnVdAYvCMA5x'
-            publishable-key='pk_test_51OgjvwSANsDuJnVdTJNvvmSw0yUXo5vRmV4CxvVAY1JJxpBOdUnZX5d9fuL3Pf6njHk0fKSX1ktOQH1VJClvyot200laA1Xndd'
+            pricing-table-id='prctbl_1POCi6P2ZUGTn5p0OXrmQaCx'
+            publishable-key='pk_live_51P5hjZP2ZUGTn5p03pmLLEaGp7TIrATI6Hb3wuMbOJ7w7wWlDE5rvr00ZLhzKjXd0lM678Uq83IHG0uJR8yNTQUV00TY9updQb'
             customer-session-client-secret={customerSession?.client_secret}
           />
         </div>
