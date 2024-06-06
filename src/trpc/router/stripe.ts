@@ -32,11 +32,22 @@ export const stripe = router({
           },
         },
       })
-      console.log(customerSession)
       return customerSession
     } catch (error) {
       console.log(error)
       throw new Error('error creating customer session')
+    }
+  }),
+
+  retrieveProduct: userProcedure.query(async ({}) => {
+    try {
+      const productData = await stripeSDK.products.retrieve(
+        'prod_QF1w8UjVJUqaEQ',
+      )
+      return productData
+    } catch (error) {
+      console.log(error)
+      throw new Error('error while getting product stripe data')
     }
   }),
 })
