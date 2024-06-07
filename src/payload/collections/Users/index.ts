@@ -132,9 +132,19 @@ export const Users: CollectionConfig = {
       },
     ],
     afterChange: [
-      async ({ doc, req }) => {
+      async ({ doc, req, operation }) => {
         const payload = req.payload
         await revalidateUser(doc, payload)
+
+        if (operation === 'create') {
+          stripeSDK.customers.update(doc.stripeCID, {
+            metadata: {
+              user_id: doc.id,
+            },
+          })
+
+          console.log('stripe updated successfully')
+        }
       },
     ],
   },
@@ -200,13 +210,8 @@ export const Users: CollectionConfig = {
     },
     {
       name: 'plan',
-      type: 'select',
-      options: [
-        { label: 'Basic', value: 'basic' },
-        { label: 'Standard', value: 'standard' },
-        { label: 'Premium', value: 'premium' },
-      ],
-      defaultValue: 'basic',
+      type: 'text',
+      defaultValue: 'Basic',
       saveToJWT: true,
     },
   ],
