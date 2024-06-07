@@ -6,7 +6,7 @@ import axiosInstance from './axiosInstance'
  * A generalized function to make HTTP requests using Axios.
  *
  * @param url - The endpoint URL to make the request to.
- * @param options - Axios request configuration options (method, headers, data, etc.).
+ * @param options - Optional Axios request configuration options (method, headers, data, etc.).
  * @param operation - A descriptive string for the type of operation (e.g., 'fetching projects', 'creating project').
  * @returns - A promise that resolves to an AxiosResponse containing the response data.
  *
@@ -26,7 +26,7 @@ const fetchData = async <T = any>(
   } catch (error: any) {
     // Check if the error is an AxiosError.
     if (axios.isAxiosError(error)) {
-      // Log an error message to the console with the operation type and error details.
+      // Log an error message specific to Axios errors, including response details if available.
       console.error(
         `Axios error during ${operation}:`,
         error.message,
@@ -34,7 +34,7 @@ const fetchData = async <T = any>(
         error.response,
       )
     } else {
-      // Log a general error message if it's not an AxiosError.
+      // Log a general error message for non-Axios errors.
       console.error(`General error during ${operation}:`, error)
     }
 
