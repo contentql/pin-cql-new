@@ -4,7 +4,7 @@ import {
   createWebhookByProjectIdSchema,
   getProjectByNameOrIdSchema,
 } from '@/trpc/validators/vercel'
-import fetchData from '@/utils/fetchData'
+import { vercelAPI } from '@/utils/vercelAPI'
 
 export const SLUG = 'contentql'
 export const TEAM_ID = 'team_Re3abfSSQoB8ELNOrc95I4DY'
@@ -13,7 +13,7 @@ export const vercelRouter = router({
   // Get all projects
   getProjects: userProcedure.query(async ({}) => {
     try {
-      const response = await fetchData(
+      const response = await vercelAPI(
         `/v9/projects?slug=${SLUG}&teamId=${TEAM_ID}`,
         { method: 'GET' },
         'fetching projects',
@@ -33,7 +33,7 @@ export const vercelRouter = router({
       const { nameOrId } = input
 
       try {
-        const response = await fetchData(
+        const response = await vercelAPI(
           `/v9/projects/${nameOrId}?slug=${SLUG}&teamId=${TEAM_ID}`,
           { method: 'GET' },
           'fetching a project by name',
@@ -51,7 +51,7 @@ export const vercelRouter = router({
     .input(createProjectWithGithubRepoSchema)
     .query(async ({ input }) => {
       try {
-        const response = await fetchData(
+        const response = await vercelAPI(
           `/v10/projects?slug=${SLUG}&teamId=${TEAM_ID}`,
           { method: 'POST', data: { ...input } },
           'creating a project',
@@ -69,7 +69,7 @@ export const vercelRouter = router({
     .input(createWebhookByProjectIdSchema)
     .query(async ({ input }) => {
       try {
-        const response = await fetchData(
+        const response = await vercelAPI(
           `/v1/webhooks?slug=${SLUG}&teamId=${TEAM_ID}`,
           { method: 'POST', data: { ...input } },
           'creating a webhook for the project',

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 
 // Creating an Axios instance with default configuration
-const axiosInstance: AxiosInstance = axios.create({
+export const vercelAPIAxiosInstance: AxiosInstance = axios.create({
   baseURL: 'https://api.vercel.com',
   headers: {
     'Content-Type': 'application/json',
@@ -9,5 +9,3 @@ const axiosInstance: AxiosInstance = axios.create({
     // Add other custom default headers here
   },
 })
-
-export default axiosInstance

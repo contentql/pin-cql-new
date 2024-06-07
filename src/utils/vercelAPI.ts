@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-import axiosInstance from './axiosInstance'
+import { vercelAPIAxiosInstance } from '@/utils/vercelAPIAxiosInstance'
 
 /**
  * A generalized function to make HTTP requests using Axios.
@@ -12,14 +12,17 @@ import axiosInstance from './axiosInstance'
  *
  * @throws - Throws an error if the request fails, with the error message logged to the console.
  */
-const fetchData = async <T = any>(
+export const vercelAPI = async <T = any>(
   url: string,
   options: AxiosRequestConfig = {},
   operation: string = 'operation',
 ): Promise<AxiosResponse<T>> => {
   try {
     // Make the HTTP request using the Axios instance and provided options.
-    const response: AxiosResponse<T> = await axiosInstance(url, options)
+    const response: AxiosResponse<T> = await vercelAPIAxiosInstance(
+      url,
+      options,
+    )
 
     // Return the full Axios response object.
     return response
@@ -42,5 +45,3 @@ const fetchData = async <T = any>(
     throw error
   }
 }
-
-export default fetchData
