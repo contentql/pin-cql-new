@@ -3,9 +3,12 @@ import {
   CreateNewDeploymentByProjectNameSchema,
   CreateProjectWithGithubRepoSchema,
   CreateWebhookByProjectIdSchema,
+  DeleteEnvVarByIdAndProjectNameOrIdSchema,
+  EditEnvVarByIdAndProjectNameOrIdSchema,
+  GetEnvVarsByProjectNameOrIdSchema,
   GetProjectByNameOrIdSchema,
-  UpsertEnvironmentVariablesSchema,
   deleteProjectNameOrIdSchema,
+  upsertEnvVarsByProjectNameOrIdSchema,
 } from '@/trpc/validators/vercel'
 import { vercelAPI } from '@/utils/vercelAPI'
 
@@ -56,7 +59,7 @@ export const vercelRouter = router({
       try {
         const response = await vercelAPI(
           `/v9/projects/${projectNameOrId}?slug=${SLUG}&teamId=${TEAM_ID}`,
-          { method: 'GET' },
+          { method: 'DELETE' },
           'deleting a project',
         )
 
@@ -120,8 +123,8 @@ export const vercelRouter = router({
     }),
 
   // Upsert one or more environment variables
-  upsertEnvironmentVariables: userProcedure
-    .input(UpsertEnvironmentVariablesSchema)
+  upsertEnvVarsByProjectNameOrId: userProcedure
+    .input(upsertEnvVarsByProjectNameOrIdSchema)
     .query(async ({ input }) => {
       const { projectNameOrId, ...body } = input
 
@@ -135,6 +138,63 @@ export const vercelRouter = router({
         return response.data
       } catch (error) {
         throw new Error('Error during upsert environment variables')
+      }
+    }),
+
+  // Get environment variables by project name or id
+  GetEnvVarsByProjectNameOrId: userProcedure
+    .input(GetEnvVarsByProjectNameOrIdSchema)
+    .query(async ({ input }) => {
+      const { projectNameOrId } = input
+
+      try {
+        const response = await vercelAPI(
+          `/v9/projects/${projectNameOrId}/env?slug=${SLUG}&teamId=${TEAM_ID}`,
+          { method: 'GET' },
+          'getting environment variables',
+        )
+
+        return response.data
+      } catch (error) {
+        throw new Error('Error during getting environment variables')
+      }
+    }),
+
+  // Edit a environment variable by id and project name or id
+  EditEnvVarByIdAndProjectNameOrId: userProcedure
+    .input(EditEnvVarByIdAndProjectNameOrIdSchema)
+    .query(async ({ input }) => {
+      const { envVarId, projectNameOrId, ...body } = input
+
+      try {
+        const response = await vercelAPI(
+          `/v9/projects/${projectNameOrId}/env/${envVarId}?slug=${SLUG}&teamId=${TEAM_ID}`,
+          { method: 'PATCH', data: { ...body } },
+          'editing environment variable',
+        )
+
+        return response.data
+      } catch (error) {
+        throw new Error('Error during editing environment variable')
+      }
+    }),
+
+  // Delete a environment variable by id and project name and id
+  DeleteEnvVarByIdAndProjectNameOrId: userProcedure
+    .input(DeleteEnvVarByIdAndProjectNameOrIdSchema)
+    .query(async ({ input }) => {
+      const { envVarId, projectNameOrId } = input
+
+      try {
+        const response = await vercelAPI(
+          `/v9/projects/${projectNameOrId}/env/${envVarId}?slug=${SLUG}&teamId=${TEAM_ID}`,
+          { method: 'DELETE' },
+          'deleting environment variable',
+        )
+
+        return response.data
+      } catch (error) {
+        throw new Error('Error during deleting environment variable')
       }
     }),
 })

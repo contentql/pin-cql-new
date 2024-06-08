@@ -269,7 +269,7 @@ const UpsertEnvironmentVariableTypeSchema = z.enum([
 ])
 
 // Zod schema to upsert one or more environment variables
-export const UpsertEnvironmentVariablesSchema = z.object({
+export const upsertEnvVarsByProjectNameOrIdSchema = z.object({
   projectNameOrId: z.union([z.string(), z.number()]),
   key: z.string(),
   value: z.string(),
@@ -277,4 +277,30 @@ export const UpsertEnvironmentVariablesSchema = z.object({
   target: z.array(z.string()),
   gitBranch: z.string().nullable(),
   comment: z.string().max(500),
+})
+
+// Zod schema to Get environment variables by project name or id
+export const GetEnvVarsByProjectNameOrIdSchema = z.object({
+  projectNameOrId: z.union([z.string(), z.number()]),
+})
+
+// Zod schema to delete a environment variable by id and project name and id
+export const DeleteEnvVarByIdAndProjectNameOrIdSchema = z.object({
+  envVarId: z.string(),
+  projectNameOrId: z.union([z.string(), z.number()]),
+})
+
+// Zod schema to edit a environment variable by id and project name or id
+export const EditEnvVarByIdAndProjectNameOrIdSchema = z.object({
+  envVarId: z.string(),
+  projectNameOrId: z.union([z.string(), z.number()]),
+  comment: z.string().max(500).optional(),
+  customEnvironmentIds: z.array(z.string()).optional(),
+  gitBranch: z.string().max(250).nullable().optional(),
+  key: z.string().optional(),
+  target: z.array(z.enum(['development', 'preview', 'production'])).optional(),
+  type: z
+    .enum(['system', 'secret', 'encrypted', 'plain', 'sensitive'])
+    .optional(),
+  value: z.string().optional(),
 })
