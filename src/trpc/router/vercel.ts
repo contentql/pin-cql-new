@@ -7,6 +7,7 @@ import {
   EditEnvVarByIdAndProjectNameOrIdSchema,
   GetEnvVarsByProjectNameOrIdSchema,
   GetProjectByNameOrIdSchema,
+  UpdateProjectByNameOrIdSchema,
   deleteProjectNameOrIdSchema,
   upsertEnvVarsByProjectNameOrIdSchema,
 } from '@/trpc/validators/vercel'
@@ -195,6 +196,25 @@ export const vercelRouter = router({
         return response.data
       } catch (error) {
         throw new Error('Error during deleting environment variable')
+      }
+    }),
+
+  // Update a project using name or id
+  UpdateProjectByNameOrId: userProcedure
+    .input(UpdateProjectByNameOrIdSchema)
+    .query(async ({ input }) => {
+      const { projectNameOrId, ...body } = input
+
+      try {
+        const response = await vercelAPI(
+          `/v9/projects/${projectNameOrId}??slug=${SLUG}&teamId=${TEAM_ID}`,
+          { method: 'PATCH', data: { ...body } },
+          'updating project',
+        )
+
+        return response.data
+      } catch (error) {
+        throw new Error('Error during updating project')
       }
     }),
 })

@@ -304,3 +304,122 @@ export const EditEnvVarByIdAndProjectNameOrIdSchema = z.object({
     .optional(),
   value: z.string().optional(),
 })
+
+// Zod schema to update a project using name or id
+export const UpdateProjectByNameOrIdSchema = z.object({
+  projectNameOrId: z.union([z.string(), z.number()]),
+  autoAssignCustomDomains: z.boolean().optional(),
+  autoAssignCustomDomainsUpdatedBy: z.string().optional(),
+  autoExposeSystemEnvs: z.boolean().optional(),
+  buildCommand: z.string().max(256).nullable().optional(),
+  commandForIgnoringBuildStep: z.string().max(256).nullable().optional(),
+  customerSupportCodeVisibility: z.boolean().optional(),
+  devCommand: z.string().max(256).nullable().optional(),
+  directoryListing: z.boolean().optional(),
+  enablePreviewFeedback: z.boolean().nullable().optional(),
+  framework: z
+    .enum([
+      'blitzjs',
+      'nextjs',
+      'gatsby',
+      'remix',
+      'astro',
+      'hexo',
+      'eleventy',
+      'docusaurus-2',
+      'docusaurus',
+      'preact',
+      'solidstart-1',
+      'solidstart',
+      'dojo',
+      'ember',
+      'vue',
+      'scully',
+      'ionic-angular',
+      'angular',
+      'polymer',
+      'svelte',
+      'sveltekit',
+      'sveltekit-1',
+      'ionic-react',
+      'create-react-app',
+      'gridsome',
+      'umijs',
+      'sapper',
+      'saber',
+      'stencil',
+      'nuxtjs',
+      'redwoodjs',
+      'hugo',
+      'jekyll',
+      'brunch',
+      'middleman',
+      'zola',
+      'hydrogen',
+      'vite',
+      'vitepress',
+      'vuepress',
+      'parcel',
+      'sanity',
+      'storybook',
+    ])
+    .nullable()
+    .optional(),
+  gitForkProtection: z.boolean().optional(),
+  gitLFS: z.boolean().optional(),
+  installCommand: z.string().max(256).nullable().optional(),
+  name: z.string().max(100).optional(),
+  nodeVersion: z
+    .enum(['20.x', '18.x', '16.x', '14.x', '12.x', '10.x'])
+    .optional(),
+  optionsAllowlist: z
+    .object({
+      paths: z
+        .array(z.object({ value: z.string() }))
+        .min(1)
+        .max(5),
+    })
+    .nullable()
+    .optional(),
+  outputDirectory: z.string().max(256).nullable().optional(),
+  passwordProtection: z
+    .object({
+      deploymentType: z.enum([
+        'all',
+        'preview',
+        'prod_deployment_urls_and_all_previews',
+      ]),
+      password: z.string().max(72).nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+  publicSource: z.boolean().nullable().optional(),
+  rootDirectory: z.string().max(256).nullable().optional(),
+  serverlessFunctionRegion: z.string().max(4).nullable().optional(),
+  skewProtectionBoundaryAt: z.number().int().optional(),
+  skewProtectionMaxAge: z.number().int().optional(),
+  sourceFilesOutsideRootDirectory: z.boolean().optional(),
+  ssoProtection: z
+    .object({
+      deploymentType: z.enum([
+        'all',
+        'preview',
+        'prod_deployment_urls_and_all_previews',
+      ]),
+    })
+    .nullable()
+    .optional(),
+  trustedIps: z.object({
+    deploymentType: z.enum([
+      'all',
+      'preview',
+      'prod_deployment_urls_and_all_previews',
+    ]),
+    addresses: z
+      .array(
+        z.object({ value: z.string(), note: z.string().max(20).optional() }),
+      )
+      .min(1),
+    protectionMode: z.enum(['exclusive', 'additional']),
+  }),
+})
