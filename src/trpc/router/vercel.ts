@@ -1,7 +1,14 @@
+import { env } from '@env'
+import {
+  adjectives,
+  colors,
+  uniqueNamesGenerator,
+} from 'unique-names-generator'
+
 import { router, userProcedure } from '@/trpc'
 import {
   CreateNewDeploymentByProjectNameSchema,
-  CreateProjectWithGithubRepoSchema,
+  CreateProjectWithGithubRepoSchema2,
   CreateWebhookByProjectIdSchema,
   DeleteEnvVarByIdAndProjectNameOrIdSchema,
   EditEnvVarByIdAndProjectNameOrIdSchema,
@@ -72,25 +79,235 @@ export const vercelRouter = router({
 
   // Create a new project with a github repo
   createProjectWithGithubRepo: userProcedure
-    .input(CreateProjectWithGithubRepoSchema)
-    .query(async ({ input }) => {
+    .input(CreateProjectWithGithubRepoSchema2)
+    .mutation(async ({ input }) => {
+      const serviceVariable = input?.data!
+
+      const randomName: string = uniqueNamesGenerator({
+        dictionaries: [adjectives, colors],
+      })
+
+      const updatedProjectName = `${serviceVariable?.Project_Name}_${randomName}`
+
       try {
         const response = await vercelAPI(
           `/v10/projects?slug=${SLUG}&teamId=${TEAM_ID}`,
-          { method: 'POST', data: { ...input } },
+          {
+            method: 'POST',
+            data: {
+              name: updatedProjectName,
+              buildCommand: null,
+              devCommand: null,
+              serverlessFunctionRegion: 'bom1',
+              environmentVariables: [
+                {
+                  key: 'CI',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: 'true',
+                },
+                {
+                  key: 'DATABASE_URI',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: serviceVariable?.DATABASE_URI || '',
+                },
+                {
+                  key: 'PAYLOAD_SECRET',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: '{{randomString}}',
+                },
+                {
+                  key: 'NEXT_PUBLIC_PUBLIC_URL',
+                  target: ['development', 'preview', 'production'],
+                  type: 'system',
+                  value: 'VERCEL_URL',
+                },
+                {
+                  key: 'PAYLOAD_URL',
+                  target: ['development', 'preview', 'production'],
+                  type: 'system',
+                  value: 'VERCEL_URL',
+                },
+                {
+                  key: 'S3_ENDPOINT',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: serviceVariable.S3_ENDPOINT || env.S3_ENDPOINT,
+                },
+                {
+                  key: 'S3_ACCESS_KEY_ID',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value:
+                    serviceVariable.S3_ACCESS_KEY_ID || env.S3_ACCESS_KEY_ID,
+                },
+                {
+                  key: 'S3_SECRET_ACCESS_KEY',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value:
+                    serviceVariable.S3_SECRET_ACCESS_KEY ||
+                    env.S3_SECRET_ACCESS_KEY,
+                },
+                {
+                  key: 'S3_BUCKET',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: serviceVariable.S3_BUCKET || env.S3_BUCKET,
+                },
+                {
+                  key: 'S3_REGION',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: serviceVariable.S3_REGION || env.S3_REGION,
+                },
+                {
+                  key: 'RESEND_API_KEY',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: serviceVariable.RESEND_API_KEY || env.RESEND_API_KEY,
+                },
+                {
+                  key: 'RESEND_SENDER_EMAIL',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value:
+                    serviceVariable.RESEND_SENDER_EMAIL ||
+                    env.RESEND_SENDER_EMAIL,
+                },
+                {
+                  key: 'RESEND_SENDER_NAME',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value:
+                    serviceVariable.RESEND_SENDER_NAME ||
+                    env.RESEND_SENDER_NAME,
+                },
+                {
+                  key: 'NEXT_PUBLIC_IS_LIVE',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: 'false',
+                },
+                {
+                  key: 'PAYLOAD_PUBLIC_DRAFT_SECRET',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: '{{randomString}}',
+                },
+                {
+                  key: 'NEXT_PRIVATE_DRAFT_SECRET',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: '{{randomString}}',
+                },
+                {
+                  key: 'REVALIDATION_KEY',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: '{{randomString}}',
+                },
+                {
+                  key: 'NEXT_PRIVATE_REVALIDATION_KEY',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: '{{randomString}}',
+                },
+                {
+                  key: 'NEXT_PUBLIC_HASURA_BASE_URL',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: env.NEXT_PUBLIC_HASURA_URI,
+                },
+                {
+                  key: 'NEXT_PUBLIC_HASURA_ADMIN_SECRET',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: env.HASURA_API_KEY,
+                },
+                {
+                  key: 'NEXT_PUBLIC_RAILWAY_API_TOKEN',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: env.RAILWAY_SUPER_API,
+                },
+                {
+                  key: 'AUTH_SECRET',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: env.AUTH_SECRET,
+                },
+                {
+                  key: 'AUTH_TRUST_HOST',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: 'true',
+                },
+                {
+                  key: 'AUTH_VERPOSE',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: 'true',
+                },
+                {
+                  key: 'AUTH_URL',
+                  target: ['development', 'preview', 'production'],
+                  type: 'system',
+                  value: 'VERCEL_URL',
+                },
+                {
+                  key: 'AUTH_GITHUB_ID',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: serviceVariable.AUTH_GITHUB_ID || env.AUTH_GITHUB_ID,
+                },
+                {
+                  key: 'AUTH_GITHUB_SECRET',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value:
+                    serviceVariable.AUTH_GITHUB_SECRET ||
+                    env.AUTH_GITHUB_SECRET,
+                },
+                {
+                  key: 'OPENAPI_KEY',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: serviceVariable.OPENAPI_KEY || env.OPENAPI_KEY,
+                },
+                {
+                  key: 'SUBSCRIPTION_PLAN',
+                  target: ['development', 'preview', 'production'],
+                  type: 'encrypted',
+                  value: 'creator',
+                },
+              ],
+              framework: 'nextjs',
+              gitRepository: {
+                repo: 'contentql/pin-hcms',
+                type: 'github',
+              },
+              installCommand: null,
+              outputDirectory: null,
+              rootDirectory: null,
+            },
+          },
           'creating a project',
         )
 
         return response.data
-      } catch (error) {
-        throw new Error('Error during creating project')
+      } catch (error: any) {
+        console.log(error)
+        throw new Error('Error during creating project', error)
       }
     }),
 
   // Create a webhook by project id
   createWebhookByProjectId: userProcedure
     .input(CreateWebhookByProjectIdSchema)
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       try {
         const response = await vercelAPI(
           `/v1/webhooks?slug=${SLUG}&teamId=${TEAM_ID}`,

@@ -18,11 +18,16 @@ export const vercelAPI = async <T = any>(
   operation: string = 'operation',
 ): Promise<AxiosResponse<T>> => {
   try {
+    const headers = {
+      Authorization: 'Bearer aYXFXA5dLm3PwRsxik081ANy',
+      ...options.headers,
+    }
+
     // Make the HTTP request using the Axios instance and provided options.
-    const response: AxiosResponse<T> = await vercelAPIAxiosInstance(
-      url,
-      options,
-    )
+    const response: AxiosResponse<T> = await vercelAPIAxiosInstance(url, {
+      ...options,
+      headers,
+    })
 
     // Return the full Axios response object.
     return response

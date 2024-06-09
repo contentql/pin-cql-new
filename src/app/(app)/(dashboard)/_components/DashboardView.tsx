@@ -81,24 +81,30 @@ const DashboardView = () => {
     },
   })
 
+  const { mutate: createWebhookByProjectId } =
+    trpc.vercel.createWebhookByProjectId.useMutation({})
+
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 
-  const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
-    trpc.railway.templateDeploy.useMutation({
+  const { mutate: templateDeploy, isPending: isTemplateDeploying } =
+    trpc.vercel.createProjectWithGithubRepo.useMutation({
       onSuccess: async data => {
+        const projectIds = data.id
+        try {
+          createWebhookByProjectId({
+            url: 'https://webhook.site/2afc2c37-e7a1-40e3-9292-ae8d9a8fcee1',
+            events: ['deployment.created', 'deployment.succeeded'],
+            projectIds: [projectIds],
+          })
+        } catch (error) {
+          console.log(error)
+          throw new Error('Error creating project')
+        }
         try {
           createProject({
-            name: serviceVariable?.Project_Name,
-            projectId: data.railway.templateDeploy.projectId,
-            workflowId: data.railway.templateDeploy.workflowId,
-          })
-
-          templateUpdate({
-            id: data.railway.templateDeploy.projectId,
-            input: {
-              name: serviceVariable?.Project_Name,
-              description: '',
-            },
+            name: data?.name,
+            projectId: data?.id,
+            workflowId: data?.accountId,
           })
         } catch (error) {
           console.log(error)
@@ -114,16 +120,7 @@ const DashboardView = () => {
     setIsDialogOpen(false)
 
     try {
-      const templateDeployPromise = templateDeploy({
-        data,
-      })
-      toast.promise(templateDeployPromise, {
-        loading: 'Deploying...',
-        success: data => {
-          return `Deployment started`
-        },
-        error: 'Error',
-      })
+      templateDeploy({ data })
     } catch (error) {
       console.log(error)
     }
