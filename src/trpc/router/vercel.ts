@@ -61,7 +61,7 @@ export const vercelRouter = router({
   // Get a project by name or id
   deleteProjectNameOrId: userProcedure
     .input(deleteProjectNameOrIdSchema)
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const { projectNameOrId } = input
 
       try {
@@ -110,7 +110,7 @@ export const vercelRouter = router({
                   key: 'DATABASE_URI',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable?.DATABASE_URI || '',
+                  value: serviceVariable?.DATABASE_URI || env.DATABASE_URI,
                 },
                 {
                   key: 'PAYLOAD_SECRET',

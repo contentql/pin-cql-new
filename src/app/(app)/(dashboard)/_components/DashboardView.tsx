@@ -82,7 +82,21 @@ const DashboardView = () => {
   })
 
   const { mutate: createWebhookByProjectId } =
-    trpc.vercel.createWebhookByProjectId.useMutation({})
+    trpc.vercel.createWebhookByProjectId.useMutation({
+      onSuccess: async () => {
+        console.log('Webhook created')
+        trpc.vercel.createNewDeploymentByProjectName.useQuery({
+          name: 'hbcd_explicit_tan',
+          target: 'production',
+          gitSource: {
+            type: 'github',
+            ref: 'main',
+            repoId: 791460068,
+          },
+          sourceFilesOutsideRootDirectory: true,
+        })
+      },
+    })
 
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 

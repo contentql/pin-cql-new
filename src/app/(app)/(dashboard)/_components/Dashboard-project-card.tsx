@@ -82,7 +82,7 @@ export const DashboardProjectCard = ({ project }: any) => {
   })
 
   const { mutate: templateDelete, isPending: isTemplateDeleting } =
-    trpc.railway.templateDelete.useMutation({
+    trpc.vercel.deleteProjectNameOrId.useMutation({
       onSuccess: () => {
         console.log('Template deleted successfully')
         try {
@@ -101,7 +101,7 @@ export const DashboardProjectCard = ({ project }: any) => {
   const handleTemplateDelete = ({ templateId }: any) => {
     try {
       templateDelete({
-        id: templateId,
+        projectNameOrId: templateId,
       })
     } catch (error) {
       console.log(error)
