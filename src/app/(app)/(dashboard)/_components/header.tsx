@@ -49,13 +49,13 @@ import { trpc } from '@/trpc/client'
 type Plan =
   | 'link'
   | 'default'
-  | 'basic'
+  | 'Basic'
   | 'destructive'
   | 'outline'
   | 'secondary'
   | 'ghost'
-  | 'standard'
-  | 'premium'
+  | 'Creator'
+  | 'Team'
   | null
   | undefined
 
@@ -96,7 +96,6 @@ const DashboardHeader = () => {
 
   const handleSubmit = () => {
     try {
-      console.log('clicked')
       // updateRailwayApi(c)
       updateRailwayApi({ railwayApiKey })
       // railwayFrom(railwayApiKey)

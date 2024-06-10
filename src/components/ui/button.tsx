@@ -20,9 +20,9 @@ const buttonVariants = cva(
         ghost:
           'hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50',
         link: 'text-slate-900 underline-offset-4 hover:underline dark:text-slate-50',
-        basic: 'bg-green-100 text-green-900',
-        standard: 'bg-blue-100 text-blue-900',
-        premium: 'bg-purple-100 text-purple-900 hover:bg-purple-200 ',
+        Basic: 'bg-blue-100 text-blue-900 hover:bg-blue-200',
+        Creator: 'bg-green-100 text-green-900 hover:bg-green-200',
+        Team: 'bg-purple-100 text-purple-900 hover:bg-purple-200 ',
       },
       size: {
         default: 'h-10 px-4 py-2',

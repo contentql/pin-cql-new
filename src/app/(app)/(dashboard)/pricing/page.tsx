@@ -1,4 +1,4 @@
-import * as React from 'react'
+import StripePricingTable from '@/app/(app)/(dashboard)/_components/StripePricingTable'
 
 declare global {
   namespace JSX {
@@ -31,12 +31,7 @@ const Pricing = () => {
             </div>
           </div>
         </div>
-        <div>
-          <stripe-pricing-table
-            pricing-table-id='prctbl_1PL6daSANsDuJnVdAYvCMA5x'
-            publishable-key='pk_test_51OgjvwSANsDuJnVdTJNvvmSw0yUXo5vRmV4CxvVAY1JJxpBOdUnZX5d9fuL3Pf6njHk0fKSX1ktOQH1VJClvyot200laA1Xndd'
-          />
-        </div>
+        <StripePricingTable />
       </div>
     </section>
   )
