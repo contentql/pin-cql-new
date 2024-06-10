@@ -81,48 +81,63 @@ const DashboardView = () => {
     },
   })
 
+  const { mutate: createNewDeploymentByProjectName } =
+    trpc.vercel.createNewDeploymentByProjectName.useMutation()
+
+  const { mutate: createWebhookByProjectId } =
+    trpc.vercel.createWebhookByProjectId.useMutation({
+      onSuccess: async () => {},
+    })
+
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 
   const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
-    trpc.railway.templateDeploy.useMutation({
+    trpc.vercel.createProjectWithGithubRepo.useMutation({
       onSuccess: async data => {
         try {
-          createProject({
-            name: serviceVariable?.Project_Name,
-            projectId: data.railway.templateDeploy.projectId,
-            workflowId: data.railway.templateDeploy.workflowId,
+          createWebhookByProjectId({
+            url: 'https://webhook.site/2afc2c37-e7a1-40e3-9292-ae8d9a8fcee1',
+            events: ['deployment.created', 'deployment.succeeded'],
+            projectIds: [data.id],
           })
 
-          templateUpdate({
-            id: data.railway.templateDeploy.projectId,
-            input: {
-              name: serviceVariable?.Project_Name,
-              description: '',
+          createNewDeploymentByProjectName({
+            name: data.name,
+            target: 'production',
+            gitSource: {
+              type: 'github',
+              ref: 'main',
+              repoId: 791460068,
             },
+            source: 'import',
           })
+
+          createProject({
+            name: data?.name,
+            projectId: data?.id,
+            workflowId: data?.accountId,
+          })
+
+          console.log('All operations completed successfully')
         } catch (error) {
-          console.log(error)
+          console.log('Error in operations:', error)
+          toast.error('Error during project setup')
         }
       },
-      onError: async () => {
+      onError: () => {
         console.log('Template creation failed')
         toast.error('Template creation failed')
       },
     })
 
-  const handleAddProject = (data: any) => {
+  const handleAddProject = async (data: any) => {
     setIsDialogOpen(false)
 
     try {
-      const templateDeployPromise = templateDeploy({
-        data,
-      })
-      toast.promise(templateDeployPromise, {
+      toast.promise(templateDeploy({ data }), {
         loading: 'Deploying...',
-        success: data => {
-          return `Deployment started`
-        },
-        error: 'Error',
+        success: 'Deployment successful!',
+        error: 'Deployment failed',
       })
     } catch (error) {
       console.log(error)
@@ -146,31 +161,6 @@ const DashboardView = () => {
             })}
           </TabsList>
           <div className='ml-auto flex items-center gap-2'>
-            {/* <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className='h-8 gap-1' size='sm' variant='outline'>
-                  <ListFilterIcon className='h-3.5 w-3.5' />
-                  <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                    Filter
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='end'>
-                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  Active
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button className='h-8 gap-1' size='sm' variant='outline'>
-              <FileIcon className='h-3.5 w-3.5' />
-              <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                Export
-              </span>
-            </Button> */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant='outline'>New Project</Button>
@@ -196,11 +186,7 @@ const DashboardView = () => {
         {projectTabs?.map(tab => {
           return (
             <TabsContent key={tab.value} value={tab.value} className='h-screen'>
-              <Card
-                x-chunk='dashboard-06-chunk-0'
-                className='min-h-full'
-                // style={{ minHeight: '600px' }}
-              >
+              <Card x-chunk='dashboard-06-chunk-0' className='min-h-full'>
                 <CardHeader>
                   <CardTitle>Projects</CardTitle>
                   <CardDescription>
@@ -212,20 +198,14 @@ const DashboardView = () => {
                     <EmptyProject setIsDialogOpen={setIsDialogOpen} />
                   ) : (
                     <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
-                      {projects
-                        // ?.filter(
-                        //   project =>
-                        //     tab?.value === 'all' ||
-                        //     project?.status.toLowerCase() === tab?.value,
-                        // )
-                        ?.map((project: any) => (
-                          <div key={project.id}>
-                            <DashboardProjectCard
-                              project={project}
-                              templateUpdate={templateUpdate}
-                            />
-                          </div>
-                        ))}
+                      {projects?.map((project: any) => (
+                        <div key={project.id}>
+                          <DashboardProjectCard
+                            project={project}
+                            templateUpdate={templateUpdate}
+                          />
+                        </div>
+                      ))}
                     </div>
                   )}
                 </CardContent>
