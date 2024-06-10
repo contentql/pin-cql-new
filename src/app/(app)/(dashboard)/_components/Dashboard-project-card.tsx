@@ -183,7 +183,7 @@ export const DashboardProjectCard = ({ project }: any) => {
         x-chunk='dashboard-01-chunk-0'
         className='group relative  w-80 cursor-pointer bg-purple-50 duration-300 hover:border-purple-600'
         onClick={() => {
-          router.push(`/project/${project?.projectId}`)
+          router.push(`/project/${project?.name}`)
         }}>
         <div className='absolute -right-2 -top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-500 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
           <DropdownMenu>

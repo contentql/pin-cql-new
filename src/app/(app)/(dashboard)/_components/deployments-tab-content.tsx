@@ -1,12 +1,7 @@
 import '@radix-ui/react-dropdown-menu'
-import { useQueryClient } from '@tanstack/react-query'
-import { getQueryKey } from '@trpc/react-query'
-import { Box, Database, EllipsisVertical } from 'lucide-react'
+import { EllipsisVertical, GitBranch } from 'lucide-react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { toast } from 'sonner'
 
-import { projects } from '@/app/(app)/(dashboard)/_data'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -21,84 +16,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { trpc } from '@/trpc/client'
 
-interface DeploymentsTabContentProps {
-  deployments: (typeof projects)[0]['services'][0]['deployments']
-}
-
-const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
-  deployments,
-}: {
-  deployments: any
-}) => {
-  const params = useParams()
-  const { serviceId } = params
-  const queryClient = useQueryClient()
-
-  const getDetailsKeys = getQueryKey(
-    trpc.railway.getDetails,
-    undefined,
-    'query',
-  )
-
-  const serviceDeployments = deployments?.edges.filter(
-    (deployment: any) => deployment.node.serviceId === serviceId,
-  )
-
-  const { mutateAsync: deploymentReDeploy } =
-    trpc.railway.deploymentReDeploy.useMutation({
-      onSuccess: data => {
-        console.log('redeployment sucessfully deployed')
-      },
-      onSettled: newTodo => {
-        queryClient.invalidateQueries({ queryKey: getDetailsKeys })
-      },
-    })
-
-  const handleRedeploy = async (id: string) => {
-    const reDeploy: any = deploymentReDeploy({
-      id,
-    })
-
-    toast.promise(reDeploy, {
-      loading: 'Deploying...',
-      success: data => {
-        return `Deployment successfully`
-      },
-      error: 'Error',
-    })
-  }
-
-  const serviceDeploymentsSorted = serviceDeployments?.sort(
-    (a: any, b: any) => {
-      const dateA: number = new Date(a.node.createdAt).getTime()
-      const dateB: number = new Date(b.node.createdAt).getTime()
-      return dateB - dateA
-    },
-  )
-
+const DeploymentsTabContent = ({ deployments }: { deployments: any }) => {
   return (
     <div className='grid grid-cols-1 gap-8'>
-      {serviceDeploymentsSorted?.map((deployment: any) => {
+      {deployments?.map((deployment: any) => {
         return (
           <Card
-            key={deployment.node.id}
-            className={`${deployment?.node.status === 'REMOVED' && 'opacity-65'}`}>
+            key={deployment.id}
+            className={`${deployment?.readyState === 'ERROR' && 'opacity-65'}`}>
             <CardHeader className='flex flex-row justify-between'>
               <div className='space-y-1'>
                 <CardTitle>
-                  {deployment?.node.staticUrl && (
+                  {deployment?.url && (
                     <Link
-                      href={`https://${deployment?.node.staticUrl}`}
+                      href={`https://${deployment?.url}`}
                       rel='noopener noreferrer'
                       target='_blank'>
-                      {deployment?.node.staticUrl}
+                      {deployment?.url}
                     </Link>
                   )}
                 </CardTitle>
                 <CardDescription className='pt-2'>
-                  {deployment?.node?.status}
+                  {deployment?.readyState}
                 </CardDescription>
               </div>
               <div className='bg-secondary text-secondary-foreground flex items-center space-x-4 rounded-md'>
@@ -116,7 +56,8 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
                     <DropdownMenuItem>View Logs</DropdownMenuItem>
                     <DropdownMenuItem>Restart</DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => handleRedeploy(deployment.node.id)}>
+                    // onClick={() => handleRedeploy(deployment.node.id)}
+                    >
                       Redeploy
                     </DropdownMenuItem>
                     <DropdownMenuItem>Remove</DropdownMenuItem>
@@ -126,32 +67,12 @@ const DeploymentsTabContent: React.FC<DeploymentsTabContentProps> = ({
             </CardHeader>
             <CardContent>
               <div className='text-muted-foreground flex space-x-4 text-sm'>
-                <div className='flex items-center'>
-                  {deployment?.node.meta?.image &&
-                  deployment?.node.meta?.image === 'mongo' ? (
-                    <>
-                      <Database className='mr-1 h-4 w-4' />
-                      {deployment?.node.meta?.image}
-                    </>
-                  ) : (
-                    <>
-                      <Box className='mr-1 h-4 w-4' />
-                      {deployment?.node.meta?.image}
-                    </>
-                  )}
-                  {/* {deployment?.node.meta?.branch && (
-                    <>
-                      <GitCommit className='mr-1 h-4 w-4' />
-                      Github
-                    </>
-                  )} */}
-                </div>
-                {/* {deployment?.meta?.branch && (
+                {deployment?.meta?.githubOrg && (
                   <div className='flex items-center'>
-                    <GitBranch className='mr-1 w-4 h-4' />
-                    {deployment?.meta?.branch}
+                    <GitBranch className='mr-1 h-4 w-4' />
+                    {deployment?.meta?.githubOrg}
                   </div>
-                )} */}
+                )}
               </div>
             </CardContent>
           </Card>
