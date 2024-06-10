@@ -38,7 +38,7 @@ export default function DeleteAccountSection() {
         <CardFooter className='flex justify-end bg-red-500/10 p-3'>
           <Dialog>
             <DialogTrigger asChild>
-              <Button color='red'>Delete Accout</Button>
+              <Button color='red'>Delete Account</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

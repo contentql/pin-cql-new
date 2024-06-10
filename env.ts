@@ -27,6 +27,8 @@ export const env = createEnv({
     HASURA_API_KEY: z.string().min(1),
     RAILWAY_SUPER_API: z.string().min(1),
     OPENAPI_KEY: z.string().min(1),
+    ENCRYPTION_KEY: z.string(),
+    VERCEL_API_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_IS_LIVE: z.boolean().default(false),
@@ -61,5 +63,7 @@ export const env = createEnv({
     HASURA_API_KEY: process.env.HASURA_API_KEY,
     RAILWAY_SUPER_API: process.env.RAILWAY_SUPER_API,
     OPENAPI_KEY: process.env.OPENAPI_KEY,
+    ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
+    VERCEL_API_KEY: process.env.VERCEL_API_KEY,
   },
 })

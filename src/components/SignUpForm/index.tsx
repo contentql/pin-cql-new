@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { MoveLeftIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
@@ -71,10 +72,10 @@ const SignUpForm = () => {
 
   const onSubmit = async (data: SignUpFormData) => {
     startTransition(async () => {
-      const result = await signUp({ ...data, redirectTo: '/profile' })
+      const result = await signUp({ ...data, redirectTo: '/dashboard' })
       setBackendSignUpResponse(result)
       if (result.success) {
-        router.push('/profile')
+        router.push('/dashboard')
       }
     })
   }
@@ -92,6 +93,12 @@ const SignUpForm = () => {
           </Link>
         </p>
       }>
+      <Link
+        href='../'
+        className='flex gap-x-2 mb-6  justify-end -top-4 items-center underline'>
+        <MoveLeftIcon className='h-4 w-4' />
+        Back
+      </Link>
       <h2 className='mb-3 text-center text-2xl font-medium'>
         Create Your Account
       </h2>

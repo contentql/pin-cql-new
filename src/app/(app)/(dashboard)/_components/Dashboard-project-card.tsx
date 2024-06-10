@@ -7,7 +7,17 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Tooltip,
   TooltipContent,
@@ -31,6 +42,9 @@ export const DashboardProjectCard = ({ project }: any) => {
 
   const [projectName, setProjectName] = useState(project?.name || '')
   const [toggleNameEdit, setToggleNameEdit] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [confirmation, setConfirmation] = useState('')
+  const [isAllowedToDelete, setIsAllowedToDelete] = useState(false)
 
   const { mutate: updateProject } = trpc.projects.updateProject.useMutation({
     onSuccess: async data => {
@@ -68,7 +82,7 @@ export const DashboardProjectCard = ({ project }: any) => {
   })
 
   const { mutate: templateDelete, isPending: isTemplateDeleting } =
-    trpc.railway.templateDelete.useMutation({
+    trpc.vercel.deleteProjectNameOrId.useMutation({
       onSuccess: () => {
         console.log('Template deleted successfully')
         try {
@@ -87,7 +101,7 @@ export const DashboardProjectCard = ({ project }: any) => {
   const handleTemplateDelete = ({ templateId }: any) => {
     try {
       templateDelete({
-        id: templateId,
+        projectNameOrId: templateId,
       })
     } catch (error) {
       console.log(error)
@@ -112,14 +126,66 @@ export const DashboardProjectCard = ({ project }: any) => {
 
   return (
     <div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className='mb-2 md:text-2xl'>
+              Are you sure?
+            </DialogTitle>
+            <DialogDescription className='text-base dark:text-white'>
+              This action cannot be undone. This will permanently delete your
+              project and remove your data from our servers.
+            </DialogDescription>
+          </DialogHeader>
+          <Label>
+            Type{' '}
+            <span className='rounded-md border bg-zinc-50 p-0.5 italic dark:border-zinc-700 dark:bg-zinc-800'>
+              {projectName}
+            </span>{' '}
+            to confirm
+          </Label>
+          <Input
+            type='text'
+            placeholder='We are sad to see you go!'
+            value={confirmation}
+            onChange={e => {
+              setConfirmation(e.target.value)
+              if (e.target.value === projectName) {
+                setIsAllowedToDelete(true)
+              } else {
+                setIsAllowedToDelete(false)
+              }
+            }}
+          />
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type='button' variant='secondary'>
+                Close
+              </Button>
+            </DialogClose>
+
+            <Button
+              variant='destructive'
+              onClick={() => {
+                handleTemplateDelete({
+                  templateId: project?.projectId,
+                })
+              }}
+              disabled={!isAllowedToDelete || isTemplateDeleting}>
+              Delete Account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Card
         key={project?.projectId}
         x-chunk='dashboard-01-chunk-0'
-        className='cursor-pointer relative group'
+        className='group relative  w-80 cursor-pointer bg-purple-50 duration-300 hover:border-purple-600'
         onClick={() => {
           router.push(`/project/${project?.projectId}`)
         }}>
-        <div className='w-6 h-6 rounded-full bg-black border border-gray-500 absolute -top-3 -right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
+        <div className='absolute -right-2 -top-3 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-gray-500 bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Settings color='white' size='15' />
@@ -139,12 +205,6 @@ export const DashboardProjectCard = ({ project }: any) => {
                 }}>
                 Services
               </DropdownMenuItem>
-              {/* <DropdownMenuItem
-                onClick={e => {
-                  e.stopPropagation()
-                }}>
-                Deployments
-              </DropdownMenuItem> */}
               <DropdownMenuItem
                 onClick={e => {
                   e.stopPropagation()
@@ -156,9 +216,11 @@ export const DashboardProjectCard = ({ project }: any) => {
                 className='text-red-600'
                 onClick={e => {
                   e.stopPropagation()
-                  handleTemplateDelete({
-                    templateId: project?.projectId,
-                  })
+                  // handleTemplateDelete({
+                  //   templateId: project?.projectId,
+                  // })
+
+                  setIsDialogOpen(true)
                 }}>
                 Delete
               </DropdownMenuItem>
@@ -187,12 +249,12 @@ export const DashboardProjectCard = ({ project }: any) => {
                 }}
                 onClick={e => e.stopPropagation()}
                 value={projectName}
-                className='py-1 h-fit focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
+                className='h-fit py-1 focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
               />
 
               <X
                 color='red'
-                className='h-5 w-5 ml-4 cursor-pointer'
+                className='ml-4 h-5 w-5 cursor-pointer'
                 onClick={e => {
                   e.stopPropagation()
                   setToggleNameEdit(false)
@@ -201,13 +263,13 @@ export const DashboardProjectCard = ({ project }: any) => {
               <Check
                 color='green'
                 onClick={e => handleEdit(e)}
-                className='h-5 w-5 ml-4 cursor-pointer'
+                className='ml-4 h-5 w-5 cursor-pointer'
               />
             </div>
           ) : (
-            <div className='text-2xl font-bold'>{projectName}</div>
+            <div className='truncate text-2xl font-bold'>{projectName}</div>
           )}
-          <p className='text-xs pt-6 text-slate-500 dark:text-slate-400'>
+          <p className='pt-6 text-xs text-slate-500 dark:text-slate-400'>
             {project?.projectId}
           </p>
         </CardContent>

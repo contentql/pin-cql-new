@@ -6,10 +6,6 @@ import { getQueryKey } from '@trpc/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import {
-  FileIcon,
-  ListFilterIcon,
-} from '@/app/(app)/(dashboard)/_components/icons'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -26,18 +22,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { trpc } from '@/trpc/client'
 
 import { DashboardProjectCard } from './Dashboard-project-card'
+import { EmptyProject } from './EmptyProject'
 import VariablesForm from './VariablesForm'
 
 const DashboardView = () => {
@@ -82,7 +71,6 @@ const DashboardView = () => {
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
     onSuccess: async () => {
       console.log('Project created')
-      toast.success('Project created successfully')
     },
     onError: async () => {
       console.log('Project creation failed')
@@ -93,41 +81,63 @@ const DashboardView = () => {
     },
   })
 
+  const { mutate: createNewDeploymentByProjectName } =
+    trpc.vercel.createNewDeploymentByProjectName.useMutation()
+
+  const { mutate: createWebhookByProjectId } =
+    trpc.vercel.createWebhookByProjectId.useMutation({
+      onSuccess: async () => {},
+    })
+
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
 
-  const { mutate: templateDeploy, isPending: isTemplateDeploying } =
-    trpc.railway.templateDeploy.useMutation({
+  const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
+    trpc.vercel.createProjectWithGithubRepo.useMutation({
       onSuccess: async data => {
         try {
-          setIsDialogOpen(false)
+          createWebhookByProjectId({
+            url: 'https://webhook.site/2afc2c37-e7a1-40e3-9292-ae8d9a8fcee1',
+            events: ['deployment.created', 'deployment.succeeded'],
+            projectIds: [data.id],
+          })
+
+          createNewDeploymentByProjectName({
+            name: data.name,
+            target: 'production',
+            gitSource: {
+              type: 'github',
+              ref: 'main',
+              repoId: 791460068,
+            },
+            source: 'import',
+          })
 
           createProject({
-            name: serviceVariable?.Project_Name,
-            projectId: data.railway.templateDeploy.projectId,
-            workflowId: data.railway.templateDeploy.workflowId,
+            name: data?.name,
+            projectId: data?.id,
+            workflowId: data?.accountId,
           })
 
-          templateUpdate({
-            id: data.railway.templateDeploy.projectId,
-            input: {
-              name: serviceVariable?.Project_Name,
-              description: '',
-            },
-          })
+          console.log('All operations completed successfully')
         } catch (error) {
-          console.log(error)
+          console.log('Error in operations:', error)
+          toast.error('Error during project setup')
         }
       },
-      onError: async () => {
+      onError: () => {
         console.log('Template creation failed')
         toast.error('Template creation failed')
       },
     })
 
-  const handleAddProject = (data: any) => {
+  const handleAddProject = async (data: any) => {
+    setIsDialogOpen(false)
+
     try {
-      templateDeploy({
-        data,
+      toast.promise(templateDeploy({ data }), {
+        loading: 'Deploying...',
+        success: 'Deployment successful!',
+        error: 'Deployment failed',
       })
     } catch (error) {
       console.log(error)
@@ -151,34 +161,9 @@ const DashboardView = () => {
             })}
           </TabsList>
           <div className='ml-auto flex items-center gap-2'>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className='h-8 gap-1' size='sm' variant='outline'>
-                  <ListFilterIcon className='h-3.5 w-3.5' />
-                  <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                    Filter
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='end'>
-                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  Active
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button className='h-8 gap-1' size='sm' variant='outline'>
-              <FileIcon className='h-3.5 w-3.5' />
-              <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                Export
-              </span>
-            </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant='outline'>Create</Button>
+                <Button variant='outline'>New Project</Button>
               </DialogTrigger>
               <DialogContent className='sm:max-w-[500px]'>
                 <DialogHeader>
@@ -191,6 +176,7 @@ const DashboardView = () => {
                   setServiceVariable={setServiceVariable}
                   handleAddProject={handleAddProject}
                   isTemplateDeploying={isTemplateDeploying}
+                  setIsDialogOpen={setIsDialogOpen}
                 />
                 <DialogClose asChild>close</DialogClose>
               </DialogContent>
@@ -200,11 +186,7 @@ const DashboardView = () => {
         {projectTabs?.map(tab => {
           return (
             <TabsContent key={tab.value} value={tab.value} className='h-screen'>
-              <Card
-                x-chunk='dashboard-06-chunk-0'
-                className='min-h-full'
-                // style={{ minHeight: '600px' }}
-              >
+              <Card x-chunk='dashboard-06-chunk-0' className='min-h-full'>
                 <CardHeader>
                   <CardTitle>Projects</CardTitle>
                   <CardDescription>
@@ -212,14 +194,11 @@ const DashboardView = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
-                    {projects
-                      // ?.filter(
-                      //   project =>
-                      //     tab?.value === 'all' ||
-                      //     project?.status.toLowerCase() === tab?.value,
-                      // )
-                      ?.map((project: any) => (
+                  {projects?.length === 0 ? (
+                    <EmptyProject setIsDialogOpen={setIsDialogOpen} />
+                  ) : (
+                    <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
+                      {projects?.map((project: any) => (
                         <div key={project.id}>
                           <DashboardProjectCard
                             project={project}
@@ -227,7 +206,8 @@ const DashboardView = () => {
                           />
                         </div>
                       ))}
-                  </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>

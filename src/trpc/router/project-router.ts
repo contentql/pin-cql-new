@@ -26,10 +26,12 @@ const payload = await getPayload({
 export const projectRouter = router({
   getProjects: userProcedure.query(async ({ ctx }) => {
     const { user } = ctx
+
     try {
       const projects = await payload.find({
         collection: 'projects',
         user,
+        overrideAccess: false,
       })
 
       return projects

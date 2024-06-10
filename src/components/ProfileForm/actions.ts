@@ -34,6 +34,22 @@ const sanitizeUserData = (data: Record<string, any>) => {
   return newData
 }
 
+// export const updateRailwayApi = async (railwayApiToken: string) => {
+//   const session = await auth()
+//   if (!session || !session.user) {
+//     redirect('/sign-in')
+//   }
+//   const user = session.user
+//   const payload = await getPayload()
+//   await payload.update({
+//     collection: 'users',
+//     data: {
+//       railwayApiToken,
+//     },
+//     id: user.id,
+//   })
+// }
+
 export const updateUser = async (userData: User) => {
   const session = await auth()
   if (!session || !session.user) {

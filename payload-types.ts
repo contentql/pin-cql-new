@@ -14,6 +14,7 @@ export interface Config {
     pages: Page;
     sessions: Session;
     projects: Project;
+    services: Service;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -50,6 +51,8 @@ export interface User {
         id?: string | null;
       }[]
     | null;
+  railwayApiToken?: string | null;
+  plan?: ('basic' | 'standard' | 'premium') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -256,6 +259,32 @@ export interface Project {
   name: string;
   projectId: string;
   workflowId: string;
+  user_id?: {
+    relationTo: 'users';
+    value: string | User;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: string;
+  serviceId?: string | null;
+  changedVariables?:
+    | {
+        name?: string | null;
+        updatedValue?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  isVariableChanged?: boolean | null;
+  project_id?: {
+    relationTo: 'projects';
+    value: string | Project;
+  } | null;
   user_id?: {
     relationTo: 'users';
     value: string | User;

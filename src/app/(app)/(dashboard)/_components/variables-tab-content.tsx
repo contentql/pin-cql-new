@@ -40,6 +40,7 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
       {} as Record<string, boolean>,
     ),
   )
+
   const [edit, setEdit] = useState<Record<string, undefined | string>>(
     Object.keys(variables || {}).reduce(
       (acc, key) => {
@@ -59,6 +60,7 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
 
   const toggleUpdate = (key: string, value: string) => {
     console.log('Toggling edit')
+
     templateVariablesUpdate({
       input: {
         environmentId: environmentId,
@@ -69,12 +71,17 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
         },
       },
     })
+
+    setEdit(prevState => ({
+      ...prevState,
+      [key]: undefined,
+    }))
   }
 
   const toggleEdit = (key: string, value: string) => {
     setEdit(prevState => ({
       ...prevState,
-      [key]: prevState[key] ? undefined : value,
+      [key]: prevState[key] === undefined ? value : undefined,
     }))
   }
 
@@ -104,28 +111,29 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
       <TableBody>
         {variables &&
           Object.entries(variables).map(([key, value]) => (
-            <TableRow key={key} className='rounded-md group'>
+            <TableRow key={key} className='group rounded-md'>
               <TableCell className='w-[30%]'>{key}</TableCell>
               <TableCell className='w-[60%]'>
-                {edit[key] ? (
+                {edit[key] !== undefined ? (
                   <div className='flex items-center gap-2'>
                     <Input
                       type='text'
                       placeholder='Value'
                       value={edit[key]}
-                      className='py-1 h-fit focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
+                      className='h-fit py-1 focus-visible:ring-0 focus-visible:ring-offset-0 dark:focus-visible:ring-0 dark:focus-visible:ring-offset-0'
                       onChange={e => {
-                        setEdit({
+                        setEdit(prevState => ({
+                          ...prevState,
                           [key]: e.target.value,
-                        })
+                        }))
                       }}
                     />
                     <X
-                      className='h-5 w-5 ml-4 cursor-pointer'
+                      className='ml-4 h-5 w-5 cursor-pointer'
                       onClick={() => toggleEdit(key, value)}
                     />
                     <Check
-                      className='h-5 w-5 ml-4 cursor-pointer'
+                      className='ml-4 h-5 w-5 cursor-pointer'
                       onClick={() => toggleUpdate(key, edit[key]!)}
                     />
                   </div>
@@ -135,7 +143,7 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
                       <>
                         <p>{value}</p>
                         <EyeOff
-                          className={`h-4 w-4 ml-2 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
+                          className={`ml-2 h-4 w-4 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
                           onClick={() => toggleVisibility(key)}
                         />
                       </>
@@ -143,18 +151,18 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
                       <>
                         <p>********</p>
                         <Eye
-                          className={`h-4 w-4 ml-2 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
+                          className={`ml-2 h-4 w-4 cursor-pointer ${!visibility[key] && 'hidden'} group-hover:block`}
                           onClick={() => toggleVisibility(key)}
                         />
                       </>
                     )}
                     {copied[key] ? (
                       <Check
-                        className={`h-4 w-4 ml-2 transition-all duration-300 ease-in-out text-green-600 ${!copied[key] && 'hidden'} group-hover:block`}
+                        className={`ml-2 h-4 w-4 text-green-600 transition-all duration-300 ease-in-out ${!copied[key] && 'hidden'} group-hover:block`}
                       />
                     ) : (
                       <Copy
-                        className={`h-4 w-4 ml-2 transition-all duration-300 ease-in-out cursor-pointer ${!copied[key] && 'hidden'} group-hover:block`}
+                        className={`ml-2 h-4 w-4 cursor-pointer transition-all duration-300 ease-in-out ${!copied[key] && 'hidden'} group-hover:block`}
                         onClick={() => handleCopy(key, value)}
                       />
                     )}

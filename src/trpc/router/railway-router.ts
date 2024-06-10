@@ -1,4 +1,9 @@
 import { env } from '@env'
+import {
+  adjectives,
+  colors,
+  uniqueNamesGenerator,
+} from 'unique-names-generator'
 import z from 'zod'
 
 import client from '@/lib/apollo/apolloClient'
@@ -64,7 +69,22 @@ export const railwayRouter = router({
   templateDeploy: userProcedure.input(z.any()).mutation(async ({ input }) => {
     const serviceVariable = input?.data!
 
-    console.log({ input })
+    // const customConfig: Config = {
+    //   dictionaries: [adjectives, colors, starWars],
+    //   separator: '-',
+    //   length: 2,
+    // }
+
+    const randomName: string = uniqueNamesGenerator({
+      dictionaries: [adjectives, colors],
+    })
+
+    // const shortName: string = uniqueNamesGenerator(customConfig)
+
+    // Use the function to generate a random string of length 5 and concatenate it with the project name
+    const updatedProjectName = `${serviceVariable?.Project_Name}_${randomName}`
+
+    console.log({ serviceVariable })
     try {
       // Mutate data using Apollo Client with variables
       const { data } = await client.mutate({
@@ -107,7 +127,7 @@ export const railwayRouter = router({
               },
               {
                 owner: 'akhil-naidu',
-                name: 'pin-hcms',
+                name: serviceVariable?.Project_Name,
                 isPrivate: false,
                 commit: null,
                 serviceIcon:
@@ -156,7 +176,7 @@ export const railwayRouter = router({
                     '${{ secret(32, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") }}',
                 },
                 template: 'ghcr.io/contentql/pin-hcms:latest',
-                serviceName: 'pin-hcms',
+                serviceName: updatedProjectName,
                 startCommand: null,
                 rootDirectory: null,
                 healthcheckPath: null,
