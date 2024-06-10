@@ -324,7 +324,7 @@ export const vercelRouter = router({
   // Create a new deployment for a project
   createNewDeploymentByProjectName: userProcedure
     .input(CreateNewDeploymentByProjectNameSchema)
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       try {
         const response = await vercelAPI(
           `/v13/deployments?forceNew=0&skipAutoDetectionConfirmation=1&slug=${SLUG}&teamId=${TEAM_ID}`,

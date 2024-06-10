@@ -254,6 +254,7 @@ export const CreateNewDeploymentByProjectNameSchema = z.object({
   name: z.string(),
   customEnvironmentSlugOrId: z.string().nullable().optional(),
   deploymentId: z.string().nullable().optional(),
+  source: z.string(),
   files: z
     .array(
       z.union([
@@ -268,7 +269,7 @@ export const CreateNewDeploymentByProjectNameSchema = z.object({
   monorepoManager: z.string().nullable().optional(),
   project: z.string().optional(),
   projectSettings: CreateNewDeploymentProjectSettingsSchema,
-  sourceFilesOutsideRootDirectory: z.boolean(),
+  sourceFilesOutsideRootDirectory: z.boolean().optional(),
   target: z.enum(['staging', 'production']).optional(),
   withLatestCommit: z.boolean().optional(),
 })

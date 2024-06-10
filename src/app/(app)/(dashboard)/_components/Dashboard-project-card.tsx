@@ -171,7 +171,7 @@ export const DashboardProjectCard = ({ project }: any) => {
                   templateId: project?.projectId,
                 })
               }}
-              disabled={!isAllowedToDelete}>
+              disabled={!isAllowedToDelete || isTemplateDeleting}>
               Delete Account
             </Button>
           </DialogFooter>
@@ -219,6 +219,7 @@ export const DashboardProjectCard = ({ project }: any) => {
                   // handleTemplateDelete({
                   //   templateId: project?.projectId,
                   // })
+
                   setIsDialogOpen(true)
                 }}>
                 Delete
