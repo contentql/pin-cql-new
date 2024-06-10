@@ -19,7 +19,6 @@ export const vercelAPI = async <T = any>(
 ): Promise<AxiosResponse<T>> => {
   try {
     const headers = {
-      Authorization: 'Bearer aYXFXA5dLm3PwRsxik081ANy',
       ...options.headers,
     }
 
