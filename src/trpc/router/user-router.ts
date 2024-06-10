@@ -13,6 +13,19 @@ export const updateRailwayApiSchema = z.object({
 })
 
 export const userRouter = router({
+  // updateUserPlan: userProcedure.mutation(async ({ ctx, input }) => {
+  //   const { user } = ctx
+  //   const { plan: any } = input
+  //   try {
+  //     await payload.update({
+  //       collection: 'users',
+  //       id: user.id,
+  //       data: {
+  //         plan,
+  //       },
+  //     })
+  //   } catch (error) {}
+  // }),
   updateRailwayApi: userProcedure
     .input(updateRailwayApiSchema)
     .mutation(async ({ ctx, input }) => {

@@ -1,21 +1,53 @@
+import { env } from '@env'
+import Stripe from 'stripe'
+
 import { router, userProcedure } from '@/trpc'
 
+const stripeSDK = new Stripe(env.STRIPE_SECRET_KEY)
+
 export const stripe = router({
-  createCustomerPortalSession: userProcedure.mutation(async () => {
+  createCustomerPortalSession: userProcedure.mutation(
+    async ({ ctx: { user } }) => {
+      try {
+        const session = await stripeSDK.billingPortal.sessions.create({
+          customer: user.stripeCID as string,
+          return_url: env.PAYLOAD_URL,
+        })
+
+        return session
+      } catch (error) {
+        console.log(error)
+        throw new Error('Unable to create customer portal session.')
+      }
+    },
+  ),
+
+  createCustomerSession: userProcedure.query(async ({ ctx: { user } }) => {
     try {
-      const stripe = require('stripe')(
-        'sk_test_51OgjvwSANsDuJnVdSSlbKwfHSIeTT6yFkj9bsO96C5Seeyyey3DE8O30UTw5mGFZ2R8ja14HmWfrgkPnoZhgcZd3000tqZxLUr',
-      )
-
-      const session = await stripe.billingPortal.sessions.create({
-        customer: 'cus_QEi9xmIlUc6u5d',
-        return_url: 'http://localhost:3000/dashboard',
+      const customerSession = await stripeSDK.customerSessions.create({
+        customer: user.stripeCID as string,
+        components: {
+          pricing_table: {
+            enabled: true,
+          },
+        },
       })
+      return customerSession
+    } catch (error) {
+      console.log(error)
+      throw new Error('error creating customer session')
+    }
+  }),
 
-      return session
-    } catch (e) {
-      console.log('Error: ', e)
-      throw new Error('Unable to create customer portal session.')
+  retrieveProduct: userProcedure.query(async ({}) => {
+    try {
+      const productData = await stripeSDK.products.retrieve(
+        'prod_QF1w8UjVJUqaEQ',
+      )
+      return productData
+    } catch (error) {
+      console.log(error)
+      throw new Error('error while getting product stripe data')
     }
   }),
 })

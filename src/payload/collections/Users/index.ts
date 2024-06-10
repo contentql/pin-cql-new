@@ -1,4 +1,6 @@
+import { env } from '@env'
 import type { CollectionConfig } from 'payload/types'
+import Stripe from 'stripe'
 
 import { ADMIN_ACCESS_ROLES, DEFAULT_USER_ROLE } from '@/lib/auth/config'
 import { getAuthJsCookieName, getCurrentUser } from '@/lib/auth/edge'
@@ -9,6 +11,8 @@ import {
   COLLECTION_SLUG_USER,
 } from '@/payload/collections/constants'
 import parseCookieString from '@/utils/parseCookieString'
+
+const stripeSDK = new Stripe(env.STRIPE_SECRET_KEY)
 
 export const Users: CollectionConfig = {
   slug: COLLECTION_SLUG_USER,
@@ -94,18 +98,6 @@ export const Users: CollectionConfig = {
     ],
   },
   hooks: {
-    // beforeLogin: [
-    //   async ({ req, user }: any) => {
-    //     const { email, password } = req.data
-    //     const res = await signIn('credentials', {
-    //       email,
-    //       password,
-    //       redirect: false,
-    //     })
-
-    //     return user
-    //   },
-    // ],
     beforeChange: [
       async ({ data, req, operation, originalDoc }) => {
         if (operation === 'create') {
@@ -115,20 +107,44 @@ export const Users: CollectionConfig = {
             limit: 1,
           })
 
-          if (docs.length === 0) {
-            return { ...data, role: 'admin' }
+          const customer = await stripeSDK.customers.create({
+            name: data.name,
+            email: data.email,
+          })
+
+          const dataWithStripeDetails = {
+            ...data,
+            stripeCID: customer.id,
+            stripeJSON: customer,
           }
 
-          return data
+          if (docs.length === 0) {
+            return {
+              ...dataWithStripeDetails,
+              role: 'admin',
+            }
+          }
+
+          return dataWithStripeDetails
         }
 
         return data
       },
     ],
     afterChange: [
-      async ({ doc, req }) => {
+      async ({ doc, req, operation }) => {
         const payload = req.payload
         await revalidateUser(doc, payload)
+
+        if (operation === 'create') {
+          stripeSDK.customers.update(doc.stripeCID, {
+            metadata: {
+              user_id: doc.id,
+            },
+          })
+
+          console.log('stripe updated successfully')
+        }
       },
     ],
   },
@@ -151,6 +167,8 @@ export const Users: CollectionConfig = {
       saveToJWT: true,
     },
     { name: 'emailVerified', type: 'date' },
+    { name: 'stripeCID', type: 'text', saveToJWT: true },
+    { name: 'stripeJSON', type: 'json', hidden: true },
     {
       name: 'accounts',
       type: 'array',
@@ -192,13 +210,8 @@ export const Users: CollectionConfig = {
     },
     {
       name: 'plan',
-      type: 'select',
-      options: [
-        { label: 'Basic', value: 'basic' },
-        { label: 'Standard', value: 'standard' },
-        { label: 'Premium', value: 'premium' },
-      ],
-      defaultValue: ['basic'],
+      type: 'text',
+      defaultValue: 'Basic',
       saveToJWT: true,
     },
   ],

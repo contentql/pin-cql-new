@@ -36,6 +36,16 @@ export interface User {
   imageUrl?: string | null;
   role?: ('admin' | 'user') | null;
   emailVerified?: string | null;
+  stripeCID?: string | null;
+  stripeJSON?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   accounts?:
     | {
         provider?: string | null;
@@ -52,7 +62,7 @@ export interface User {
       }[]
     | null;
   railwayApiToken?: string | null;
-  plan?: ('basic' | 'standard' | 'premium') | null;
+  plan?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
