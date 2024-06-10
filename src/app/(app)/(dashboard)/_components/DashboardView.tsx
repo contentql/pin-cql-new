@@ -187,28 +187,32 @@ const DashboardView = () => {
           return (
             <TabsContent key={tab.value} value={tab.value} className='h-screen'>
               <Card x-chunk='dashboard-06-chunk-0' className='min-h-full'>
-                <CardHeader>
-                  <CardTitle>Projects</CardTitle>
-                  <CardDescription>
-                    Manage your projects and manage its services.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {projects?.length === 0 ? (
-                    <EmptyProject setIsDialogOpen={setIsDialogOpen} />
-                  ) : (
-                    <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
-                      {projects?.map((project: any) => (
-                        <div key={project.id}>
-                          <DashboardProjectCard
-                            project={project}
-                            templateUpdate={templateUpdate}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
+                <div className='dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[50rem] w-full bg-white dark:bg-black'>
+                  {/* Radial gradient for the container to give a faded look */}
+                  <div className='pointer-events-none absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black'></div>
+                  <CardHeader>
+                    <CardTitle>Projects</CardTitle>
+                    <CardDescription>
+                      Manage your projects and manage its services.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {projects?.length === 0 ? (
+                      <EmptyProject setIsDialogOpen={setIsDialogOpen} />
+                    ) : (
+                      <div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3'>
+                        {projects?.map((project: any) => (
+                          <div key={project.id}>
+                            <DashboardProjectCard
+                              project={project}
+                              templateUpdate={templateUpdate}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </div>
               </Card>
             </TabsContent>
           )

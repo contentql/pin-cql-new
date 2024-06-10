@@ -46,6 +46,23 @@ export const DashboardProjectCard = ({ project }: any) => {
   const [confirmation, setConfirmation] = useState('')
   const [isAllowedToDelete, setIsAllowedToDelete] = useState(false)
 
+  const { data: user } = trpc.user.getUser.useQuery()
+
+  const cardBorder = () => {
+    switch (user?.plan) {
+      case 'Basic':
+        return 'hover:border-blue-500'
+      case 'Creator':
+        return 'hover:border-green-500'
+      case 'Team':
+        return 'hover:border-purple-500'
+      default:
+        return 'hover:border-black'
+    }
+  }
+
+  const border = cardBorder()
+
   const { mutate: updateProject } = trpc.projects.updateProject.useMutation({
     onSuccess: async data => {
       setToggleNameEdit(false)
@@ -181,7 +198,7 @@ export const DashboardProjectCard = ({ project }: any) => {
       <Card
         key={project?.projectId}
         x-chunk='dashboard-01-chunk-0'
-        className='group relative  w-80 cursor-pointer bg-purple-50 duration-300 hover:border-purple-600'
+        className={`w-50 group relative cursor-pointer bg-white duration-300 ${border}`}
         onClick={() => {
           router.push(`/project/${project?.name}`)
         }}>

@@ -14,15 +14,15 @@ import {
 import { trpc } from '@/trpc/client'
 
 type Plan =
-  | 'link'
   | 'default'
-  | 'basic'
   | 'destructive'
   | 'outline'
   | 'secondary'
   | 'ghost'
-  | 'standard'
-  | 'premium'
+  | 'link'
+  | 'Basic'
+  | 'Creator'
+  | 'Team'
   | null
   | undefined
 
@@ -30,6 +30,18 @@ const DashboardSideNav = () => {
   const { data: user } = trpc.user.getUser.useQuery()
 
   const plan = (user?.plan ? user?.plan : 'default') as Plan
+
+  const getDisplayPlan = () => {
+    if (plan === 'Basic') {
+      return 'Upgrade to Creator'
+    } else if (plan === 'Creator') {
+      return 'Upgrade to Team'
+    }
+
+    return 'Plan Team'
+  }
+
+  const DisplayPlan = getDisplayPlan()
   return (
     <div className='fixed inset-y-0 left-0 hidden w-60 flex-col border-r bg-white dark:bg-slate-950 sm:flex'>
       <div className='flex h-full max-h-screen flex-col gap-2'>
@@ -62,7 +74,7 @@ const DashboardSideNav = () => {
         <div className='mt-auto p-4'>
           <Card x-chunk='dashboard-02-chunk-0'>
             <CardHeader className='p-2 pt-0 md:p-4'>
-              <CardTitle>Upgrade to Pro</CardTitle>
+              <CardTitle>{DisplayPlan}</CardTitle>
               <CardDescription>
                 Unlock all features and get unlimited access to our support
                 team.

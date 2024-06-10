@@ -178,10 +178,7 @@ const Services = () => {
             <X
               className='h-5 w-5 cursor-pointer'
               onClick={() => {
-                setIsVisible(false)
-                setTimeout(() => {
-                  router.push('../')
-                }, 200)
+                router.push('/dashboard')
               }}
             />
           </CardHeader>
