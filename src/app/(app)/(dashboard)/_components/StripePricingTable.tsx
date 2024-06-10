@@ -8,8 +8,6 @@ const StripePricingTable = () => {
   const { data: customerSession } = trpc.stripe.createCustomerSession.useQuery()
   const { data: productData } = trpc.stripe.retrieveProduct.useQuery()
 
-  console.log('stripe product data', productData)
-
   return (
     <div>
       <stripe-pricing-table
