@@ -252,12 +252,6 @@ export const vercelRouter = router({
                   value: 'true',
                 },
                 {
-                  key: 'AUTH_URL',
-                  target: ['development', 'preview', 'production'],
-                  type: 'system',
-                  value: 'VERCEL_URL',
-                },
-                {
                   key: 'AUTH_GITHUB_ID',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
