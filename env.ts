@@ -50,9 +50,9 @@ export const env = createEnv({
     DATABASE_URI: process.env.DATABASE_URI,
     PAYLOAD_SECRET: process.env.PAYLOAD_SECRET,
     NEXT_PUBLIC_PUBLIC_URL: changeBasedOnENV(
-      process.env.NEXT_PUBLIC_PUBLIC_URL as string,
+      process.env.NEXT_PUBLIC_PUBLIC_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL as string,
     ),
-    PAYLOAD_URL: changeBasedOnENV(process.env.PAYLOAD_URL as string),
+    PAYLOAD_URL: changeBasedOnENV(process.env.PAYLOAD_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL as string),
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
