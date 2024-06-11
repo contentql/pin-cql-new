@@ -13,23 +13,23 @@ import { toast } from 'sonner'
 
 import Breadcrumbs from '@/app/(app)/(dashboard)/_components/breadcrumbs'
 import {
-  HomeIcon,
-  LineChartIcon,
-  Package2Icon,
-  PackageIcon,
-  PanelLeftIcon,
-  ShoppingCartIcon,
-  UsersIcon,
+    HomeIcon,
+    LineChartIcon,
+    Package2Icon,
+    PackageIcon,
+    PanelLeftIcon,
+    ShoppingCartIcon,
+    UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
 // import { updateRailwayApi } from '@/components/ProfileForm/actions'
 import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { trpc } from '@/trpc/client'
@@ -107,7 +107,7 @@ const DashboardHeader = () => {
               className='group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-slate-900 text-lg font-semibold text-slate-50 dark:bg-slate-50 dark:text-slate-900 md:text-base'
               href='#'>
               <Package2Icon className='h-5 w-5 transition-all group-hover:scale-110' />
-              <span className='sr-only'>Acme Inc</span>
+              <span className='sr-only'>ContentQL</span>
             </Link>
             <Link
               className='flex items-center gap-4 px-2.5 text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-slate-50'
