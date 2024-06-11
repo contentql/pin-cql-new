@@ -1,7 +1,7 @@
 import Services from './services'
 
 const ServiceView = () => {
-  return <Services vertical />
+  return <Services />
 }
 
 export default ServiceView
