@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { trpc } from '@/trpc/client'
 
 import DeploymentsTabContent from './deployments-tab-content'
+import VariablesTabContent from './variables-tab-content'
 
 const Services = () => {
   const router = useRouter()
@@ -69,19 +70,19 @@ const Services = () => {
         />
       ),
     },
-    // {
-    //   value: 'variables',
-    //   label: 'Variables',
-    //   content: variables ? (
-    //     <VariablesTabContent
-    //       variables={variables?.railway?.variables}
-    //       environmentId={environmentId}
-    //       templateVariablesUpdate={templateVariablesUpdate}
-    //     />
-    //   ) : (
-    //     <div>Loading variables...</div>
-    //   ),
-    // },
+    {
+      value: 'variables',
+      label: 'Variables',
+      content: variables ? (
+        <VariablesTabContent
+          variables={fetchedProjectData?.env}
+          // environmentId={environmentId}
+          // templateVariablesUpdate={templateVariablesUpdate}
+        />
+      ) : (
+        <div>Loading variables...</div>
+      ),
+    },
     { value: 'metrics', label: 'Metrics', content: <MetricsTabContent /> },
     { value: 'settings', label: 'Settings', content: <SettingsTabContent /> },
   ]
@@ -136,14 +137,16 @@ const Services = () => {
           //   )
           // }}
         >
-          <div
-            className={`absolute ${typeof dot === 'string' ? dot : dot.backGround} right-3 top-3 h-3 w-3 rounded-full`}
-          />
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle
-              className={`text-sm ${typeof dot === 'string' ? dot : dot.text} font-medium`}>
-              {fetchedProjectData?.targets.production.readyState}
-            </CardTitle>
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
+            <div className='flex items-center gap-2'>
+              <div
+                className={`absolute ${typeof dot === 'string' ? dot : dot.backGround} h-3 w-3 rounded-full`}
+              />
+              <CardTitle
+                className={`text-sm ${typeof dot === 'string' ? dot : dot.text} pl-4 font-medium`}>
+                {fetchedProjectData?.targets.production.readyState}
+              </CardTitle>
+            </div>
             {/* {service?.icon} */}
           </CardHeader>
           <CardContent>

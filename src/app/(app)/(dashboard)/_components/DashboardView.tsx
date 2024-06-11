@@ -40,25 +40,16 @@ const DashboardView = () => {
       value: 'all',
       label: 'All',
     },
-    // {
-    //   value: 'active',
-    //   label: 'Active',
-    // },
-    // {
-    //   value: 'deploying',
-    //   label: 'Deploying',
-    // },
-    // {
-    //   value: 'failed',
-    //   label: 'Failed',
-    // },
   ]
 
   const {
     data: userProjects,
     error,
     refetch: getProjectsRefetch,
+    isLoading,
   } = trpc.projects.getProjects.useQuery()
+
+  console.log(isLoading)
 
   const projects = userProjects?.docs
 
@@ -187,9 +178,9 @@ const DashboardView = () => {
           return (
             <TabsContent key={tab.value} value={tab.value} className='h-screen'>
               <Card x-chunk='dashboard-06-chunk-0' className='min-h-full'>
-                <div className='dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[50rem] w-full bg-white dark:bg-black'>
+                <div className='dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[50rem] w-full  dark:bg-black'>
                   {/* Radial gradient for the container to give a faded look */}
-                  <div className='pointer-events-none absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black'></div>
+                  <div className='pointer-events-none absolute inset-0  [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black'></div>
                   <CardHeader>
                     <CardTitle>Projects</CardTitle>
                     <CardDescription>
