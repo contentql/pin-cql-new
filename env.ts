@@ -72,7 +72,6 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_TRUST_HOST: true,
     AUTH_VERPOSE: true,
-    AUTH_URL: changeBasedOnENV(process.env.AUTH_URL as string),
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     NEXT_PUBLIC_HASURA_URI: process.env.NEXT_PUBLIC_HASURA_URI,
