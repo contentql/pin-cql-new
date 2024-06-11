@@ -1,6 +1,4 @@
-import { projects } from '../_data'
 import { Check, Copy, EllipsisVertical, Eye, EyeOff, X } from 'lucide-react'
-import { useParams } from 'next/navigation'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -16,20 +14,16 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Input } from '~/src/components/ui/input'
 
 interface VariablesTabContentProps {
-  variables: (typeof projects)[0]['services'][0]['variables']
-  environmentId: string
-  templateVariablesUpdate: any
+  variables: any
+  // environmentId: string
+  // templateVariablesUpdate: any
 }
 
 const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
   variables,
-  environmentId,
-  templateVariablesUpdate,
+  // environmentId,
+  // templateVariablesUpdate,
 }) => {
-  const params = useParams()
-
-  const projectId = params.projectId?.toString()
-  const serviceId = params.serviceId?.toString()
   const [copied, setCopied] = useState<Record<string, boolean>>({})
   const [visibility, setVisibility] = useState<Record<string, boolean>>(
     Object.keys(variables || {}).reduce(
@@ -60,17 +54,6 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
 
   const toggleUpdate = (key: string, value: string) => {
     console.log('Toggling edit')
-
-    templateVariablesUpdate({
-      input: {
-        environmentId: environmentId,
-        serviceId: serviceId,
-        projectId: projectId,
-        variables: {
-          [key]: value,
-        },
-      },
-    })
 
     setEdit(prevState => ({
       ...prevState,
@@ -110,7 +93,7 @@ const VariablesTabContent: React.FC<VariablesTabContentProps> = ({
     <Table>
       <TableBody>
         {variables &&
-          Object.entries(variables).map(([key, value]) => (
+          variables.map(({ key, value }: { key: string; value: string }) => (
             <TableRow key={key} className='group rounded-md'>
               <TableCell className='w-[30%]'>{key}</TableCell>
               <TableCell className='w-[60%]'>

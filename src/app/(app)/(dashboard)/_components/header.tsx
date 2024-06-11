@@ -3,7 +3,7 @@
 import { projects } from '../_data'
 // import { useQueryClient } from '@tanstack/react-query'
 // import { getQueryKey } from '@trpc/react-query'
-import { BadgePercent, LoaderCircle, Magnet, Plug } from 'lucide-react'
+import { BadgePercent } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -24,16 +24,6 @@ import {
 // import { updateRailwayApi } from '@/components/ProfileForm/actions'
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -41,8 +31,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { trpc } from '@/trpc/client'
 
@@ -166,95 +154,25 @@ const DashboardHeader = () => {
         ]}
       />
       <div className='relative ml-auto flex-1 md:grow-0'></div>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          {/* button click  */}
-          <Button variant={plan} className='gap-1'>
-            <Plug className='h-4 w-4' />
-            {user?.railwayApiToken ? 'Update Railway' : 'Link Railway'}
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className='text-xl font-semibold'>
-              Link to Railway
-            </DialogTitle>
-            <DialogDescription className='mt-2 text-gray-600'>
-              Connect your Railway account to manage your project. Enter your{' '}
-              <span className='text-red-500'>API key</span> carefully, as it is
-              a <span className='text-red-500'>sensitive</span> piece of
-              information.
-            </DialogDescription>
-          </DialogHeader>
-          <div className='my-4 grid w-full gap-2'>
-            <Label htmlFor='api_key' className='font-medium text-gray-700'>
-              API Key
-            </Label>
-            <Input
-              type='text'
-              id='api_key'
-              value={railwayApiKey}
-              onChange={e => setRailwayApiKey(e.target.value)}
-              placeholder='Enter your API Key'
-              className='rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
-              required
-            />
-            <p className='mt-1 text-sm'>
-              Don&apos;t have an account on Railway?{' '}
-              <a
-                href='https://railway.app'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-blue-500 hover:underline'>
-                Create one here
-              </a>
-              .
-            </p>
-            <p className='mt-1 text-sm'>
-              Need help creating your API key?{' '}
-              <a
-                href='https://railway.app/account/tokens'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-blue-500 hover:underline'>
-                Check this page
-              </a>
-              .
-            </p>
-          </div>
-          <DialogFooter className='mt-4 flex justify-end gap-2'>
-            <DialogClose asChild>
-              <Button variant='ghost' className='hover:bg-gray-100'>
-                Cancel
-              </Button>
-            </DialogClose>
-            <Button
-              type='submit'
-              className='gap-1 px-8'
-              onClick={() => {
-                handleSubmit()
-              }}>
-              {isLoading ? (
-                <LoaderCircle className='h-4 w-4 animate-spin' />
-              ) : (
-                <Magnet className='h-4 w-4' />
-              )}
-              Link
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Manage Plan  */}
-      <Button
-        variant='default'
-        className='gap-1 capitalize'
-        onClick={() => {
-          createCustomerPortalSession()
-        }}>
-        <BadgePercent className='h-4 w-4' />
-        Manage subscription
-      </Button>
+      {plan === 'Basic' ? (
+        <Link href='/pricing'>
+          <Button variant={plan} size='sm' className='w-full gap-1 capitalize'>
+            Pricing
+          </Button>
+        </Link>
+      ) : (
+        <Button
+          variant={plan}
+          className='gap-1 capitalize'
+          onClick={() => {
+            createCustomerPortalSession()
+          }}>
+          <BadgePercent className='h-4 w-4' />
+          Manage subscription
+        </Button>
+      )}
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
