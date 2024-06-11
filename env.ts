@@ -28,16 +28,13 @@ export const env = createEnv({
     AUTH_SECRET: z.string(),
     AUTH_TRUST_HOST: z.boolean().default(true),
     AUTH_VERPOSE: z.boolean(),
-    AUTH_URL: z.string().url(),
     AUTH_GITHUB_ID: z.string(),
     AUTH_GITHUB_SECRET: z.string(),
     HASURA_API_KEY: z.string().min(1),
     RAILWAY_SUPER_API: z.string().min(1),
     OPENAPI_KEY: z.string().min(1),
     ENCRYPTION_KEY: z.string(),
-
     VERCEL_API_KEY: z.string().min(1),
-
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     SUBSCRIPTION_PLAN: z.string().min(1),
