@@ -6,7 +6,7 @@ export const vercelAPIAxiosInstance: AxiosInstance = axios.create({
   baseURL: 'https://api.vercel.com',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${env.VERCEL_API_KEY}`,
+    Authorization: `Bearer ${env.API_VERCEL_KEY}`,
     // Add other custom default headers here
   },
 })
