@@ -60,8 +60,8 @@ export const env = createEnv({
     ),
 
     PAYLOAD_URL: changeBasedOnENV(
-      process.env.PAYLOAD_URL ||
-        (process.env.VERCEL_PROJECT_PRODUCTION_URL as string),
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+        process.env.PAYLOAD_URL) as string,
     ),
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_ENDPOINT_VERCEL: process.env.S3_ENDPOINT_VERCEL,
