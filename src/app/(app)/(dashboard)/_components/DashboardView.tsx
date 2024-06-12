@@ -72,7 +72,11 @@ const DashboardView = () => {
   const { mutate: createNewDeploymentByProjectName } =
     trpc.vercel.createNewDeploymentByProjectName.useMutation({
       onSuccess: async () => {
-        setMessages(prev => [...prev, 'Deployment started successfully'])
+        setMessages(prev => [
+          ...prev,
+          'Deployment started successfully',
+          'Deploying . . .',
+        ])
       },
       onError: async () => {
         setMessages(prev => [...prev, 'Error Deploying'])

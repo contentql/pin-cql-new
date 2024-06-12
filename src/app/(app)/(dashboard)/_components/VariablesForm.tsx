@@ -197,7 +197,7 @@ export default function VariablesForm({
                 fill='currentColor'
                 d='M4 12a8 8 0 018-8v8H4z'></path>
             </svg>
-            <div>Processing...</div>
+            <div>Please wait processing...</div>
           </div>
           <div className='mt-4'>
             {messages.map((message: string) => (
