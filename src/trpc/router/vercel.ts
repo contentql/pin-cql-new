@@ -297,7 +297,7 @@ export const vercelRouter = router({
     .mutation(async ({ input }) => {
       try {
         const response = await vercelAPI(
-          `/v1/=${SLUG}&teamId=${TEAM_ID}`,
+          `/v1/webhooks?slug=${SLUG}&teamId=${TEAM_ID}`,
           { method: 'POST', data: { ...input } },
           'creating a webhook for the project',
         )
