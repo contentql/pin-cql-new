@@ -7,7 +7,6 @@ export const novuRouter = router({
     .input(TriggerNotificationSchema)
     .mutation(async ({ input }) => {
       const { to, templateId, payload } = input
-
       try {
         const response = await sendNotification(to, templateId, payload)
 
