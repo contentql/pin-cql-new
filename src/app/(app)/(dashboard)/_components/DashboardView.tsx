@@ -34,7 +34,7 @@ const DashboardView = () => {
 
   const [serviceVariable, setServiceVariable] = useState<any>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [messages, setMessages] = useState<string>()
+  const [messages, setMessages] = useState<string[]>([])
 
   const projectTabs = [
     {
@@ -73,20 +73,20 @@ const DashboardView = () => {
   const { mutate: createNewDeploymentByProjectName } =
     trpc.vercel.createNewDeploymentByProjectName.useMutation({
       onSuccess: async () => {
-        setMessages('Deployment started')
+        setMessages(prev => [...prev, 'Deployment started'])
       },
       onError: async () => {
-        setMessages('Deployment failed')
+        setMessages(prev => [...prev, 'Deployment failed'])
       },
     })
 
   const { mutate: createWebhookByProjectId } =
     trpc.vercel.createWebhookByProjectId.useMutation({
       onSuccess: async () => {
-        setMessages('Webhook created successfully')
+        setMessages(prev => [...prev, 'Webhook created successfully'])
       },
       onError: async () => {
-        setMessages('Webhook creation failed')
+        setMessages(prev => [...prev, 'Webhook failed'])
       },
     })
 
@@ -95,7 +95,7 @@ const DashboardView = () => {
   const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
     trpc.vercel.createProjectWithGithubRepo.useMutation({
       onSuccess: async data => {
-        setMessages('Project created successfully')
+        setMessages(prev => [...prev, 'Project created successfully'])
         try {
           createWebhookByProjectId({
             url: 'https://webhook.site/2afc2c37-e7a1-40e3-9292-ae8d9a8fcee1',
@@ -128,15 +128,14 @@ const DashboardView = () => {
       },
       onError: () => {
         console.log('Template creation failed')
-        setMessages('Project creation faileds')
+        setMessages(prev => [...prev, 'Project creation failed'])
       },
     })
 
-  const handleAddProject = async (data: any, setMessages: any) => {
+  const handleAddProject = async (data: any) => {
     try {
       await templateDeploy({ data })
     } catch (error) {
-      setMessages((prev: any) => [...prev, 'Deployment failed'])
       console.log(error)
     }
   }
@@ -166,7 +165,7 @@ const DashboardView = () => {
                 <DialogHeader>
                   <DialogTitle>Add Project</DialogTitle>
                   <DialogDescription>
-                    Please provide all variable fields asked below.
+                    Please provide required details asked below.
                   </DialogDescription>
                 </DialogHeader>
                 <VariablesForm

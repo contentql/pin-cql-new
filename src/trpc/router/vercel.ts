@@ -99,7 +99,8 @@ export const vercelRouter = router({
               name: updatedProjectName,
               buildCommand: null,
               devCommand: null,
-              serverlessFunctionRegion: 'bom1',
+              serverlessFunctionRegion:
+                serviceVariable.serverlessFunctionRegion,
               environmentVariables: [
                 {
                   key: 'CI',
@@ -111,9 +112,7 @@ export const vercelRouter = router({
                   key: 'DATABASE_URI',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value:
-                    serviceVariable?.DATABASE_URI ||
-                    `${env.DATABASE_URI_VERCEL}/${updatedProjectName}`,
+                  value: `${env.DATABASE_URI_VERCEL}/${updatedProjectName}`,
                 },
                 {
                   key: 'PAYLOAD_SECRET',
@@ -137,58 +136,49 @@ export const vercelRouter = router({
                   key: 'S3_ENDPOINT',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value:
-                    serviceVariable.S3_ENDPOINT ||
-                    `${env.S3_ENDPOINT_VERCEL}/${updatedProjectName}`,
+                  value: `${env.S3_ENDPOINT_VERCEL}/${updatedProjectName}`,
                 },
                 {
                   key: 'S3_ACCESS_KEY_ID',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value:
-                    serviceVariable.S3_ACCESS_KEY_ID || env.S3_ACCESS_KEY_ID,
+                  value: env.S3_ACCESS_KEY_ID,
                 },
                 {
                   key: 'S3_SECRET_ACCESS_KEY',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value:
-                    serviceVariable.S3_SECRET_ACCESS_KEY ||
-                    env.S3_SECRET_ACCESS_KEY,
+                  value: env.S3_SECRET_ACCESS_KEY,
                 },
                 {
                   key: 'S3_BUCKET',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable.S3_BUCKET || env.S3_BUCKET,
+                  value: env.S3_BUCKET,
                 },
                 {
                   key: 'S3_REGION',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable.S3_REGION || env.S3_REGION,
+                  value: env.S3_REGION,
                 },
                 {
                   key: 'RESEND_API_KEY',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable.RESEND_API_KEY || env.RESEND_API_KEY,
+                  value: env.RESEND_API_KEY,
                 },
                 {
                   key: 'RESEND_SENDER_EMAIL',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value:
-                    serviceVariable.RESEND_SENDER_EMAIL ||
-                    env.RESEND_SENDER_EMAIL,
+                  value: env.RESEND_SENDER_EMAIL,
                 },
                 {
                   key: 'RESEND_SENDER_NAME',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value:
-                    serviceVariable.RESEND_SENDER_NAME ||
-                    env.RESEND_SENDER_NAME,
+                  value: env.RESEND_SENDER_NAME,
                 },
                 {
                   key: 'NEXT_PUBLIC_IS_LIVE',
@@ -260,21 +250,19 @@ export const vercelRouter = router({
                   key: 'AUTH_GITHUB_ID',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable.AUTH_GITHUB_ID || env.AUTH_GITHUB_ID,
+                  value: env.AUTH_GITHUB_ID,
                 },
                 {
                   key: 'AUTH_GITHUB_SECRET',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value:
-                    serviceVariable.AUTH_GITHUB_SECRET ||
-                    env.AUTH_GITHUB_SECRET,
+                  value: env.AUTH_GITHUB_SECRET,
                 },
                 {
                   key: 'OPENAPI_KEY',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable.OPENAPI_KEY || env.OPENAPI_KEY,
+                  value: env.OPENAPI_KEY,
                 },
                 {
                   key: 'SUBSCRIPTION_PLAN',
