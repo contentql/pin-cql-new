@@ -1,4 +1,5 @@
 import { env } from '@env'
+import { Novu } from '@novu/node'
 import type { CollectionConfig } from 'payload/types'
 import Stripe from 'stripe'
 
@@ -13,6 +14,7 @@ import {
 import parseCookieString from '@/utils/parseCookieString'
 
 const stripeSDK = new Stripe(env.STRIPE_SECRET_KEY)
+const novu = new Novu(env.NOVU_API_KEY)
 
 export const Users: CollectionConfig = {
   slug: COLLECTION_SLUG_USER,
@@ -144,6 +146,20 @@ export const Users: CollectionConfig = {
           })
 
           console.log('stripe updated successfully')
+        }
+      },
+
+      async ({ doc, operation }) => {
+        if (operation === 'create') {
+          const [firstName, lastName] = doc.name.split(' ')
+
+          await novu.subscribers.identify(doc?.id, {
+            firstName,
+            lastName,
+            email: doc?.email,
+            avatar: doc?.imageUrl || '',
+            locale: 'en-US',
+          })
         }
       },
     ],
