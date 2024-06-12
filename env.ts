@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 const changeBasedOnENV = (env: string, noHttp = false) => {
   if (process.env.NODE_ENV === 'development') {
-    return noHttp ? `${env}` : `http://${env}`
+    return `http://${env}`
   }
   if (process.env.NODE_ENV === 'production') return `https://${env}`
 }
@@ -28,16 +28,13 @@ export const env = createEnv({
     AUTH_SECRET: z.string(),
     AUTH_TRUST_HOST: z.boolean().default(true),
     AUTH_VERPOSE: z.boolean(),
-    AUTH_URL: z.string().url(),
     AUTH_GITHUB_ID: z.string(),
     AUTH_GITHUB_SECRET: z.string(),
     HASURA_API_KEY: z.string().min(1),
     RAILWAY_SUPER_API: z.string().min(1),
     OPENAPI_KEY: z.string().min(1),
     ENCRYPTION_KEY: z.string(),
-
-    VERCEL_API_KEY: z.string().min(1),
-
+    API_VERCEL_KEY: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     SUBSCRIPTION_PLAN: z.string().min(1),
@@ -55,9 +52,13 @@ export const env = createEnv({
     DATABASE_URI: process.env.DATABASE_URI,
     PAYLOAD_SECRET: process.env.PAYLOAD_SECRET,
     NEXT_PUBLIC_PUBLIC_URL: changeBasedOnENV(
-      process.env.NEXT_PUBLIC_PUBLIC_URL as string,
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+        process.env.NEXT_PUBLIC_PUBLIC_URL) as string,
     ),
-    PAYLOAD_URL: changeBasedOnENV(process.env.PAYLOAD_URL as string),
+    PAYLOAD_URL: changeBasedOnENV(
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+        process.env.PAYLOAD_URL) as string,
+    ),
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
@@ -74,7 +75,6 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_TRUST_HOST: true,
     AUTH_VERPOSE: true,
-    AUTH_URL: changeBasedOnENV(process.env.AUTH_URL as string),
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     NEXT_PUBLIC_HASURA_URI: process.env.NEXT_PUBLIC_HASURA_URI,
@@ -82,15 +82,13 @@ export const env = createEnv({
     RAILWAY_SUPER_API: process.env.RAILWAY_SUPER_API,
     OPENAPI_KEY: process.env.OPENAPI_KEY,
     ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
-
-    VERCEL_API_KEY: process.env.VERCEL_API_KEY,
-
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+    SUBSCRIPTION_PLAN: process.env.SUBSCRIPTION_PLAN,
+    API_VERCEL_KEY: process.env.API_VERCEL_KEY,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_PRICING_TABLE_ID: process.env.NEXT_PUBLIC_PRICING_TABLE_ID,
-    SUBSCRIPTION_PLAN: process.env.SUBSCRIPTION_PLAN,
     NOVU_API_KEY: process.env.NOVU_API_KEY,
     NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER:
       process.env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER,
