@@ -201,14 +201,14 @@ export default function VariablesForm({
           </div>
           <div className='mt-4'>
             {messages.map((message: string) => (
-              <div key={message} className='flex items-center gap-2'>
+              <div key={message}>
                 {message.includes('Error') ? (
-                  <div className='p-2'>
+                  <div className='flex items-center gap-2 p-2'>
                     <AlertCircle color='red' />
                     <p>{message}</p>
                   </div>
                 ) : (
-                  <div className='p-2'>
+                  <div className='flex items-center gap-2 p-2'>
                     <CheckCheck color='green' />
                     <p>{message}</p>
                   </div>

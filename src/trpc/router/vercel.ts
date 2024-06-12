@@ -368,7 +368,7 @@ export const vercelRouter = router({
   // Edit a environment variable by id and project name or id
   EditEnvVarByIdAndProjectNameOrId: userProcedure
     .input(EditEnvVarByIdAndProjectNameOrIdSchema)
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const { envVarId, projectNameOrId, ...body } = input
 
       try {

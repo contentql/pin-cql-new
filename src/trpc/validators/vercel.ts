@@ -300,7 +300,7 @@ export const DeleteEnvVarByIdAndProjectNameOrIdSchema = z.object({
 
 // Zod schema to edit a environment variable by id and project name or id
 export const EditEnvVarByIdAndProjectNameOrIdSchema = z.object({
-  envVarId: z.string(),
+  envVarId: z.string().optional(),
   projectNameOrId: z.union([z.string(), z.number()]),
   comment: z.string().max(500).optional(),
   customEnvironmentIds: z.array(z.string()).optional(),
