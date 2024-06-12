@@ -85,9 +85,10 @@ export const vercelRouter = router({
 
       const randomName: string = uniqueNamesGenerator({
         dictionaries: [adjectives, colors],
+        separator: '-',
       })
 
-      const updatedProjectName = `${serviceVariable?.Project_Name}_${randomName}`
+      const updatedProjectName = `${serviceVariable?.Project_Name}-${randomName}`
 
       try {
         const response = await vercelAPI(
@@ -124,13 +125,13 @@ export const vercelRouter = router({
                   key: 'NEXT_PUBLIC_PUBLIC_URL',
                   target: ['development', 'preview', 'production'],
                   type: 'system',
-                  value: 'VERCEL_PROJECT_PRODUCTION_URL',
+                  value: 'VERCEL_URL',
                 },
                 {
                   key: 'PAYLOAD_URL',
                   target: ['development', 'preview', 'production'],
                   type: 'system',
-                  value: 'VERCEL_PROJECT_PRODUCTION_URL',
+                  value: 'VERCEL_URL',
                 },
                 {
                   key: 'S3_ENDPOINT',
