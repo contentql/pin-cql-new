@@ -34,6 +34,7 @@ const DashboardView = () => {
 
   const [serviceVariable, setServiceVariable] = useState<any>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [messages, setMessages] = useState<string>()
 
   const projectTabs = [
     {
@@ -49,8 +50,6 @@ const DashboardView = () => {
     isLoading,
   } = trpc.projects.getProjects.useQuery()
 
-  console.log(isLoading)
-
   const projects = userProjects?.docs
 
   const getProjectKeys = getQueryKey(
@@ -65,7 +64,6 @@ const DashboardView = () => {
     },
     onError: async () => {
       console.log('Project creation failed')
-      toast.error('Project creation failed')
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: getProjectKeys })
@@ -73,11 +71,23 @@ const DashboardView = () => {
   })
 
   const { mutate: createNewDeploymentByProjectName } =
-    trpc.vercel.createNewDeploymentByProjectName.useMutation()
+    trpc.vercel.createNewDeploymentByProjectName.useMutation({
+      onSuccess: async () => {
+        setMessages('Deployment started')
+      },
+      onError: async () => {
+        setMessages('Deployment failed')
+      },
+    })
 
   const { mutate: createWebhookByProjectId } =
     trpc.vercel.createWebhookByProjectId.useMutation({
-      onSuccess: async () => {},
+      onSuccess: async () => {
+        setMessages('Webhook created successfully')
+      },
+      onError: async () => {
+        setMessages('Webhook creation failed')
+      },
     })
 
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation()
@@ -85,6 +95,7 @@ const DashboardView = () => {
   const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
     trpc.vercel.createProjectWithGithubRepo.useMutation({
       onSuccess: async data => {
+        setMessages('Project created successfully')
         try {
           createWebhookByProjectId({
             url: 'https://webhook.site/2afc2c37-e7a1-40e3-9292-ae8d9a8fcee1',
@@ -117,20 +128,15 @@ const DashboardView = () => {
       },
       onError: () => {
         console.log('Template creation failed')
-        toast.error('Template creation failed')
+        setMessages('Project creation faileds')
       },
     })
 
-  const handleAddProject = async (data: any) => {
-    setIsDialogOpen(false)
-
+  const handleAddProject = async (data: any, setMessages: any) => {
     try {
-      toast.promise(templateDeploy({ data }), {
-        loading: 'Deploying...',
-        success: 'Deployment successful!',
-        error: 'Deployment failed',
-      })
+      await templateDeploy({ data })
     } catch (error) {
+      setMessages((prev: any) => [...prev, 'Deployment failed'])
       console.log(error)
     }
   }
@@ -168,6 +174,8 @@ const DashboardView = () => {
                   handleAddProject={handleAddProject}
                   isTemplateDeploying={isTemplateDeploying}
                   setIsDialogOpen={setIsDialogOpen}
+                  messages={messages}
+                  setMessages={setMessages}
                 />
                 <DialogClose asChild>close</DialogClose>
               </DialogContent>
@@ -178,8 +186,7 @@ const DashboardView = () => {
           return (
             <TabsContent key={tab.value} value={tab.value} className='h-screen'>
               <Card x-chunk='dashboard-06-chunk-0' className='min-h-full'>
-                <div className='dark:bg-dot-white/[0.2] bg-dot-black/[0.2] relative h-[50rem] w-full  dark:bg-black'>
-                  {/* Radial gradient for the container to give a faded look */}
+                <div className='relative h-[50rem] w-full bg-dot-black/[0.2] dark:bg-black  dark:bg-dot-white/[0.2]'>
                   <div className='pointer-events-none absolute inset-0  [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black'></div>
                   <CardHeader>
                     <CardTitle>Projects</CardTitle>
