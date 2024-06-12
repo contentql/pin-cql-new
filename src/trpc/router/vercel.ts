@@ -121,18 +121,18 @@ export const vercelRouter = router({
                   type: 'encrypted',
                   value: '{{randomString}}',
                 },
-                {
-                  key: 'NEXT_PUBLIC_PUBLIC_URL',
-                  target: ['development', 'preview', 'production'],
-                  type: 'system',
-                  value: 'VERCEL_URL',
-                },
-                {
-                  key: 'PAYLOAD_URL',
-                  target: ['development', 'preview', 'production'],
-                  type: 'system',
-                  value: 'VERCEL_URL',
-                },
+                // {
+                //   key: 'NEXT_PUBLIC_PUBLIC_URL',
+                //   target: ['development', 'preview', 'production'],
+                //   type: 'system',
+                //   value: 'VERCEL_URL',
+                // },
+                // {
+                //   key: 'PAYLOAD_URL',
+                //   target: ['development', 'preview', 'production'],
+                //   type: 'system',
+                //   value: 'VERCEL_URL',
+                // },
                 {
                   key: 'S3_ENDPOINT',
                   target: ['development', 'preview', 'production'],
