@@ -110,7 +110,9 @@ export const vercelRouter = router({
                   key: 'DATABASE_URI',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable?.DATABASE_URI || env.DATABASE_URI,
+                  value:
+                    serviceVariable?.DATABASE_URI ||
+                    `${env.DATABASE_URI_VERCEL}/${updatedProjectName}`,
                 },
                 {
                   key: 'PAYLOAD_SECRET',
@@ -122,19 +124,21 @@ export const vercelRouter = router({
                   key: 'NEXT_PUBLIC_PUBLIC_URL',
                   target: ['development', 'preview', 'production'],
                   type: 'system',
-                  value: 'VERCEL_URL',
+                  value: 'VERCEL_PROJECT_PRODUCTION_URL',
                 },
                 {
                   key: 'PAYLOAD_URL',
                   target: ['development', 'preview', 'production'],
                   type: 'system',
-                  value: 'VERCEL_URL',
+                  value: 'VERCEL_PROJECT_PRODUCTION_URL',
                 },
                 {
                   key: 'S3_ENDPOINT',
                   target: ['development', 'preview', 'production'],
                   type: 'encrypted',
-                  value: serviceVariable.S3_ENDPOINT || env.S3_ENDPOINT,
+                  value:
+                    serviceVariable.S3_ENDPOINT ||
+                    `${env.S3_ENDPOINT_VERCEL}/${updatedProjectName}`,
                 },
                 {
                   key: 'S3_ACCESS_KEY_ID',

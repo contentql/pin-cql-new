@@ -11,9 +11,11 @@ const changeBasedOnENV = (env: string, noHttp = false) => {
 export const env = createEnv({
   server: {
     DATABASE_URI: z.string().min(1),
+    DATABASE_URI_VERCEL: z.string().min(1),
     PAYLOAD_SECRET: z.string().min(1),
     PAYLOAD_URL: z.string().url(),
     S3_ENDPOINT: z.string().min(1),
+    S3_ENDPOINT_VERCEL: z.string().min(1),
     S3_ACCESS_KEY_ID: z.string().min(1),
     S3_SECRET_ACCESS_KEY: z.string().min(1),
     S3_BUCKET: z.string().min(1),
@@ -50,16 +52,19 @@ export const env = createEnv({
   },
   runtimeEnv: {
     DATABASE_URI: process.env.DATABASE_URI,
+    DATABASE_URI_VERCEL: process.env.DATABASE_URI_VERCEL,
     PAYLOAD_SECRET: process.env.PAYLOAD_SECRET,
     NEXT_PUBLIC_PUBLIC_URL: changeBasedOnENV(
       (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
         process.env.NEXT_PUBLIC_PUBLIC_URL) as string,
     ),
+
     PAYLOAD_URL: changeBasedOnENV(
-      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-        process.env.PAYLOAD_URL) as string,
+      process.env.PAYLOAD_URL ||
+        (process.env.VERCEL_PROJECT_PRODUCTION_URL as string),
     ),
     S3_ENDPOINT: process.env.S3_ENDPOINT,
+    S3_ENDPOINT_VERCEL: process.env.S3_ENDPOINT_VERCEL,
     S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
     S3_BUCKET: process.env.S3_BUCKET,
