@@ -34,6 +34,8 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { trpc } from '@/trpc/client'
 
+import { NovuNotificationCenterProvider } from '~/src/providers/NovuProvider'
+
 type Plan =
   | 'link'
   | 'default'
@@ -173,6 +175,9 @@ const DashboardHeader = () => {
           Manage subscription
         </Button>
       )}
+
+      {/* Novu Notification Center */}
+      <NovuNotificationCenterProvider />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
