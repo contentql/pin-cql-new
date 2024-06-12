@@ -8,6 +8,7 @@ import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { User } from 'payload-types'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -49,11 +50,15 @@ type Plan =
   | null
   | undefined
 
-const DashboardHeader = () => {
+interface Props {
+  user: User
+}
+
+const DashboardHeader: React.FC<Props> = ({ user }) => {
   const [open, setOpen] = useState(false)
   const [railwayApiKey, setRailwayApiKey] = useState<string>('')
 
-  const { data: user } = trpc.user.getUser.useQuery()
+  // const { data: user } = trpc.user.getUser.useQuery()
 
   const router = useRouter()
 
@@ -177,7 +182,7 @@ const DashboardHeader = () => {
       )}
 
       {/* Novu Notification Center */}
-      <NovuNotificationCenterProvider />
+      <NovuNotificationCenterProvider user={user} />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
