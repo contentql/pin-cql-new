@@ -4,7 +4,6 @@ import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { useState } from 'react'
-import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -73,20 +72,20 @@ const DashboardView = () => {
   const { mutate: createNewDeploymentByProjectName } =
     trpc.vercel.createNewDeploymentByProjectName.useMutation({
       onSuccess: async () => {
-        setMessages(prev => [...prev, 'Deployment started'])
+        setMessages(prev => [...prev, 'Deployment started successfully'])
       },
       onError: async () => {
-        setMessages(prev => [...prev, 'Deployment failed'])
+        setMessages(prev => [...prev, 'Error Deploying'])
       },
     })
 
   const { mutate: createWebhookByProjectId } =
     trpc.vercel.createWebhookByProjectId.useMutation({
       onSuccess: async () => {
-        setMessages(prev => [...prev, 'Webhook created successfully'])
+        setMessages(prev => [...prev, 'Webhook attacked successfully'])
       },
       onError: async () => {
-        setMessages(prev => [...prev, 'Webhook failed'])
+        setMessages(prev => [...prev, 'Error attaching webhook'])
       },
     })
 
@@ -123,12 +122,11 @@ const DashboardView = () => {
           console.log('All operations completed successfully')
         } catch (error) {
           console.log('Error in operations:', error)
-          toast.error('Error during project setup')
         }
       },
       onError: () => {
         console.log('Template creation failed')
-        setMessages(prev => [...prev, 'Project creation failed'])
+        setMessages(prev => [...prev, 'Error creating project'])
       },
     })
 
