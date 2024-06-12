@@ -5,5 +5,5 @@ export const TriggerNotificationSchema = z.object({
     subscriberId: z.string(),
   }),
   templateId: z.string(),
-  notificationPayload: z.record(z.any()),
+  payload: z.record(z.any()),
 })

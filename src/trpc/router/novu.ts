@@ -6,16 +6,12 @@ export const novuRouter = router({
   triggerNotification: publicProcedure
     .input(TriggerNotificationSchema)
     .mutation(async ({ input }) => {
-      const { to, templateId, notificationPayload } = input
+      const { to, templateId, payload } = input
 
       try {
-        const response = await sendNotification(
-          to,
-          templateId,
-          notificationPayload,
-        )
+        const response = await sendNotification(to, templateId, payload)
 
-        return { success: true, data: response }
+        return { success: true, data: response.data }
       } catch (error) {
         throw new Error((error as Error).message)
       }
