@@ -38,6 +38,7 @@ export const env = createEnv({
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     SUBSCRIPTION_PLAN: z.string().min(1),
+    NOVU_API_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_IS_LIVE: z.boolean().default(false),
@@ -45,14 +46,19 @@ export const env = createEnv({
     NEXT_PUBLIC_HASURA_URI: z.string().url(),
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_PRICING_TABLE_ID: z.string().min(1),
+    NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER: z.string().min(1),
   },
   runtimeEnv: {
     DATABASE_URI: process.env.DATABASE_URI,
     PAYLOAD_SECRET: process.env.PAYLOAD_SECRET,
     NEXT_PUBLIC_PUBLIC_URL: changeBasedOnENV(
-     ( process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.NEXT_PUBLIC_PUBLIC_URL ) as string,
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+        process.env.NEXT_PUBLIC_PUBLIC_URL) as string,
     ),
-    PAYLOAD_URL: changeBasedOnENV(( process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.PAYLOAD_URL) as string),
+    PAYLOAD_URL: changeBasedOnENV(
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+        process.env.PAYLOAD_URL) as string,
+    ),
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
@@ -83,5 +89,8 @@ export const env = createEnv({
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_PRICING_TABLE_ID: process.env.NEXT_PUBLIC_PRICING_TABLE_ID,
+    NOVU_API_KEY: process.env.NOVU_API_KEY,
+    NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER:
+      process.env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER,
   },
 })

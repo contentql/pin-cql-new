@@ -1,5 +1,6 @@
 import { publicProcedure, router } from '@/trpc'
 import { getBlogs } from '@/trpc/router/blog-router'
+import { novuRouter } from '@/trpc/router/novu'
 import { getLayouts } from '@/trpc/router/page-router'
 import { projectRouter } from '@/trpc/router/project-router'
 import { railwayRouter } from '@/trpc/router/railway-router'
@@ -17,6 +18,7 @@ export const appRouter = router({
   stripe: stripe,
   projects: projectRouter,
   user: userRouter,
+  novu: novuRouter,
   test: publicProcedure.query(async () => {
     return {
       success: 'working',
