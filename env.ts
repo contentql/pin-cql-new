@@ -49,6 +49,7 @@ export const env = createEnv({
     NEXT_PUBLIC_HASURA_URI: z.string().url(),
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_PRICING_TABLE_ID: z.string().min(1),
+    NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER: z.string().min(1),
   },
   runtimeEnv: {
     DATABASE_URI: process.env.DATABASE_URI,
@@ -91,5 +92,7 @@ export const env = createEnv({
     NEXT_PUBLIC_PRICING_TABLE_ID: process.env.NEXT_PUBLIC_PRICING_TABLE_ID,
     SUBSCRIPTION_PLAN: process.env.SUBSCRIPTION_PLAN,
     NOVU_API_KEY: process.env.NOVU_API_KEY,
+    NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER:
+      process.env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER,
   },
 })
