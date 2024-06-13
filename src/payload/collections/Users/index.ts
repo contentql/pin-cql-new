@@ -1,5 +1,5 @@
 import { env } from '@env'
-import { Novu } from '@novu/node'
+import { ChatProviderIdEnum, Novu } from '@novu/node'
 import type { CollectionConfig } from 'payload/types'
 import Stripe from 'stripe'
 
@@ -159,6 +159,14 @@ export const Users: CollectionConfig = {
             email: doc?.email,
             avatar: doc?.imageUrl || '',
             locale: 'en-US',
+            channels: [
+              {
+                providerId: ChatProviderIdEnum.MsTeams,
+                credentials: {
+                  webhookUrl: env.MS_TEAMS_WEBHOOK_URL_FOR_NOVU,
+                },
+              },
+            ],
           })
         }
       },
