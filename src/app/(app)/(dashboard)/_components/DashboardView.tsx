@@ -4,7 +4,8 @@ import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { AlertCircle, CheckCheck } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -49,14 +50,14 @@ const DashboardView = () => {
     refetch: getProjectsRefetch,
     isLoading,
   } = trpc.projects.getProjects.useQuery(undefined, {
-    refetchInterval: 10000,
+    refetchInterval: 5000,
   })
 
   const projects = userProjects?.docs
 
   const deployingProjects = projects?.filter(project => project.isDeploying)
 
-  console.log(isDialogOpen)
+  const newProjects = projects?.filter(project => project.isNewProject)
 
   const getProjectKeys = getQueryKey(
     trpc.projects.getProjects,
@@ -149,6 +150,7 @@ const DashboardView = () => {
             name: data?.name,
             projectId: data?.id,
             workflowId: data?.accountId,
+            isNewProject: true,
           })
 
           console.log('All operations completed successfully')
@@ -169,6 +171,12 @@ const DashboardView = () => {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    if (deployingProjects?.length === 0 && newProjects?.length === 0) {
+      setIsDialogOpen(false)
+    }
+  }, [projects])
 
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
@@ -309,7 +317,7 @@ const DashboardView = () => {
               <p>{deployingProject.name} : Deploying . . .</p>
             </div>
           ))
-        : null}
+        : toast.success('Your project is ready 🎉')}
     </main>
   )
 }

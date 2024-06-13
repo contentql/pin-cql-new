@@ -38,6 +38,11 @@ export const Projects: CollectionConfig = {
       admin: { description: 'workflowId of the railway template.' },
     },
     {
+      name: 'isNewProject',
+      type: 'checkbox',
+      label: 'Is New Project',
+    },
+    {
       name: 'isDeploying',
       type: 'checkbox',
       label: 'Is Project Deploying',

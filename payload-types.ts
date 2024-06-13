@@ -269,6 +269,7 @@ export interface Project {
   name: string;
   projectId: string;
   workflowId: string;
+  isNewProject?: boolean | null;
   isDeploying?: boolean | null;
   deploymentEventMessages?:
     | {

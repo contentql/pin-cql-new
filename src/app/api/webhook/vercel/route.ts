@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
         data: {
           isDeploying: false,
           deploymentEventMessages: [],
+          isNewProject: false,
         },
       })
     } else if (event.type === 'deployment.error') {
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
         },
         data: {
           isDeploying: false,
+          isNewProject: false,
         },
       })
     }

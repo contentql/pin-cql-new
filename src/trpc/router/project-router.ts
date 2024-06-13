@@ -8,6 +8,7 @@ const projectsSchema = z.object({
   name: z.string(),
   projectId: z.string(), // Assuming projectId is a UUID
   workflowId: z.string(),
+  isNewProject: z.boolean(),
 })
 
 const deleteProjectSchema = z.object({
@@ -52,6 +53,7 @@ export const projectRouter = router({
             name: input.name,
             projectId: input.projectId,
             workflowId: input.workflowId,
+            isNewProject: input.isNewProject,
           },
           user,
         })
