@@ -5,7 +5,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
 import { AlertCircle, CheckCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -50,10 +49,10 @@ const DashboardView = () => {
     refetch: getProjectsRefetch,
     isLoading,
   } = trpc.projects.getProjects.useQuery(undefined, {
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   })
 
-  const projects = userProjects?.docs
+  const projects = userProjects?.docs || []
 
   const deployingProjects = projects?.filter(project => project.isDeploying)
 
@@ -211,7 +210,7 @@ const DashboardView = () => {
                   handleAddProject={handleAddProject}
                   isTemplateDeploying={isTemplateDeploying}
                   setIsDialogOpen={setIsDialogOpen}
-                  setMessages={setMessages}
+                  messages={messages}
                 />
                 <DialogClose asChild>close</DialogClose>
               </DialogContent>
@@ -307,17 +306,16 @@ const DashboardView = () => {
           )
         })}
       </Tabs>
-      {deployingProjects
-        ? deployingProjects?.length > 0 &&
-          deployingProjects.map(deployingProject => (
-            <div
-              key={deployingProject.name}
-              className='fixed bottom-4 right-4 flex items-center gap-2 rounded-lg bg-black bg-opacity-75 p-4 text-white shadow-lg'>
-              <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-t-2 border-white'></div>
-              <p>{deployingProject.name} : Deploying . . .</p>
-            </div>
-          ))
-        : toast.success('Your project is ready 🎉')}
+      {deployingProjects &&
+        deployingProjects?.length > 0 &&
+        deployingProjects.map(deployingProject => (
+          <div
+            key={deployingProject.name}
+            className='fixed bottom-4 right-4 flex items-center gap-2 rounded-lg bg-black bg-opacity-75 p-4 text-white shadow-lg'>
+            <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-t-2 border-white'></div>
+            <p>{deployingProject.name} : Deploying . . .</p>
+          </div>
+        ))}
     </main>
   )
 }

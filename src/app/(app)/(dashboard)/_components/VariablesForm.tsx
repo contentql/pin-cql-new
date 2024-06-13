@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { AlertCircle, CheckCheck } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -33,6 +34,7 @@ export default function VariablesForm({
   handleAddProject,
   isTemplateDeploying,
   setIsDialogOpen,
+  messages,
 }: any) {
   const [formData, setFormData] = useState({})
   const [isOpen, setIsOpen] = useState(false)
@@ -151,7 +153,6 @@ export default function VariablesForm({
     setIsOpen(true)
     try {
       await handleAddProject(formData)
-      setIsDialogOpen(false)
     } catch (error) {
       console.log('error', error)
     }
@@ -176,27 +177,69 @@ export default function VariablesForm({
 
   return (
     <div>
-      <div>
-        <div className='flex w-full flex-col gap-4'>
-          <Stepper variant='circle-alt' initialStep={0} steps={steps}>
-            {steps.map((stepProps, index) => {
-              if (index === 0) {
+      {isOpen ? (
+        <div>
+          <div className='mt-4 flex items-center justify-center'>
+            <svg
+              className='mr-2 h-5 w-5 animate-spin text-gray-500'
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'>
+              <circle
+                className='opacity-25'
+                cx='12'
+                cy='12'
+                r='10'
+                stroke='currentColor'
+                strokeWidth='4'></circle>
+              <path
+                className='opacity-75'
+                fill='currentColor'
+                d='M4 12a8 8 0 018-8v8H4z'></path>
+            </svg>
+            <div>Please wait processing...</div>
+          </div>
+          <div className='mt-4'>
+            {messages.map((message: any) => (
+              <div key={message.event}>
+                {message.event.includes('Error') ? (
+                  <div className='flex items-center gap-2 p-2'>
+                    <AlertCircle color='red' />
+                    <p>{message.event}</p>
+                  </div>
+                ) : (
+                  <div className='flex items-center gap-2 p-2'>
+                    <CheckCheck color='green' />
+                    <p>{message.event}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div className='flex w-full flex-col gap-4'>
+            <Stepper variant='circle-alt' initialStep={0} steps={steps}>
+              {steps.map((stepProps, index) => {
+                if (index === 0) {
+                  return (
+                    <Step key={stepProps.label} {...stepProps}>
+                      <FirstStepForm />
+                    </Step>
+                  )
+                }
                 return (
                   <Step key={stepProps.label} {...stepProps}>
-                    <FirstStepForm />
+                    <SecondStepForm />
                   </Step>
                 )
-              }
-              return (
-                <Step key={stepProps.label} {...stepProps}>
-                  <SecondStepForm />
-                </Step>
-              )
-            })}
-            <MyStepperFooter />
-          </Stepper>
+              })}
+              <MyStepperFooter />
+            </Stepper>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
