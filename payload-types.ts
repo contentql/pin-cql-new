@@ -269,7 +269,13 @@ export interface Project {
   name: string;
   projectId: string;
   workflowId: string;
-  isDeploying: boolean;
+  isDeploying?: boolean | null;
+  deploymentEventMessages?:
+    | {
+        event?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   user_id?: {
     relationTo: 'users';
     value: string | User;
