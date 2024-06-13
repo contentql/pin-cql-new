@@ -269,6 +269,7 @@ export interface Project {
   name: string;
   projectId: string;
   workflowId: string;
+  isDeploying: boolean;
   user_id?: {
     relationTo: 'users';
     value: string | User;

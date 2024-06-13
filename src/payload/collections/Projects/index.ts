@@ -21,14 +21,14 @@ export const Projects: CollectionConfig = {
       type: 'text',
       label: 'Name',
       required: true,
-      admin: { description: 'Name of the railway template.' },
+      admin: { description: 'Name of the vercel project.' },
     },
     {
       name: 'projectId',
       type: 'text',
       label: 'projectId',
       required: true,
-      admin: { description: 'ProjectId of the railway template.' },
+      admin: { description: 'ProjectId of the vercel project.' },
     },
     {
       name: 'workflowId',
@@ -36,6 +36,12 @@ export const Projects: CollectionConfig = {
       label: 'workflowId',
       required: true,
       admin: { description: 'workflowId of the railway template.' },
+    },
+    {
+      name: 'isDeploying',
+      type: 'checkbox',
+      label: 'Is Project Deploying',
+      required: true,
     },
     {
       name: 'user_id',
