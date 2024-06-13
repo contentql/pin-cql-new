@@ -63,12 +63,14 @@ export const DashboardProjectCard = ({ project }: any) => {
 
   const border = cardBorder()
 
-  const { mutate: updateProject } = trpc.projects.updateProject.useMutation({
-    onSuccess: async data => {
-      setToggleNameEdit(false)
-      toast.success('Project updated successfully')
+  const { mutate: updateProject } = trpc.projects.updateProjectName.useMutation(
+    {
+      onSuccess: async data => {
+        setToggleNameEdit(false)
+        toast.success('Project updated successfully')
+      },
     },
-  })
+  )
 
   const { mutate: templateUpdate } = trpc.railway.templateUpdate.useMutation({
     onSuccess: async data => {

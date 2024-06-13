@@ -3,6 +3,7 @@
 import { DialogClose } from '@radix-ui/react-dialog'
 import { useQueryClient } from '@tanstack/react-query'
 import { getQueryKey } from '@trpc/react-query'
+import { AlertCircle, CheckCheck } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -33,7 +34,7 @@ const DashboardView = () => {
 
   const [serviceVariable, setServiceVariable] = useState<any>()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [messages, setMessages] = useState<string[]>([])
+  const [messages, setMessages] = useState<{ event: string }[]>([])
 
   const projectTabs = [
     {
@@ -47,9 +48,15 @@ const DashboardView = () => {
     error,
     refetch: getProjectsRefetch,
     isLoading,
-  } = trpc.projects.getProjects.useQuery()
+  } = trpc.projects.getProjects.useQuery(undefined, {
+    refetchInterval: 10000,
+  })
 
   const projects = userProjects?.docs
+
+  const deployingProjects = projects?.filter(project => project.isDeploying)
+
+  console.log(isDialogOpen)
 
   const getProjectKeys = getQueryKey(
     trpc.projects.getProjects,
@@ -57,9 +64,19 @@ const DashboardView = () => {
     'query',
   )
 
+  const { mutate: updateProjectEvents } =
+    trpc.projects.updateProjectEvents.useMutation()
+
   const { mutate: createProject } = trpc.projects.createProject.useMutation({
-    onSuccess: async () => {
-      console.log('Project created')
+    onSuccess: async data => {
+      try {
+        updateProjectEvents({
+          id: data.id,
+          data: messages,
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
     onError: async () => {
       console.log('Project creation failed')
@@ -74,22 +91,26 @@ const DashboardView = () => {
       onSuccess: async () => {
         setMessages(prev => [
           ...prev,
-          'Deployment started successfully',
-          'Deploying . . .',
+          { event: 'Deployment started successfully' },
+          { event: 'Deploying . . .' },
         ])
       },
       onError: async () => {
-        setMessages(prev => [...prev, 'Error Deploying'])
+        setMessages(prev => [...prev, { event: 'Error Deploying' }])
       },
     })
 
   const { mutate: createWebhookByProjectId } =
     trpc.vercel.createWebhookByProjectId.useMutation({
       onSuccess: async () => {
-        setMessages(prev => [...prev, 'Webhook attacked successfully'])
+        setMessages(prev => [
+          ...prev,
+
+          { event: 'Webhook attacked successfully' },
+        ])
       },
       onError: async () => {
-        setMessages(prev => [...prev, 'Error attaching webhook'])
+        setMessages(prev => [...prev, { event: 'Error attaching webhook' }])
       },
     })
 
@@ -98,11 +119,18 @@ const DashboardView = () => {
   const { mutateAsync: templateDeploy, isPending: isTemplateDeploying } =
     trpc.vercel.createProjectWithGithubRepo.useMutation({
       onSuccess: async data => {
-        setMessages(prev => [...prev, 'Project created successfully'])
+        setMessages(prev => [
+          ...prev,
+          { event: 'Project created successfully' },
+        ])
         try {
           createWebhookByProjectId({
-            url: 'https://6252-103-88-103-114.ngrok-free.app/api/webhook/vercel',
-            events: ['deployment.created', 'deployment.succeeded'],
+            url: 'https://5ebb-103-88-103-114.ngrok-free.app/api/webhook/vercel',
+            events: [
+              'deployment.created',
+              'deployment.succeeded',
+              'deployment.error',
+            ],
             projectIds: [data.id],
           })
 
@@ -130,7 +158,7 @@ const DashboardView = () => {
       },
       onError: () => {
         console.log('Template creation failed')
-        setMessages(prev => [...prev, 'Error creating project'])
+        setMessages(prev => [...prev, { event: 'Error creating project' }])
       },
     })
 
@@ -175,12 +203,66 @@ const DashboardView = () => {
                   handleAddProject={handleAddProject}
                   isTemplateDeploying={isTemplateDeploying}
                   setIsDialogOpen={setIsDialogOpen}
-                  messages={messages}
                   setMessages={setMessages}
                 />
                 <DialogClose asChild>close</DialogClose>
               </DialogContent>
             </Dialog>
+
+            {deployingProjects
+              ? deployingProjects?.length > 0 && (
+                  <Dialog>
+                    <DialogContent className='sm:max-w-[500px]'>
+                      <DialogHeader>
+                        <DialogTitle>Deploying your project</DialogTitle>
+                        <DialogDescription>
+                          Please provide required details asked below.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div>
+                        <div className='mt-4 flex items-center justify-center'>
+                          <svg
+                            className='mr-2 h-5 w-5 animate-spin text-gray-500'
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'>
+                            <circle
+                              className='opacity-25'
+                              cx='12'
+                              cy='12'
+                              r='10'
+                              stroke='currentColor'
+                              strokeWidth='4'></circle>
+                            <path
+                              className='opacity-75'
+                              fill='currentColor'
+                              d='M4 12a8 8 0 018-8v8H4z'></path>
+                          </svg>
+                          <div>Please wait processing...</div>
+                        </div>
+                        <div className='mt-4'>
+                          {messages.map((message: any, index: number) => (
+                            <div key={index}>
+                              {message.event.includes('Error') ? (
+                                <div className='flex items-center gap-2 p-2'>
+                                  <AlertCircle color='red' />
+                                  <p>{message.event}</p>
+                                </div>
+                              ) : (
+                                <div className='flex items-center gap-2 p-2'>
+                                  <CheckCheck color='green' />
+                                  <p>{message.event}</p>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <DialogClose asChild>close</DialogClose>
+                    </DialogContent>
+                  </Dialog>
+                )
+              : null}
           </div>
         </div>
         {projectTabs?.map(tab => {
@@ -217,6 +299,17 @@ const DashboardView = () => {
           )
         })}
       </Tabs>
+      {deployingProjects
+        ? deployingProjects?.length > 0 &&
+          deployingProjects.map(deployingProject => (
+            <div
+              key={deployingProject.name}
+              className='fixed bottom-4 right-4 flex items-center gap-2 rounded-lg bg-black bg-opacity-75 p-4 text-white shadow-lg'>
+              <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-t-2 border-white'></div>
+              <p>{deployingProject.name} : Deploying . . .</p>
+            </div>
+          ))
+        : null}
     </main>
   )
 }

@@ -41,7 +41,17 @@ export const Projects: CollectionConfig = {
       name: 'isDeploying',
       type: 'checkbox',
       label: 'Is Project Deploying',
-      required: true,
+    },
+    {
+      name: 'deploymentEventMessages',
+      type: 'array',
+      fields: [
+        {
+          name: 'event',
+          type: 'text',
+          label: 'Event',
+        },
+      ],
     },
     {
       name: 'user_id',
