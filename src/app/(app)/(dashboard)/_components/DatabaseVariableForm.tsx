@@ -76,13 +76,17 @@ const DatabaseVariableForm = ({ projectId }: { projectId: string }) => {
             <FormItem>
               <FormLabel>Database URL</FormLabel>
               <FormControl>
-                <Input placeholder='mongo database url' {...field} />
+                <Input
+                  className='w-full'
+                  placeholder='mongo database url'
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type='submit'>Submit</Button>
+        <Button type='submit'>Save</Button>
       </form>
     </Form>
   )

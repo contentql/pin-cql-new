@@ -101,7 +101,7 @@ const DashboardView = () => {
         setMessages(prev => [...prev, 'Project created successfully'])
         try {
           createWebhookByProjectId({
-            url: 'https://webhook.site/2afc2c37-e7a1-40e3-9292-ae8d9a8fcee1',
+            url: 'https://6252-103-88-103-114.ngrok-free.app/api/webhook/vercel',
             events: ['deployment.created', 'deployment.succeeded'],
             projectIds: [data.id],
           })
