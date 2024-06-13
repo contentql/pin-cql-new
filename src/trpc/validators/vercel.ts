@@ -89,18 +89,7 @@ export const CreateProjectWithGithubRepoSchema = z.object({
 export const CreateProjectWithGithubRepoSchema2 = z.object({
   data: z.object({
     Project_Name: z.string(),
-    DATABASE_URI: z.string().optional(),
-    S3_ENDPOINT: z.string().optional(),
-    S3_ACCESS_KEY_ID: z.string().optional(),
-    S3_SECRET_ACCESS_KEY: z.string().optional(),
-    S3_BUCKET: z.string().optional(),
-    S3_REGION: z.string().optional(),
-    RESEND_API_KEY: z.string().optional(),
-    RESEND_SENDER_EMAIL: z.string().optional(),
-    RESEND_SENDER_NAME: z.string().optional(),
-    AUTH_GITHUB_ID: z.string().optional(),
-    AUTH_GITHUB_SECRET: z.string().optional(),
-    OPENAPI_KEY: z.string().optional(),
+    serverlessFunctionRegion: z.string().max(5),
   }),
 })
 
@@ -116,6 +105,7 @@ export const CreateWebhookByProjectIdSchema = z.object({
         'deployment.succeeded',
         'project.created',
         'project.removed',
+        'deployment.ready',
       ]),
     )
     .min(1),
@@ -311,7 +301,7 @@ export const DeleteEnvVarByIdAndProjectNameOrIdSchema = z.object({
 
 // Zod schema to edit a environment variable by id and project name or id
 export const EditEnvVarByIdAndProjectNameOrIdSchema = z.object({
-  envVarId: z.string(),
+  envVarId: z.string().optional(),
   projectNameOrId: z.union([z.string(), z.number()]),
   comment: z.string().max(500).optional(),
   customEnvironmentIds: z.array(z.string()).optional(),

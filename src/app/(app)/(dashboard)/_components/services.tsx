@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import MetricsTabContent from '@/app/(app)/(dashboard)/_components/metrics-tab-content'
 import SettingsTabContent from '@/app/(app)/(dashboard)/_components/settings-tab-content'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { trpc } from '@/trpc/client'
 
 import DeploymentsTabContent from './deployments-tab-content'
-import VariablesTabContent from './variables-tab-content'
 
 const Services = () => {
   const router = useRouter()
@@ -34,31 +32,7 @@ const Services = () => {
 
   console.log('fetched project', fetchedProjectData)
 
-  // const { mutate: templateVariablesUpdate } =
-  //   trpc.railway.templateVariablesUpdate.useMutation({
-  //     onSuccess: async data => {
-  //       setShowNotification(true)
-  //       console.log('Variables updated')
-  //       if (serviceId && environmentId) {
-  //         getVariables({
-  //           environmentId: environmentId,
-  //           projectId: projectId,
-  //           serviceId: serviceId,
-  //         })
-  //       }
-  //     },
-  //     onError: async () => {
-  //       console.log('Variables update failed')
-  //     },
-  //   })
-
   const deployments = fetchedProjectData?.latestDeployments
-
-  // const deploymentsSorted = deployments?.edges.sort((a: any, b: any) => {
-  //   const dateA: number = new Date(a.node.createdAt).getTime()
-  //   const dateB: number = new Date(b.node.createdAt).getTime()
-  //   return dateB - dateA
-  // })
 
   const serviceDetailsTabs = [
     {
@@ -70,21 +44,21 @@ const Services = () => {
         />
       ),
     },
+    // {
+    //   value: 'variables',
+    //   label: 'Variables',
+    //   content: variables ? (
+    //     <VariablesTabContent variables={fetchedProjectData?.env} />
+    //   ) : (
+    //     <div>Loading variables...</div>
+    //   ),
+    // },
+    // { value: 'metrics', label: 'Metrics', content: <MetricsTabContent /> },
     {
-      value: 'variables',
-      label: 'Variables',
-      content: variables ? (
-        <VariablesTabContent
-          variables={fetchedProjectData?.env}
-          // environmentId={environmentId}
-          // templateVariablesUpdate={templateVariablesUpdate}
-        />
-      ) : (
-        <div>Loading variables...</div>
-      ),
+      value: 'settings',
+      label: 'Settings',
+      content: <SettingsTabContent projectId={projectId} />,
     },
-    { value: 'metrics', label: 'Metrics', content: <MetricsTabContent /> },
-    { value: 'settings', label: 'Settings', content: <SettingsTabContent /> },
   ]
 
   const getDotClass = () => {

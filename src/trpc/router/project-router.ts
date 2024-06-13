@@ -8,13 +8,14 @@ const projectsSchema = z.object({
   name: z.string(),
   projectId: z.string(), // Assuming projectId is a UUID
   workflowId: z.string(),
+  isNewProject: z.boolean(),
 })
 
 const deleteProjectSchema = z.object({
   id: z.string(),
 })
 
-const updateProjectSchema = z.object({
+const updateProjectNameSchema = z.object({
   id: z.string(),
   name: z.string(),
 })
@@ -46,24 +47,41 @@ export const projectRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx
       try {
-        await payload.create({
+        const { id, name, projectId } = await payload.create({
           collection: 'projects',
           data: {
             name: input.name,
             projectId: input.projectId,
             workflowId: input.workflowId,
+            isNewProject: input.isNewProject,
           },
           user,
         })
-        return { success: true }
+        return { id, name, projectId }
       } catch (error) {
         console.log('Error during creating project:', error)
         throw new Error('Error during creating project')
       }
     }),
 
-  updateProject: userProcedure
-    .input(updateProjectSchema)
+  updateProjectEvents: userProcedure
+    .input(z.any())
+    .mutation(async ({ input }) => {
+      try {
+        await payload.update({
+          collection: 'projects',
+          data: {
+            deploymentEventMessages: input.data,
+          },
+          id: input.id,
+        })
+      } catch (error) {
+        console.error('Error updating project events', error)
+      }
+    }),
+
+  updateProjectName: userProcedure
+    .input(updateProjectNameSchema)
     .mutation(async ({ input }) => {
       try {
         await payload.update({
