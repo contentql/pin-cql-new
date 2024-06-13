@@ -125,7 +125,7 @@ const DashboardView = () => {
         ])
         try {
           createWebhookByProjectId({
-            url: 'https://5ebb-103-88-103-114.ngrok-free.app/api/webhook/vercel',
+            url: 'https://pin-cql-new.vercel.app/api/webhook/vercel',
             events: [
               'deployment.created',
               'deployment.succeeded',
