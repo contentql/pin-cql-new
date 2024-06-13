@@ -33,6 +33,19 @@ export async function POST(req: NextRequest) {
         },
         data: {
           isDeploying: false,
+          deploymentEventMessages: [],
+        },
+      })
+    } else if (event.type === 'deployment.error') {
+      await payload.update({
+        collection: 'projects',
+        where: {
+          name: {
+            equals: event.payload.name,
+          },
+        },
+        data: {
+          isDeploying: false,
         },
       })
     }

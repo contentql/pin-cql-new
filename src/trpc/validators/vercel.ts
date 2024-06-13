@@ -105,6 +105,7 @@ export const CreateWebhookByProjectIdSchema = z.object({
         'deployment.succeeded',
         'project.created',
         'project.removed',
+        'deployment.ready',
       ]),
     )
     .min(1),
