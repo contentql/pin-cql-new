@@ -6,6 +6,8 @@ const changeBasedOnENV = (env: string, noHttp = false) => {
     return `http://${env}`
   }
   if (process.env.NODE_ENV === 'production') return `https://${env}`
+
+  return `http://${env}`
 }
 
 export const env = createEnv({
@@ -55,13 +57,15 @@ export const env = createEnv({
     DATABASE_URI_VERCEL: process.env.DATABASE_URI_VERCEL,
     PAYLOAD_SECRET: process.env.PAYLOAD_SECRET,
     NEXT_PUBLIC_PUBLIC_URL: changeBasedOnENV(
-      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-        process.env.NEXT_PUBLIC_PUBLIC_URL) as string,
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL as string) ||
+        (process.env.NEXT_PUBLIC_PUBLIC_URL as string),
     ),
+    // NEXT_PUBLIC_PUBLIC_URL : process.env.NEXT_PUBLIC_PUBLIC_URL,
+    // PAYLOAD_URL: process.env.PAYLOAD_URL,
 
     PAYLOAD_URL: changeBasedOnENV(
-      (process.env.VERCEL_PROJECT_PRODUCTION_URL ||
-        process.env.PAYLOAD_URL) as string,
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL as string) ||
+        (process.env.PAYLOAD_URL as string),
     ),
     S3_ENDPOINT: process.env.S3_ENDPOINT,
     S3_ENDPOINT_VERCEL: process.env.S3_ENDPOINT_VERCEL,
