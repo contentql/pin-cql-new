@@ -3,7 +3,6 @@
 import { projects } from '../_data'
 // import { useQueryClient } from '@tanstack/react-query'
 // import { getQueryKey } from '@trpc/react-query'
-import { BadgePercent } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,23 +13,23 @@ import { toast } from 'sonner'
 
 import Breadcrumbs from '@/app/(app)/(dashboard)/_components/breadcrumbs'
 import {
-    HomeIcon,
-    LineChartIcon,
-    Package2Icon,
-    PackageIcon,
-    PanelLeftIcon,
-    ShoppingCartIcon,
-    UsersIcon,
+  HomeIcon,
+  LineChartIcon,
+  Package2Icon,
+  PackageIcon,
+  PanelLeftIcon,
+  ShoppingCartIcon,
+  UsersIcon,
 } from '@/app/(app)/(dashboard)/_components/icons'
 // import { updateRailwayApi } from '@/components/ProfileForm/actions'
 import { Button } from '@/components/ui/button'
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { trpc } from '@/trpc/client'
@@ -163,7 +162,7 @@ const DashboardHeader: React.FC<Props> = ({ user }) => {
       <div className='relative ml-auto flex-1 md:grow-0'></div>
 
       {/* Manage Plan  */}
-      {plan === 'Basic' ? (
+      {/* {plan === 'Basic' ? (
         <Link href='/pricing'>
           <Button variant={plan} size='sm' className='w-full gap-1 capitalize'>
             Pricing
@@ -179,7 +178,7 @@ const DashboardHeader: React.FC<Props> = ({ user }) => {
           <BadgePercent className='h-4 w-4' />
           Manage subscription
         </Button>
-      )}
+      )} */}
 
       {/* Novu Notification Center */}
       <NovuNotificationCenterProvider user={user} />
