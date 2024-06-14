@@ -41,13 +41,12 @@ const DashboardSideNav = () => {
   const plan = (user?.plan ? user?.plan : 'default') as Plan
 
   const getDisplayPlan = () => {
-    if (plan === 'Basic') {
-      return 'Upgrade your plan'
+    if (plan === 'Team') {
+      return 'Your plan is Team'
     } else if (plan === 'Creator') {
       return 'Upgrade to Team'
     }
-
-    return 'Plan Team'
+    return 'Upgrade your plan'
   }
 
   const DisplayPlan = getDisplayPlan()
