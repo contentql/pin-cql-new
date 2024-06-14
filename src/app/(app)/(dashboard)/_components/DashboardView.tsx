@@ -223,7 +223,7 @@ const DashboardView = () => {
                       <DialogHeader>
                         <DialogTitle>Deploying your project</DialogTitle>
                         <DialogDescription>
-                          Please provide required details asked below.
+                          Please wait your project is deploying.
                         </DialogDescription>
                       </DialogHeader>
                       <div>

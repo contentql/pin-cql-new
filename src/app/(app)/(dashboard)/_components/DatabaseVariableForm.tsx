@@ -1,5 +1,3 @@
-'use client'
-
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -21,7 +19,13 @@ const formSchema = z.object({
   DATABASE_URI: z.string().min(2),
 })
 
-const DatabaseVariableForm = ({ projectId }: { projectId: string }) => {
+const DatabaseVariableForm = ({
+  projectId,
+  getEnvVarId,
+}: {
+  projectId: string
+  getEnvVarId: any
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,18 +33,7 @@ const DatabaseVariableForm = ({ projectId }: { projectId: string }) => {
     },
   })
 
-  const { data: ProjectEnv } = trpc.vercel.GetEnvVarsByProjectNameOrId.useQuery(
-    {
-      projectNameOrId: projectId,
-    },
-  )
-
-  const getEnvVarId = (key: string) => {
-    const filterData = ProjectEnv.envs.filter((env: any) => env.key === key)
-    return filterData[0].id
-  }
-
-  const { mutate: EditEnvVarByIdAndProjectNameOrId } =
+  const { mutateAsync: EditEnvVarByIdAndProjectNameOrId } =
     trpc.vercel.EditEnvVarByIdAndProjectNameOrId.useMutation({
       onSuccess: async () => {
         toast.success('Env variable updated successfully')
@@ -50,20 +43,30 @@ const DatabaseVariableForm = ({ projectId }: { projectId: string }) => {
       },
     })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const { mutateAsync: updateProjectEnvVariables } =
+    trpc.projects.updateProjectEnvVariables.useMutation()
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     const keys = Object.keys(values)
 
     const id = getEnvVarId(keys[0])
 
-    EditEnvVarByIdAndProjectNameOrId({
+    console.log(values)
+
+    await EditEnvVarByIdAndProjectNameOrId({
       projectNameOrId: projectId,
       key: keys[0],
       value: values.DATABASE_URI,
       type: 'encrypted',
       target: ['development', 'preview', 'production'],
       envVarId: id,
+    }).then(() => {
+      updateProjectEnvVariables({
+        id: projectId,
+        key: keys[0],
+        value: values.DATABASE_URI,
+      })
     })
-    console.log(id)
   }
 
   return (

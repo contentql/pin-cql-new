@@ -4,6 +4,8 @@ import { z } from 'zod'
 
 import { router, userProcedure } from '@/trpc'
 
+// import { encrypt } from '@/utils/crypto'
+
 const projectsSchema = z.object({
   name: z.string(),
   projectId: z.string(), // Assuming projectId is a UUID
@@ -18,6 +20,12 @@ const deleteProjectSchema = z.object({
 const updateProjectNameSchema = z.object({
   id: z.string(),
   name: z.string(),
+})
+
+const updateProjectEnvVariables = z.object({
+  key: z.string(),
+  id: z.string(),
+  value: z.any(),
 })
 
 const payload = await getPayload({
@@ -64,6 +72,37 @@ export const projectRouter = router({
       }
     }),
 
+  updateProjectEnvVariables: userProcedure
+    .input(updateProjectEnvVariables)
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx
+
+      // const encryptedValue = encrypt(input.value)
+
+      console.log({ input })
+
+      try {
+        await payload.update({
+          collection: 'projects',
+          where: {
+            name: {
+              equals: input.id,
+            },
+          },
+          data: {
+            userEnvironmentVariables: [
+              {
+                variableName: input.key,
+                value: input.value,
+              },
+            ],
+          },
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }),
+
   updateProjectEvents: userProcedure
     .input(z.any())
     .mutation(async ({ input }) => {
@@ -73,7 +112,7 @@ export const projectRouter = router({
           data: {
             deploymentEventMessages: input.data,
           },
-          id: input.id,
+          where: {},
         })
       } catch (error) {
         console.error('Error updating project events', error)

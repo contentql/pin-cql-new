@@ -6,7 +6,13 @@ import { Switch } from '@/components/ui/switch'
 
 import DatabaseVariableForm from './DatabaseVariableForm'
 
-const SettingsTabContent = ({ projectId }: { projectId: string }) => {
+const SettingsTabContent = ({
+  projectId,
+  getEnvVarId,
+}: {
+  projectId: string
+  getEnvVarId: any
+}) => {
   const [showDatabaseFrom, setShowDatabaseForm] = useState(false)
   return (
     <section className='w-full'>
@@ -30,7 +36,12 @@ const SettingsTabContent = ({ projectId }: { projectId: string }) => {
               aria-label='Analytics'
             />
           </div>
-          {showDatabaseFrom && <DatabaseVariableForm projectId={projectId} />}
+          {showDatabaseFrom && (
+            <DatabaseVariableForm
+              projectId={projectId}
+              getEnvVarId={getEnvVarId}
+            />
+          )}
           {/* <div className='flex items-center justify-between rounded-lg bg-gray-100 p-4 dark:bg-gray-800'>
             <div className='space-y-1'>
               <h3 className='text-lg font-medium'>Database</h3>

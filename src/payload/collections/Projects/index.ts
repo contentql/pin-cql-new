@@ -59,6 +59,24 @@ export const Projects: CollectionConfig = {
       ],
     },
     {
+      name: 'userEnvironmentVariables',
+      label: 'Environment Variables',
+      type: 'array',
+      admin: { description: 'Environment Variables updated by user.' },
+      fields: [
+        {
+          name: 'variableName',
+          label: 'Variable Name',
+          type: 'text',
+        },
+        {
+          name: 'value',
+          label: 'Value',
+          type: 'textarea',
+        },
+      ],
+    },
+    {
       name: 'user_id',
       label: 'User Id',
       type: 'relationship',
