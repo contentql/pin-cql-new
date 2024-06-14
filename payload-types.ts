@@ -280,7 +280,7 @@ export interface Project {
   userEnvironmentVariables?:
     | {
         variableName?: string | null;
-        key?: string | null;
+        value?: string | null;
         id?: string | null;
       }[]
     | null;

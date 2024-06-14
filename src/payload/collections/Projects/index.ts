@@ -70,8 +70,8 @@ export const Projects: CollectionConfig = {
           type: 'text',
         },
         {
-          name: 'key',
-          label: 'Key',
+          name: 'value',
+          label: 'Value',
           type: 'textarea',
         },
       ],

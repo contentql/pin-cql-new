@@ -30,9 +30,18 @@ const Services = () => {
       projectNameOrId: projectId,
     })
 
-  console.log('fetched project', fetchedProjectData)
+  const { data: ProjectEnv } = trpc.vercel.GetEnvVarsByProjectNameOrId.useQuery(
+    {
+      projectNameOrId: projectId,
+    },
+  )
 
-  const deployments = fetchedProjectData?.latestDeployments
+  const getEnvVarId = (key: string) => {
+    const filterData = ProjectEnv.envs.filter((env: any) => env.key === key)
+    return filterData[0].id
+  }
+
+  console.log('fetched project', fetchedProjectData)
 
   const serviceDetailsTabs = [
     {
@@ -44,20 +53,12 @@ const Services = () => {
         />
       ),
     },
-    // {
-    //   value: 'variables',
-    //   label: 'Variables',
-    //   content: variables ? (
-    //     <VariablesTabContent variables={fetchedProjectData?.env} />
-    //   ) : (
-    //     <div>Loading variables...</div>
-    //   ),
-    // },
-    // { value: 'metrics', label: 'Metrics', content: <MetricsTabContent /> },
     {
       value: 'settings',
       label: 'Settings',
-      content: <SettingsTabContent projectId={projectId} />,
+      content: (
+        <SettingsTabContent projectId={projectId} getEnvVarId={getEnvVarId} />
+      ),
     },
   ]
 
