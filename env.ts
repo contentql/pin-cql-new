@@ -43,6 +43,7 @@ export const env = createEnv({
     STRIPE_PUBLISHABLE_KEY: z.string().min(1),
     SUBSCRIPTION_PLAN: z.string().min(1),
     NOVU_API_KEY: z.string().min(1),
+    MS_TEAMS_WEBHOOK_URL_FOR_NOVU: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_IS_LIVE: z.boolean().default(false),
@@ -101,5 +102,6 @@ export const env = createEnv({
     NOVU_API_KEY: process.env.NOVU_API_KEY,
     NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER:
       process.env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER,
+    MS_TEAMS_WEBHOOK_URL_FOR_NOVU: process.env.MS_TEAMS_WEBHOOK_URL_FOR_NOVU,
   },
 })
