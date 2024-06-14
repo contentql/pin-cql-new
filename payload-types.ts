@@ -277,6 +277,13 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
+  userEnvironmentVariables?:
+    | {
+        variableName?: string | null;
+        key?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   user_id?: {
     relationTo: 'users';
     value: string | User;
