@@ -64,6 +64,8 @@ const DashboardView = () => {
     'query',
   )
 
+  const { data: user } = trpc.user.getUser.useQuery()
+
   const { mutate: updateProjectEvents } =
     trpc.projects.updateProjectEvents.useMutation()
 
@@ -196,7 +198,9 @@ const DashboardView = () => {
           <div className='ml-auto flex items-center gap-2'>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant='outline'>New Project</Button>
+                {user?.plan === 'Basic' ? null : (
+                  <Button variant='outline'>New Project</Button>
+                )}
               </DialogTrigger>
               <DialogContent className='sm:max-w-[500px]'>
                 <DialogHeader>

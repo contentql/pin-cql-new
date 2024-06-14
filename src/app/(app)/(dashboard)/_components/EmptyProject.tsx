@@ -1,12 +1,16 @@
 'use client'
 
+import Link from 'next/link'
+
 import { Button } from '@/components/ui/button'
+import { trpc } from '@/trpc/client'
 
 export function EmptyProject({
   setIsDialogOpen,
 }: {
   setIsDialogOpen: (arg: boolean) => void
 }) {
+  const { data: user } = trpc.user.getUser.useQuery()
   return (
     <div className='relative z-10 mx-auto flex h-[30rem] w-full flex-col items-center justify-center rounded-md antialiased'>
       <div className='mx-auto flex max-w-xl flex-col justify-center p-4'>
@@ -14,13 +18,19 @@ export function EmptyProject({
           No Projects Created
         </h1>
         <div className='z-10 mx-auto mt-6'>
-          <Button
-            onClick={() => {
-              setIsDialogOpen(true)
-              console.log('clicked')
-            }}>
-            Create Now
-          </Button>
+          {user?.plan === 'Basic' ? (
+            <Link href='/pricing'>
+              <Button>Upgrade Now</Button>
+            </Link>
+          ) : (
+            <Button
+              onClick={() => {
+                setIsDialogOpen(true)
+                console.log('clicked')
+              }}>
+              Create Now
+            </Button>
+          )}
         </div>
       </div>
     </div>

@@ -2,14 +2,15 @@
 
 import { Bell, Home, Package2, Users } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card'
 import { trpc } from '@/trpc/client'
 
@@ -27,13 +28,21 @@ type Plan =
   | undefined
 
 const DashboardSideNav = () => {
+  const router = useRouter()
   const { data: user } = trpc.user.getUser.useQuery()
+
+  const { mutate: createCustomerPortalSession } =
+    trpc.stripe.createCustomerPortalSession.useMutation({
+      onSuccess: async data => {
+        router.push(data?.url)
+      },
+    })
 
   const plan = (user?.plan ? user?.plan : 'default') as Plan
 
   const getDisplayPlan = () => {
     if (plan === 'Basic') {
-      return 'Upgrade to Creator'
+      return 'Upgrade your plan'
     } else if (plan === 'Creator') {
       return 'Upgrade to Team'
     }
@@ -81,11 +90,21 @@ const DashboardSideNav = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className='p-2 pt-0 md:p-4 md:pt-0'>
-              <Link href='/pricing'>
-                <Button variant={plan} size='sm' className='w-full'>
+              {user && user?.plan === 'Basic' ? (
+                <Link href='/pricing'>
+                  <Button variant={plan} size='sm' className='w-full'>
+                    Upgrade
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  variant={plan}
+                  size='sm'
+                  className='w-full'
+                  onClick={() => createCustomerPortalSession()}>
                   Upgrade
                 </Button>
-              </Link>
+              )}
             </CardContent>
           </Card>
         </div>
