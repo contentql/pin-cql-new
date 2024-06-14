@@ -5,7 +5,7 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   compiler: {
-    removeConsole: process.env.NODE_ENV !== 'development', // Remove console.log in production
+    // removeConsole: process.env.NODE_ENV !== 'development', // Remove console.log in production
   },
   async redirects() {
     return [
@@ -24,7 +24,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'pin-hcms-production.up.railway.app',
+        hostname: 'contentql.io',
       },
       {
         protocol: 'https',
