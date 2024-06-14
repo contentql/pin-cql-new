@@ -127,7 +127,7 @@ const DashboardView = () => {
         ])
         try {
           createWebhookByProjectId({
-            url: 'https://pin-cql-new.vercel.app/api/webhook/vercel',
+            url: 'https://contentql.io/api/webhook/vercel',
             events: [
               'deployment.created',
               'deployment.succeeded',
