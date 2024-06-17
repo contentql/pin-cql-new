@@ -5,6 +5,8 @@ type Client = {
 
 const clients: Client[] = []
 
+// the res object here is the writer, so now we can use it in our webhook
+// look at the sendMessageToClient function below
 export function addClient(id: number, res: any): void {
   clients.push({ id, res })
 }
